@@ -1,0 +1,19 @@
+# C# Web API
+web-service/**/bin/
+web-service/**/obj/
+web-service/**/.vs/
+web-service/**/appsettings.json
+web-service/**/*.user
+
+# Web App
+web-app/node_modules/
+
+# Android
+mobile-app/.gradle/
+mobile-app/app/build/
+mobile-app/local.properties
+mobile-app/app/google-services.json
+
+# General
+.DS_Store
+*.log 

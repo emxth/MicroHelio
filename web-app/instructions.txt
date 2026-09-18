@@ -1,0 +1,13 @@
+Add Tailwind CSS via CDN — paste this into the <head> of every HTML file you create. No npm, no installation needed:
+<script src="https://cdn.tailwindcss.com"></script>
+
+src/css/style.css — this is your shared custom styles file. Link it in every page:
+<link rel="stylesheet" href="/src/css/style.css">
+
+src/js/api-client.js — this is the shared file everyone uses to call the API. Create it empty for now, Dewmi will fill it in.
+
+Each member creates their own pages inside their assigned folder — for example Dewmi creates src/pages/auth/login.html, src/pages/users/user-list.html etc.
+
+To run the project — right-click index.html in VS Code Explorer → Open with Live Server. Your browser opens at http://127.0.0.1:5500. Any HTML file can be opened the same way.
+
+That's it — no terminal commands, no npm install, no build step. Each member opens VS Code, creates their HTML pages inside their assigned folder, adds the Tailwind CDN script tag, and writes their JS in their assigned src/js/ file. The whole team can work completely independently.

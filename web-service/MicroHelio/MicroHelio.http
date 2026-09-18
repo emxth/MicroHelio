@@ -1,0 +1,6 @@
+@MicroHelio_HostAddress = http://localhost:5056
+
+GET {{MicroHelio_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
