@@ -12,17 +12,18 @@ namespace MicroHelio.Services
     public class TransactionService
     {
         private readonly IMongoCollection<Transaction> _transactions;
-        private readonly IMongoCollection<EnergyReservation> _reservations; // Needed to update Ashwin's collection
-        private readonly string _hmacSecret = "SuperSecretKey_MoveToEnvVariablesLater!"; // TODO: Move to config
+        private readonly IMongoCollection<EnergyReservation> _reservations;
+        private readonly string _hmacSecret;
 
         // Initializes MongoDB collections using the injected database settings
-        public TransactionService(IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings)
+        public TransactionService(IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings, IConfiguration configuration)
         {
             var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _transactions = database.GetCollection<Transaction>(settings.Value.TransactionsCollectionName);
-
-            // Accessing the reservation collection to enforce business rules across components
             _reservations = database.GetCollection<EnergyReservation>("EnergyReservations");
+
+            // Dynamically load the secret from Secret Manager (local) or Environment Variables (IIS)
+            _hmacSecret = configuration["Jwt:Key"] ?? throw new InvalidOperationException("HMAC secret is not configured.");
         }
 
         // Creates a new transaction record when a Grid Operator initiates a scan
@@ -136,6 +137,49 @@ namespace MicroHelio.Services
         public async Task<Transaction?> GetTransactionByIdAsync(string id)
         {
             return await _transactions.Find(t => t.Id == id).FirstOrDefaultAsync();
+        }
+
+        // Generates an HMAC-signed JSON payload for approved reservations and stores it in the database.
+        public async Task<string?> GenerateQrPayloadAsync(string reservationId)
+        {
+            var reservation = await _reservations.Find(r => r.Id == reservationId).FirstOrDefaultAsync();
+
+            // Ensure reservation exists and is strictly approved before generating a QR code
+            if (reservation == null || reservation.Status != "Approved")
+            {
+                return null;
+            }
+
+            // 1. Construct the exact string to hash to ensure verification matches later
+            var messageToHash = $"{reservation.Id}{reservation.ProsumerNic}{reservation.NodeId}{reservation.ScheduledDate:yyyy-MM-dd}";
+
+            string computedSignature;
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_hmacSecret)))
+            {
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(messageToHash));
+                computedSignature = Convert.ToBase64String(computedHash);
+            }
+
+            // 2. Build the JSON payload object mapped to the agreed schema
+            var payloadObj = new
+            {
+                reservationId = reservation.Id,
+                prosumerNic = reservation.ProsumerNic,
+                nodeId = reservation.NodeId,
+                scheduledDate = reservation.ScheduledDate.ToString("yyyy-MM-dd"),
+                hmacSignature = computedSignature
+            };
+
+            var qrCodeDataString = JsonSerializer.Serialize(payloadObj);
+
+            // 3. Store the generated QR data on the reservation document
+            var update = Builders<EnergyReservation>.Update
+                .Set(r => r.QrCodeData, qrCodeDataString)
+                .Set(r => r.QrGeneratedAt, DateTime.UtcNow);
+
+            await _reservations.UpdateOneAsync(r => r.Id == reservationId, update);
+
+            return qrCodeDataString;
         }
     }
 }
