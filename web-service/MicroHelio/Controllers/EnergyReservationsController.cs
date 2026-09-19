@@ -21,7 +21,7 @@ namespace MicroHelio.Controllers
          * Generates an HMAC-signed payload and stores it on the reservation document.
          */
         [HttpPost("{id}/generate-qr")]
-        [Authorize(Roles = "Backoffice,GridOperator")]
+        [Authorize(Roles = "Prosumer,Backoffice,GridOperator")]
         public async Task<IActionResult> GenerateQr(string id)
         {
             var qrData = await _transactionService.GenerateQrPayloadAsync(id);
