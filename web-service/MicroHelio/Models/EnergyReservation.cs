@@ -60,7 +60,7 @@ namespace MicroHelio.Models
         [BsonElement("cancelledAt")]
         public DateTime? CancelledAt { get; set; }
 
-        // Populated only after status becomes "Approved" for Component 4
+        // Populated only after status becomes "Approved"
         [BsonElement("qrCodeData")]
         public string? QrCodeData { get; set; }
 
