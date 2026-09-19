@@ -1,11 +1,12 @@
-using System;
-using System.Text;
 using MicroHelio.Config;
-using MongoDB.Driver;
-using Microsoft.Extensions.Options;
+using MicroHelio.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+using System;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +56,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Add the TransactionService to the DI container
+builder.Services.AddScoped<TransactionService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -105,6 +107,33 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
     {
         return Results.Problem($"Database connection failed: {ex.Message}");
     }
+});
+
+// Temporary test endpoint to generate a valid GridOperator token
+app.MapGet("/api/test-token", (IConfiguration config) =>
+{
+    var jwtSettings = config.GetSection("Jwt");
+    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+    var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
+
+    var claims = new[]
+    {
+        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "mock-operator-67890"),
+        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "GridOperator")
+    };
+
+    var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
+        issuer: jwtSettings["Issuer"],
+        audience: jwtSettings["Audience"],
+        claims: claims,
+        expires: DateTime.UtcNow.AddHours(1),
+        signingCredentials: creds
+    );
+
+    return Results.Ok(new
+    {
+        token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token)
+    });
 });
 
 app.Run();
