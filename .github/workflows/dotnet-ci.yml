@@ -21,13 +21,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '8.0.x' # Update this to match your project's target framework
+        dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore web-service/MicroHelio.sln # Update path if your .sln is elsewhere
+      run: dotnet restore MicroHelio.sln
 
     - name: Build project
-      run: dotnet build web-service/MicroHelio.sln --configuration Release --no-restore
+      run: dotnet build MicroHelio.sln --configuration Release --no-restore
 
     - name: Run Unit Tests
-      run: dotnet test web-service/MicroHelio.sln --configuration Release --no-build --verbosity normal
+      run: dotnet test MicroHelio.sln --configuration Release --no-build --verbosity normal
