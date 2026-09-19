@@ -39,4 +39,23 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
+{
+    try
+    {
+        var db = client.GetDatabase("MicroHelioDb");
+        var result = await db.RunCommandAsync((MongoDB.Driver.Command<MongoDB.Bson.BsonDocument>)"{ping:1}");
+
+        return Results.Ok(new
+        {
+            message = "MongoDB connected successfully!",
+            pingResult = result.ToString()
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem($"Database connection failed: {ex.Message}");
+    }
+});
+
 app.Run();
