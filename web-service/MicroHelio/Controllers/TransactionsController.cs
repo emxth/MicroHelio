@@ -30,7 +30,7 @@ namespace MicroHelio.Controllers
         public async Task<IActionResult> InitiateTransaction([FromBody] CreateTransactionDto dto)
         {
             var operatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var transaction = await _transactionService.CreateInitiatedTransactionAsync(dto, operatorId);
+            var transaction = await _transactionService.CreateInitiatedTransactionAsync(dto, operatorId ?? "UnknownOperator");
 
             return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.Id }, transaction);
         }
