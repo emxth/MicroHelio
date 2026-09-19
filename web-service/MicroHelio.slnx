@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="MicroHelio.Tests/MicroHelio.Tests.csproj" />
+  <Project Path="MicroHelio/MicroHelio.csproj" />
+</Solution>
