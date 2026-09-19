@@ -27,7 +27,9 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -57,6 +59,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // Add the TransactionService to the DI container
 builder.Services.AddScoped<TransactionService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -84,7 +87,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();

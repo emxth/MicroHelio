@@ -76,6 +76,8 @@ namespace MicroHelio.Controllers
                 return NotFound();
             }
 
+            //throw new Exception("This is a simulated database failure for testing!");
+
             return Ok(transaction);
         }
     }
