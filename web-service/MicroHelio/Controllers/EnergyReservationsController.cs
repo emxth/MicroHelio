@@ -1,4 +1,9 @@
-﻿using MicroHelio.Services;
+﻿/* 
+ * Author: Ashwin
+ * Purpose: API Controller routing RESTful requests to the Reservation Service[cite: 1].
+ */
+using MicroHelio.DTOs;
+using MicroHelio.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,29 +13,126 @@ namespace MicroHelio.Controllers
     [Route("api/reservations")]
     public class EnergyReservationsController : ControllerBase
     {
-        private readonly TransactionService _transactionService;
+        private readonly ReservationService _reservationService;
 
-        // Injects the TransactionService to maintain central API business logic
-        public EnergyReservationsController(TransactionService transactionService)
+        // Injects the FAT service layer for reservation logic[cite: 1].
+        public EnergyReservationsController(ReservationService reservationService)
         {
-            _transactionService = transactionService;
+            _reservationService = reservationService;
         }
 
-        /*
-         * Endpoint to trigger QR code generation for an approved reservation.
-         * Generates an HMAC-signed payload and stores it on the reservation document.
-         */
-        [HttpPost("{id}/generate-qr")]
-        [Authorize(Roles = "Backoffice,GridOperator")]
-        public async Task<IActionResult> GenerateQr(string id)
+        // POST /api/reservations - Creates a new reservation[cite: 2].
+        // Allowed for Prosumers via mobile app.
+        [HttpPost]
+        public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto dto)
         {
-            var qrData = await _transactionService.GenerateQrPayloadAsync(id);
-            if (qrData == null)
+            try
             {
-                return BadRequest("Cannot generate QR. Reservation not found or not in 'Approved' status.");
+                var reservation = await _reservationService.CreateReservationAsync(dto);
+                return CreatedAtAction(nameof(GetProsumerReservations), new { id = reservation.Id }, reservation);
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
-            return Ok(new { message = "QR Payload generated successfully.", payload = qrData });
+        // PUT /api/reservations/{id} - Updates an existing reservation
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateReservation(string id, [FromBody] UpdateReservationDto dto)
+        {
+            try
+            {
+                await _reservationService.UpdateReservationAsync(id, dto);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // PATCH /api/reservations/{id}/cancel - Cancels a reservation
+        [HttpPatch("{id}/cancel")]
+        public async Task<IActionResult> CancelReservation(string id, [FromBody] string reason)
+        {
+            try
+            {
+                await _reservationService.CancelReservationAsync(id, reason);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET /api/reservations?prosumerNic={nic} - Retrieves a prosumer's bookings
+        [HttpGet]
+        public async Task<IActionResult> GetProsumerReservations([FromQuery] string prosumerNic)
+        {
+            if (string.IsNullOrEmpty(prosumerNic)) return BadRequest("prosumerNic is required.");
+            
+            var reservations = await _reservationService.GetByProsumerAsync(prosumerNic);
+            return Ok(reservations);
+        }
+
+        // GET /api/reservations/dashboard?prosumerNic={nic} - Retrieves counts for mobile dashboard
+        [HttpGet("dashboard")]
+        public async Task<IActionResult> GetDashboardCounts([FromQuery] string prosumerNic)
+        {
+            if (string.IsNullOrEmpty(prosumerNic)) return BadRequest("prosumerNic is required.");
+            
+            var counts = await _reservationService.GetDashboardCountsAsync(prosumerNic);
+            return Ok(counts);
+        }
+
+        // PATCH /api/reservations/{id}/approve - Approves a booking
+        [HttpPatch("{id}/approve")]
+        // [Authorize(Roles = "GridOperator,Backoffice")] // Uncomment when Dewmi finishes Auth[cite: 2]
+        public async Task<IActionResult> ApproveReservation(string id, [FromBody] string operatorId)
+        {
+            try
+            {
+                await _reservationService.ApproveReservationAsync(id, operatorId);
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET /api/reservations/status/{status} - Gets Approved or Pending lists
+        [HttpGet("status/{status}")]
+        public async Task<IActionResult> GetReservationsByStatus(string status)
+        {
+            var reservations = await _reservationService.GetReservationsByStatusAsync(status);
+            return Ok(reservations);
+        }
+
+        // GET /api/reservations/search - Multi-parameter search
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchReservations(
+            [FromQuery] string? nodeId, 
+            [FromQuery] string? date, 
+            [FromQuery] string? status, 
+            [FromQuery] string? nic)
+        {
+            var results = await _reservationService.SearchReservationsAsync(nodeId, date, status, nic);
+            return Ok(results);
         }
     }
 }
