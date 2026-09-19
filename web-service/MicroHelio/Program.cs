@@ -64,7 +64,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var secretKey = jwtSettings["Key"] ?? "SuperSecretKeyThatIsAtLeast32BytesLongForHMACSHA256";
+        var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+        
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -119,7 +120,9 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
 app.MapGet("/api/test-token", (IConfiguration config) =>
 {
     var jwtSettings = config.GetSection("Jwt");
-    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+    var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+
+    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
     var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
 
     var claims = new[]

@@ -12,17 +12,18 @@ namespace MicroHelio.Services
     public class TransactionService
     {
         private readonly IMongoCollection<Transaction> _transactions;
-        private readonly IMongoCollection<EnergyReservation> _reservations; // Needed to update Ashwin's collection
-        private readonly string _hmacSecret = "SuperSecretKey_MoveToEnvVariablesLater!"; // TODO: Move to config
+        private readonly IMongoCollection<EnergyReservation> _reservations;
+        private readonly string _hmacSecret;
 
         // Initializes MongoDB collections using the injected database settings
-        public TransactionService(IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings)
+        public TransactionService(IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings, IConfiguration configuration)
         {
             var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _transactions = database.GetCollection<Transaction>(settings.Value.TransactionsCollectionName);
-
-            // Accessing the reservation collection to enforce business rules across components
             _reservations = database.GetCollection<EnergyReservation>("EnergyReservations");
+
+            // Dynamically load the secret from Secret Manager (local) or Environment Variables (IIS)
+            _hmacSecret = configuration["Jwt:Key"] ?? throw new InvalidOperationException("HMAC secret is not configured.");
         }
 
         // Creates a new transaction record when a Grid Operator initiates a scan
