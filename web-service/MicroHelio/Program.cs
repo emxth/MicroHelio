@@ -57,6 +57,8 @@ builder.Services.AddSwaggerGen(c =>
 
 // Add the TransactionService to the DI container
 builder.Services.AddScoped<TransactionService>();
+// Registers the FAT business logic service for Reservation management
+builder.Services.AddScoped<ReservationService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
