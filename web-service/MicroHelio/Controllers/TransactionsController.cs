@@ -8,7 +8,7 @@ namespace MicroHelio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly TransactionService _transactionService;

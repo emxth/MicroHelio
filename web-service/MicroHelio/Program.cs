@@ -118,7 +118,7 @@ app.MapGet("/api/test-token", (IConfiguration config) =>
 
     var claims = new[]
     {
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "mock-operator-67890"),
+        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "64f1a2b3c4d5e6f7a8b9c099"),
         new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "GridOperator")
     };
 
