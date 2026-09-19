@@ -137,5 +137,48 @@ namespace MicroHelio.Services
         {
             return await _transactions.Find(t => t.Id == id).FirstOrDefaultAsync();
         }
+
+        // Generates an HMAC-signed JSON payload for approved reservations and stores it in the database.
+        public async Task<string?> GenerateQrPayloadAsync(string reservationId)
+        {
+            var reservation = await _reservations.Find(r => r.Id == reservationId).FirstOrDefaultAsync();
+
+            // Ensure reservation exists and is strictly approved before generating a QR code
+            if (reservation == null || reservation.Status != "Approved")
+            {
+                return null;
+            }
+
+            // 1. Construct the exact string to hash to ensure verification matches later
+            var messageToHash = $"{reservation.Id}{reservation.ProsumerNic}{reservation.NodeId}{reservation.ScheduledDate:yyyy-MM-dd}";
+
+            string computedSignature;
+            using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_hmacSecret)))
+            {
+                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(messageToHash));
+                computedSignature = Convert.ToBase64String(computedHash);
+            }
+
+            // 2. Build the JSON payload object mapped to the agreed schema
+            var payloadObj = new
+            {
+                reservationId = reservation.Id,
+                prosumerNic = reservation.ProsumerNic,
+                nodeId = reservation.NodeId,
+                scheduledDate = reservation.ScheduledDate.ToString("yyyy-MM-dd"),
+                hmacSignature = computedSignature
+            };
+
+            var qrCodeDataString = JsonSerializer.Serialize(payloadObj);
+
+            // 3. Store the generated QR data on the reservation document
+            var update = Builders<EnergyReservation>.Update
+                .Set(r => r.QrCodeData, qrCodeDataString)
+                .Set(r => r.QrGeneratedAt, DateTime.UtcNow);
+
+            await _reservations.UpdateOneAsync(r => r.Id == reservationId, update);
+
+            return qrCodeDataString;
+        }
     }
 }

@@ -1,7 +1,5 @@
-﻿/* 
- * Author: Randiv
- * Purpose: Handles HTTP requests for operator QR scanning, verification, and transaction completion.
- */
+﻿using MicroHelio.DTOs;
+using MicroHelio.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
