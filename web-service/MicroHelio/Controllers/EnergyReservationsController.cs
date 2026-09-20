@@ -1,6 +1,6 @@
 ﻿/* 
  * Author: Ashwin
- * Purpose: API Controller routing RESTful requests to the Reservation Service[cite: 1].
+ * Purpose: API Controller routing RESTful requests to the Reservation Service
  */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
@@ -11,17 +11,18 @@ namespace MicroHelio.Controllers
 {
     [ApiController]
     [Route("api/reservations")]
+    [Authorize]
     public class EnergyReservationsController : ControllerBase
     {
         private readonly ReservationService _reservationService;
 
-        // Injects the FAT service layer for reservation logic[cite: 1].
+        // Injects the service layer for reservation logic
         public EnergyReservationsController(ReservationService reservationService)
         {
             _reservationService = reservationService;
         }
 
-        // POST /api/reservations - Creates a new reservation[cite: 2].
+        // POST /api/reservations - Creates a new reservation
         // Allowed for Prosumers via mobile app.
         [HttpPost]
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto dto)
@@ -97,7 +98,7 @@ namespace MicroHelio.Controllers
 
         // PATCH /api/reservations/{id}/approve - Approves a booking
         [HttpPatch("{id}/approve")]
-        // [Authorize(Roles = "GridOperator,Backoffice")] // Uncomment when Dewmi finishes Auth[cite: 2]
+        [Authorize(Roles = "GridOperator,Backoffice")]
         public async Task<IActionResult> ApproveReservation(string id, [FromBody] string operatorId)
         {
             try
