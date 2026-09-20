@@ -27,7 +27,9 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -59,11 +61,13 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<TransactionService>();
 // Registers the FAT business logic service for Reservation management
 builder.Services.AddScoped<ReservationService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var secretKey = jwtSettings["Key"] ?? "SuperSecretKeyThatIsAtLeast32BytesLongForHMACSHA256";
+        var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+        
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -86,7 +90,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
@@ -115,13 +122,15 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
 app.MapGet("/api/test-token", (IConfiguration config) =>
 {
     var jwtSettings = config.GetSection("Jwt");
-    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+    var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+
+    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
     var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
 
     var claims = new[]
     {
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "mock-operator-67890"),
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "GridOperator")
+        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "64f1a2b3c4d5e6f7a8b9c099"),
+        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "Prosumer")
     };
 
     var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
