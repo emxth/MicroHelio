@@ -111,6 +111,12 @@ namespace MicroHelio.Services
             return await _reservations.Find(r => r.ProsumerNic == nic).ToListAsync();
         }
 
+        // Retrieves one reservation by ID.
+        public async Task<EnergyReservation?> GetByIdAsync(string id)
+        {
+            return await _reservations.Find(r => r.Id == id).FirstOrDefaultAsync();
+        }
+
         // Retrieves a dashboard count summary for a prosumer
         public async Task<object> GetDashboardCountsAsync(string nic)
         {
