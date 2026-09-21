@@ -239,5 +239,97 @@
         </div>
       </div>
     </section>
+
+    <!-- How it works section -->
+    <section id="how-it-works" class="py-20 px-6 bg-bg-app">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+          <div
+            class="text-secondary font-semibold text-sm uppercase tracking-widest mb-2"
+          >
+            Workflow
+          </div>
+          <h2 class="text-3xl font-bold text-text-dark">
+            How a transaction works
+          </h2>
+        </div>
+        <div class="relative">
+          <div
+            class="hidden md:block absolute top-8 left-0 right-0 h-0.5 bg-border"
+            style="margin: 0 10%"
+          ></div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="text-center relative">
+              <div
+                class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-primary bg-surface relative z-10"
+              >
+                <span class="text-primary font-bold text-lg">1</span>
+              </div>
+              <h4 class="font-semibold text-sm text-text-dark mb-1">
+                Prosumer Books
+              </h4>
+              <p class="text-text-muted text-xs leading-relaxed">
+                Reserves an energy slot via mobile app within the 7-day window
+              </p>
+            </div>
+
+            <div class="text-center relative">
+              <div
+                class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-secondary bg-surface relative z-10"
+              >
+                <span class="font-bold text-lg" style="color: #52b788">2</span>
+              </div>
+              <h4 class="font-semibold text-sm text-text-dark mb-1">
+                Operator Approves
+              </h4>
+              <p class="text-text-muted text-xs leading-relaxed">
+                Grid operator reviews and approves the pending booking
+              </p>
+            </div>
+
+            <div class="text-center relative">
+              <div
+                class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-accent bg-surface relative z-10"
+                style="border-color: #e9c46a"
+              >
+                <span class="font-bold text-lg" style="color: #e9c46a">3</span>
+              </div>
+              <h4 class="font-semibold text-sm text-text-dark mb-1">
+                QR Generated
+              </h4>
+              <p class="text-text-muted text-xs leading-relaxed">
+                App generates a secure HMAC-signed QR code for the transfer
+              </p>
+            </div>
+
+            <div class="text-center relative">
+              <div
+                class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-primary relative z-10"
+              >
+                <svg
+                  class="w-7 h-7 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h4 class="font-semibold text-sm text-text-dark mb-1">
+                Transfer Complete
+              </h4>
+              <p class="text-text-muted text-xs leading-relaxed">
+                Operator scans QR, verifies on server, confirms energy transfer
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>
