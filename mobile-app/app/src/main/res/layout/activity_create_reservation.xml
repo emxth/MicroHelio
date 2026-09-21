@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/eco_off_white">
+
+    <!-- Top Header Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/deep_canopy_green"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Energy Reservation"
+            android:textColor="@color/pure_white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Schedule a drop-off or charging slot"
+            android:textColor="@color/soft_sunlight"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            android:background="@color/pure_white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Prosumer NIC (Pre-filled or read-only) -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Prosumer NIC"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etProsumerNic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="981234567V"
+                    android:enabled="false"
+                    android:textColor="@color/dark_pine"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Node ID Input -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Microgrid Node ID"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etNodeId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. 6ab010deebaa40318d55e010"
+                    android:textColor="@color/dark_pine"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Slot ID Input -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Energy Booking Slot ID"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etSlotId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="e.g. 6ab01323ebaa40318d55e014"
+                    android:textColor="@color/dark_pine"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Reservation Type -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reservation Type (DropOff / Charging)"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etReservationType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DropOff"
+                    android:textColor="@color/dark_pine"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="14dp"/>
+
+                <!-- Scheduled Date Picker Button -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scheduled Date (Within 7 Days)"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <Button
+                    android:id="@+id/btnSelectDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select Date (YYYY-MM-DD)"
+                    android:backgroundTint="@color/vibrant_leaf_green"
+                    android:textColor="@color/pure_white"
+                    android:layout_marginBottom="14dp"
+                    app:cornerRadius="8dp"/>
+
+                <!-- Start and End Times -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginBottom="14dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Start Time (HH:mm)"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"/>
+                        <EditText
+                            android:id="@+id/etStartTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="14:00"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="8dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="End Time (HH:mm)"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp"/>
+                        <EditText
+                            android:id="@+id/etEndTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="15:00"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Requested Capacity -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Requested Capacity (KWh)"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="4dp"/>
+                <EditText
+                    android:id="@+id/etCapacity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="4.0"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/dark_pine"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="24dp"/>
+
+                <!-- Submit Button -->
+                <Button
+                    android:id="@+id/btnSubmitReservation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm Reservation"
+                    android:backgroundTint="@color/deep_canopy_green"
+                    android:textColor="@color/pure_white"
+                    app:cornerRadius="8dp"
+                    android:padding="12dp"/>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </ScrollView>
+</LinearLayout>
