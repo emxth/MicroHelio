@@ -60,6 +60,11 @@ builder.Services.AddSwaggerGen(c =>
 // Add the TransactionService to the DI container
 builder.Services.AddScoped<TransactionService>();
 
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ProsumerService>();
+builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<AuthService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
