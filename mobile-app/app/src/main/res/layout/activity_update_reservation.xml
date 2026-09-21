@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/eco_off_white">
+
+    <!-- Top Header Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/deep_canopy_green"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Manage Reservation"
+            android:textColor="@color/pure_white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update slot details or cancel booking"
+            android:textColor="@color/soft_sunlight"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Policy Warning Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFF3CD">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Notice: Updates and cancellations require at least 12 hours' notice prior to the scheduled start time."
+                    android:textColor="#856404"
+                    android:textSize="13sp"
+                    android:padding="14dp"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Main Form Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                android:background="@color/pure_white">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <!-- Reservation ID (Read-only reference) -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reservation ID"
+                        android:textColor="@color/moss_gray"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp"/>
+                    <EditText
+                        android:id="@+id/etReservationId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter Reservation ID to modify"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="14dp"/>
+
+                    <!-- New Slot ID Input -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Booking Slot ID"
+                        android:textColor="@color/moss_gray"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp"/>
+                    <EditText
+                        android:id="@+id/etNewSlotId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="e.g. 6ab0138bebaa40318d55e01e"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="14dp"/>
+
+                    <!-- New Scheduled Date Button -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Scheduled Date"
+                        android:textColor="@color/moss_gray"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp"/>
+                    <Button
+                        android:id="@+id/btnSelectNewDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Select Date (YYYY-MM-DD)"
+                        android:backgroundTint="@color/vibrant_leaf_green"
+                        android:textColor="@color/pure_white"
+                        android:layout_marginBottom="14dp"
+                        app:cornerRadius="8dp"/>
+
+                    <!-- Start and End Times -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2"
+                        android:layout_marginBottom="14dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="New Start (HH:mm)"
+                                android:textColor="@color/moss_gray"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="4dp"/>
+                            <EditText
+                                android:id="@+id/etNewStartTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="16:00"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="8dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="New End (HH:mm)"
+                                android:textColor="@color/moss_gray"
+                                android:textSize="12sp"
+                                android:layout_marginBottom="4dp"/>
+                            <EditText
+                                android:id="@+id/etNewEndTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="17:00"
+                                android:textSize="14sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Update Action Button -->
+                    <Button
+                        android:id="@+id/btnUpdateReservation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Save Changes (PUT)"
+                        android:backgroundTint="@color/deep_canopy_green"
+                        android:textColor="@color/pure_white"
+                        app:cornerRadius="8dp"
+                        android:layout_marginBottom="16dp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Cancellation Reason -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancellation Reason (Required to Cancel)"
+                        android:textColor="@color/moss_gray"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="4dp"/>
+                    <EditText
+                        android:id="@+id/etCancelReason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="e.g. Schedule changed"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="14sp"
+                        android:layout_marginBottom="14dp"/>
+
+                    <!-- Cancel Action Button -->
+                    <Button
+                        android:id="@+id/btnCancelReservation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel Booking (PATCH)"
+                        android:backgroundTint="#C92A2A"
+                        android:textColor="@color/pure_white"
+                        app:cornerRadius="8dp"/>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
