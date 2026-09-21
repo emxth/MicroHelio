@@ -74,6 +74,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Registration of services for microgrid node and slot management
+builder.Services.AddScoped<INodeService, NodeService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
