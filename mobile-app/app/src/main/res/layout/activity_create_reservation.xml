@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@color/eco_off_white">
 
-    <!-- Top Header Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Schedule a drop-off or charging slot"
+            android:text="Select microgrid node, slot, type and input capacity"
             android:textColor="@color/soft_sunlight"
             android:textSize="14sp"
             android:layout_marginTop="4dp"/>
@@ -41,7 +40,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="3dp"
-            android:background="@color/pure_white">
+            app:cardBackgroundColor="@color/pure_white">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,7 +48,7 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <!-- Prosumer NIC (Pre-filled or read-only) -->
+                <!-- Prosumer NIC -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -67,127 +66,71 @@
                     android:textSize="14sp"
                     android:layout_marginBottom="14dp"/>
 
-                <!-- Node ID Input -->
+                <!-- Microgrid Node Dropdown -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Microgrid Node ID"
+                    android:text="Select Microgrid Node"
                     android:textColor="@color/moss_gray"
                     android:textSize="12sp"
                     android:layout_marginBottom="4dp"/>
-                <EditText
-                    android:id="@+id/etNodeId"
+                <Spinner
+                    android:id="@+id/spinnerNodes"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="e.g. 6ab010deebaa40318d55e010"
-                    android:textColor="@color/dark_pine"
-                    android:textSize="14sp"
+                    android:layout_height="48dp"
+                    android:background="@android:drawable/btn_dropdown"
                     android:layout_marginBottom="14dp"/>
 
-                <!-- Slot ID Input -->
+                <!-- Energy Booking Slot Dropdown -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Energy Booking Slot ID"
+                    android:text="Select Available Time Slot"
                     android:textColor="@color/moss_gray"
                     android:textSize="12sp"
                     android:layout_marginBottom="4dp"/>
-                <EditText
-                    android:id="@+id/etSlotId"
+                <Spinner
+                    android:id="@+id/spinnerSlots"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="e.g. 6ab01323ebaa40318d55e014"
-                    android:textColor="@color/dark_pine"
-                    android:textSize="14sp"
+                    android:layout_height="48dp"
+                    android:background="@android:drawable/btn_dropdown"
                     android:layout_marginBottom="14dp"/>
 
-                <!-- Reservation Type -->
+                <!-- Reservation Type Dropdown -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reservation Type (DropOff / Charging)"
+                    android:text="Reservation Type"
                     android:textColor="@color/moss_gray"
                     android:textSize="12sp"
                     android:layout_marginBottom="4dp"/>
-                <EditText
-                    android:id="@+id/etReservationType"
+                <Spinner
+                    android:id="@+id/spinnerReservationType"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="DropOff"
-                    android:textColor="@color/dark_pine"
-                    android:textSize="14sp"
+                    android:layout_height="48dp"
+                    android:background="@android:drawable/btn_dropdown"
                     android:layout_marginBottom="14dp"/>
 
-                <!-- Scheduled Date Picker Button -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Scheduled Date (Within 7 Days)"
-                    android:textColor="@color/moss_gray"
-                    android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <Button
-                    android:id="@+id/btnSelectDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Select Date (YYYY-MM-DD)"
-                    android:backgroundTint="@color/vibrant_leaf_green"
-                    android:textColor="@color/pure_white"
-                    android:layout_marginBottom="14dp"
-                    app:cornerRadius="8dp"/>
-
-                <!-- Start and End Times -->
+                <!-- Auto-populated Date & Time Info Display -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
+                    android:orientation="vertical"
+                    android:background="@color/eco_off_white"
+                    android:padding="12dp"
                     android:layout_marginBottom="14dp">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/tvSelectedSlotDetails"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Start Time (HH:mm)"
-                            android:textColor="@color/moss_gray"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <EditText
-                            android:id="@+id/etStartTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="14:00"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginStart="8dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="End Time (HH:mm)"
-                            android:textColor="@color/moss_gray"
-                            android:textSize="12sp"
-                            android:layout_marginBottom="4dp"/>
-                        <EditText
-                            android:id="@+id/etEndTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="15:00"
-                            android:textSize="14sp"/>
-                    </LinearLayout>
+                        android:text="Selected Slot: None"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="13sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
-                <!-- Requested Capacity -->
+                <!-- Requested Capacity with Validation -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -199,7 +142,7 @@
                     android:id="@+id/etCapacity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="4.0"
+                    android:hint="e.g. 5.0"
                     android:inputType="numberDecimal"
                     android:textColor="@color/dark_pine"
                     android:textSize="14sp"
