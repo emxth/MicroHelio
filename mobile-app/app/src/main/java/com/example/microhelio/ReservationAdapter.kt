@@ -5,6 +5,7 @@
 
 package com.example.microhelio
 
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -37,12 +38,11 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
         val status = res.optString("status", "Unknown")
         holder.tvStatus.text = status
 
-        // Color-code status badges
         when (status) {
-            "Approved" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#52B788")) // Vibrant Leaf Green
-            "Pending" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#E9C46A"))  // Soft Sunlight
-            "Cancelled" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#C92A2A")) // Red
-            else -> holder.tvStatus.setBackgroundColor(Color.parseColor("#748C7E"))      // Moss Gray
+            "Approved" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#52B788"))
+            "Pending" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#E9C46A"))
+            "Cancelled" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#C92A2A"))
+            else -> holder.tvStatus.setBackgroundColor(Color.parseColor("#748C7E"))
         }
 
         holder.tvNodeAndType.text = "Node ID: ${res.optString("nodeId")} | Type: ${res.optString("reservationType")}"
@@ -51,6 +51,18 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
         holder.tvDateTime.text = "Date: $rawDate | ${res.optString("scheduledStartTime")} - ${res.optString("scheduledEndTime")}"
 
         holder.tvCapacity.text = "Requested Capacity: ${res.optDouble("requestedCapacityKWh")} KWh"
+
+        // TAP TO EDIT/MANAGE BOOKING
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            // Extract the MongoDB _id string (handles both "id" and "$oid" formats)
+            val resId = res.optString("id", res.optString("_id"))
+
+            val intent = Intent(context, UpdateReservationActivity::class.java).apply {
+                putExtra("RESERVATION_ID", resId)
+            }
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = reservations.size

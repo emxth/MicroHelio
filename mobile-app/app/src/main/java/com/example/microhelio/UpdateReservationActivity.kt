@@ -1,83 +1,216 @@
 /*
  * Author: Ashwin
- * Purpose: Native Android activity for updating or cancelling reservations with API sync.
+ * Purpose: Interactive native activity for updating or cancelling reservations with prefilled dropdown state.
  */
 package com.example.microhelio
 
-import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.Calendar
 import kotlin.concurrent.thread
 
 class UpdateReservationActivity : AppCompatActivity() {
 
     private lateinit var etReservationId: EditText
-    private lateinit var etNewSlotId: EditText
-    private lateinit var btnSelectNewDate: Button
-    private lateinit var etNewStartTime: EditText
-    private lateinit var etNewEndTime: EditText
+    private lateinit var spinnerNodes: Spinner
+    private lateinit var spinnerSlots: Spinner
+    private lateinit var tvSelectedSlotDetails: TextView
     private lateinit var etCancelReason: EditText
     private lateinit var btnUpdateReservation: Button
     private lateinit var btnCancelReservation: Button
 
+    private val baseUrl = "http://localhost:5056/api"
+
+    private val nodeList = ArrayList<JSONObject>()
+    private val slotList = ArrayList<JSONObject>()
+
+    private var reservationId: String = ""
+    private var existingNodeId: String = ""
+    private var existingSlotId: String = ""
+    private var selectedNodeId: String = ""
+    private var selectedSlotId: String = ""
     private var selectedDateString: String = ""
-    private val baseUrl = "https://10.0.2.2:5056/api"
+    private var selectedStartTime: String = ""
+    private var selectedEndTime: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update_reservation)
 
         etReservationId = findViewById(R.id.etReservationId)
-        etNewSlotId = findViewById(R.id.etNewSlotId)
-        btnSelectNewDate = findViewById(R.id.btnSelectNewDate)
-        etNewStartTime = findViewById(R.id.etNewStartTime)
-        etNewEndTime = findViewById(R.id.etNewEndTime)
+        spinnerNodes = findViewById(R.id.spinnerNodes)
+        spinnerSlots = findViewById(R.id.spinnerSlots)
+        tvSelectedSlotDetails = findViewById(R.id.tvSelectedSlotDetails)
         etCancelReason = findViewById(R.id.etCancelReason)
         btnUpdateReservation = findViewById(R.id.btnUpdateReservation)
         btnCancelReservation = findViewById(R.id.btnCancelReservation)
 
-        // Pre-fill reservation ID if passed via intent
-        intent.getStringExtra("RESERVATION_ID")?.let {
-            etReservationId.setText(it)
+        // Get reservation ID passed from history adapter click
+        reservationId = intent.getStringExtra("RESERVATION_ID") ?: ""
+        etReservationId.setText(reservationId)
+
+        if (reservationId.isNotEmpty()) {
+            fetchReservationDetails(reservationId)
         }
 
-        btnSelectNewDate.setOnClickListener {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+        btnUpdateReservation.setOnClickListener { updateReservation() }
+        btnCancelReservation.setOnClickListener { cancelReservation() }
+    }
 
-            DatePickerDialog(this, { _, y, m, d ->
-                selectedDateString = String.format("%d-%02d-%02dT00:00:00Z", y, m + 1, d)
-                btnSelectNewDate.text = String.format("%d-%02d-%02d", y, m + 1, d)
-            }, year, month, day).show()
+    private fun fetchReservationDetails(id: String) {
+        thread {
+            try {
+                val url = URL("$baseUrl/reservations/$id")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 5000
+
+                if (connection.responseCode == 200) {
+                    val response = connection.inputStream.bufferedReader().use { it.readText() }
+                    val json = JSONObject(response)
+
+                    existingNodeId = json.optString("nodeId")
+                    existingSlotId = json.optString("slotId")
+                    selectedDateString = json.optString("scheduledDate")
+                    selectedStartTime = json.optString("scheduledStartTime")
+                    selectedEndTime = json.optString("scheduledEndTime")
+
+                    runOnUiThread {
+                        tvSelectedSlotDetails.text = "Current: $selectedStartTime - $selectedEndTime on ${selectedDateString.split("T")[0]}"
+                    }
+
+                    // Now load nodes and pre-select the existing node
+                    fetchMicrogridNodes()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
+    }
 
-        btnUpdateReservation.setOnClickListener {
-            updateReservation()
+    private fun fetchMicrogridNodes() {
+        thread {
+            try {
+                val url = URL("$baseUrl/nodes")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 5000
+
+                if (connection.responseCode == 200) {
+                    val response = connection.inputStream.bufferedReader().use { it.readText() }
+                    val jsonArray = JSONArray(response)
+                    nodeList.clear()
+
+                    val displayNames = ArrayList<String>()
+                    var preselectIndex = 0
+
+                    for (i in 0 until jsonArray.length()) {
+                        val obj = jsonArray.getJSONObject(i)
+                        nodeList.add(obj)
+                        displayNames.add("${obj.optString("nodeCode")} - ${obj.optString("name")}")
+
+                        val objId = obj.optString("id", obj.optString("_id"))
+                        if (objId == existingNodeId) {
+                            preselectIndex = i
+                        }
+                    }
+
+                    runOnUiThread {
+                        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, displayNames)
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinnerNodes.adapter = adapter
+                        spinnerNodes.setSelection(preselectIndex)
+
+                        spinnerNodes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                                val node = nodeList[position]
+                                selectedNodeId = node.optString("id", node.optString("_id"))
+                                fetchSlotsForNode(selectedNodeId)
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>) {}
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Fallback mock context
+                runOnUiThread {
+                    selectedNodeId = existingNodeId
+                    fetchSlotsForNode(selectedNodeId)
+                }
+            }
         }
+    }
 
-        btnCancelReservation.setOnClickListener {
-            cancelReservation()
+    private fun fetchSlotsForNode(nodeId: String) {
+        thread {
+            try {
+                val url = URL("$baseUrl/slots?nodeId=$nodeId")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.connectTimeout = 5000
+
+                if (connection.responseCode == 200) {
+                    val response = connection.inputStream.bufferedReader().use { it.readText() }
+                    val jsonArray = JSONArray(response)
+                    slotList.clear()
+
+                    val slotDisplays = ArrayList<String>()
+                    var preselectIndex = 0
+
+                    for (i in 0 until jsonArray.length()) {
+                        val obj = jsonArray.getJSONObject(i)
+                        slotList.add(obj)
+                        val date = obj.optString("slotDate").split("T")[0]
+                        slotDisplays.add("$date | ${obj.optString("slotStartTime")} - ${obj.optString("slotEndTime")} (${obj.optDouble("availableCapacityKWh")} kWh left)")
+
+                        val slotId = obj.optString("id", obj.optString("_id"))
+                        if (slotId == existingSlotId) {
+                            preselectIndex = i
+                        }
+                    }
+
+                    runOnUiThread {
+                        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, slotDisplays)
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinnerSlots.adapter = adapter
+                        spinnerSlots.setSelection(preselectIndex)
+
+                        spinnerSlots.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                                val slot = slotList[position]
+                                selectedSlotId = slot.optString("id", slot.optString("_id"))
+                                selectedDateString = slot.optString("slotDate")
+                                selectedStartTime = slot.optString("slotStartTime")
+                                selectedEndTime = slot.optString("slotEndTime")
+
+                                tvSelectedSlotDetails.text = "New Selection: $selectedStartTime - $selectedEndTime on ${selectedDateString.split("T")[0]}"
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>) {}
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     private fun updateReservation() {
-        val reservationId = etReservationId.text.toString().trim()
-        val slotId = etNewSlotId.text.toString().trim()
-        val startTime = etNewStartTime.text.toString().trim()
-        val endTime = etNewEndTime.text.toString().trim()
-
-        if (reservationId.isEmpty() || slotId.isEmpty() || selectedDateString.isEmpty() || startTime.isEmpty()) {
-            Toast.makeText(this, "Please fill in all update fields", Toast.LENGTH_SHORT).show()
+        if (reservationId.isEmpty() || selectedSlotId.isEmpty()) {
+            Toast.makeText(this, "Missing update parameters", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -87,45 +220,41 @@ class UpdateReservationActivity : AppCompatActivity() {
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "PUT"
                 connection.setRequestProperty("Content-Type", "application/json; utf-8")
-                connection.setRequestProperty("Accept", "application/json")
+                connection.connectTimeout = 5000
+                connection.readTimeout = 5000
                 connection.doOutput = true
 
+                // Matches UpdateReservationDto exactly
                 val jsonBody = JSONObject().apply {
-                    put("slotId", slotId)
+                    put("slotId", selectedSlotId)
                     put("scheduledDate", selectedDateString)
-                    put("scheduledStartTime", startTime)
-                    put("scheduledEndTime", endTime)
+                    put("scheduledStartTime", selectedStartTime)
+                    put("scheduledEndTime", selectedEndTime)
                 }
 
                 OutputStreamWriter(connection.outputStream).use { it.write(jsonBody.toString()) }
 
-                val responseCode = connection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_NO_CONTENT || responseCode == HttpURLConnection.HTTP_OK) {
+                val code = connection.responseCode
+                if (code == HttpURLConnection.HTTP_NO_CONTENT || code == HttpURLConnection.HTTP_OK) {
                     runOnUiThread {
-                        Toast.makeText(this, "Reservation updated successfully!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@UpdateReservationActivity, "Reservation Updated Successfully!", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 } else {
-                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                    runOnUiThread {
-                        Toast.makeText(this, "Update failed: ${errorStream ?: "Check 12-hour notice rule"}handler", Toast.LENGTH_LONG).show()
-                    }
+                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Check 12-hour rule"
+                    runOnUiThread { Toast.makeText(this@UpdateReservationActivity, "Update Failed ($code): $errorStream", Toast.LENGTH_LONG).show() }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+                runOnUiThread { Toast.makeText(this@UpdateReservationActivity, "Network Error: ${e.message}", Toast.LENGTH_LONG).show() }
             }
         }
     }
 
     private fun cancelReservation() {
-        val reservationId = etReservationId.text.toString().trim()
         val reason = etCancelReason.text.toString().trim()
-
         if (reservationId.isEmpty() || reason.isEmpty()) {
-            Toast.makeText(this, "Reservation ID and cancellation reason are required", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Cancellation reason is required", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -135,31 +264,26 @@ class UpdateReservationActivity : AppCompatActivity() {
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "PATCH"
                 connection.setRequestProperty("Content-Type", "application/json; utf-8")
-                connection.setRequestProperty("Accept", "application/json")
+                connection.connectTimeout = 5000
+                connection.readTimeout = 5000
                 connection.doOutput = true
 
-                // Passing string reason as JSON body expected by controller
-                val jsonBody = JSONObject.quote(reason)
+                val jsonReason = JSONObject.quote(reason)
+                OutputStreamWriter(connection.outputStream).use { it.write(jsonReason) }
 
-                OutputStreamWriter(connection.outputStream).use { it.write(jsonBody) }
-
-                val responseCode = connection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_NO_CONTENT || responseCode == HttpURLConnection.HTTP_OK) {
+                val code = connection.responseCode
+                if (code == HttpURLConnection.HTTP_NO_CONTENT || code == HttpURLConnection.HTTP_OK) {
                     runOnUiThread {
-                        Toast.makeText(this, "Reservation cancelled successfully!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@UpdateReservationActivity, "Reservation Cancelled Successfully!", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 } else {
-                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                    runOnUiThread {
-                        Toast.makeText(this, "Cancellation failed: ${errorStream ?: "Check 12-hour rule"}handler", Toast.LENGTH_LONG).show()
-                    }
+                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Check 12-hour rule"
+                    runOnUiThread { Toast.makeText(this@UpdateReservationActivity, "Cancel Failed ($code): $errorStream", Toast.LENGTH_LONG).show() }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+                runOnUiThread { Toast.makeText(this@UpdateReservationActivity, "Network Error: ${e.message}", Toast.LENGTH_LONG).show() }
             }
         }
     }

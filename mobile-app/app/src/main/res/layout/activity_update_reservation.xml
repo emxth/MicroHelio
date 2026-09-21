@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="3dp"
-                android:background="@color/pure_white">
+                app:cardBackgroundColor="@color/pure_white">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,7 +73,7 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <!-- Reservation ID (Read-only reference) -->
+                    <!-- Reservation ID Reference -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -85,95 +85,58 @@
                         android:id="@+id/etReservationId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Reservation ID to modify"
+                        android:enabled="false"
                         android:textColor="@color/dark_pine"
                         android:textSize="14sp"
                         android:layout_marginBottom="14dp"/>
 
-                    <!-- New Slot ID Input -->
+                    <!-- Microgrid Node Dropdown -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Booking Slot ID"
+                        android:text="Select Microgrid Node"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp"/>
-                    <EditText
-                        android:id="@+id/etNewSlotId"
+                    <Spinner
+                        android:id="@+id/spinnerNodes"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="e.g. 6ab0138bebaa40318d55e01e"
-                        android:textColor="@color/dark_pine"
-                        android:textSize="14sp"
+                        android:layout_height="48dp"
+                        android:background="@android:drawable/btn_dropdown"
                         android:layout_marginBottom="14dp"/>
 
-                    <!-- New Scheduled Date Button -->
+                    <!-- Energy Booking Slot Dropdown -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Scheduled Date"
+                        android:text="Select New Available Time Slot"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:layout_marginBottom="4dp"/>
-                    <Button
-                        android:id="@+id/btnSelectNewDate"
+                    <Spinner
+                        android:id="@+id/spinnerSlots"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Select Date (YYYY-MM-DD)"
-                        android:backgroundTint="@color/vibrant_leaf_green"
-                        android:textColor="@color/pure_white"
-                        android:layout_marginBottom="14dp"
-                        app:cornerRadius="8dp"/>
+                        android:layout_height="48dp"
+                        android:background="@android:drawable/btn_dropdown"
+                        android:layout_marginBottom="14dp"/>
 
-                    <!-- Start and End Times -->
+                    <!-- Auto-populated Date & Time Info Display -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2"
+                        android:orientation="vertical"
+                        android:background="@color/eco_off_white"
+                        android:padding="12dp"
                         android:layout_marginBottom="14dp">
 
-                        <LinearLayout
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/tvSelectedSlotDetails"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginEnd="8dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="New Start (HH:mm)"
-                                android:textColor="@color/moss_gray"
-                                android:textSize="12sp"
-                                android:layout_marginBottom="4dp"/>
-                            <EditText
-                                android:id="@+id/etNewStartTime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="16:00"
-                                android:textSize="14sp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:layout_marginStart="8dp">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="New End (HH:mm)"
-                                android:textColor="@color/moss_gray"
-                                android:textSize="12sp"
-                                android:layout_marginBottom="4dp"/>
-                            <EditText
-                                android:id="@+id/etNewEndTime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="17:00"
-                                android:textSize="14sp"/>
-                        </LinearLayout>
+                            android:text="Current Slot: Loading..."
+                            android:textColor="@color/dark_pine"
+                            android:textSize="13sp"
+                            android:textStyle="bold"/>
                     </LinearLayout>
 
                     <!-- Update Action Button -->
@@ -185,7 +148,8 @@
                         android:backgroundTint="@color/deep_canopy_green"
                         android:textColor="@color/pure_white"
                         app:cornerRadius="8dp"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="16dp"
+                        android:padding="12dp"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -218,7 +182,8 @@
                         android:text="Cancel Booking (PATCH)"
                         android:backgroundTint="#C92A2A"
                         android:textColor="@color/pure_white"
-                        app:cornerRadius="8dp"/>
+                        app:cornerRadius="8dp"
+                        android:padding="12dp"/>
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
