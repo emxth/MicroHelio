@@ -5,7 +5,7 @@
  */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
-using Microsoft.AspNetCore.Authorization;
+// using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,7 +13,7 @@ namespace MicroHelio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    // [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly TransactionService _transactionService;
@@ -26,7 +26,7 @@ namespace MicroHelio.Controllers
 
         // Creates a transaction record when a Grid Operator initiates a scan, setting status to 'Initiated'
         [HttpPost]
-        [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
         public async Task<IActionResult> InitiateTransaction([FromBody] CreateTransactionDto dto)
         {
             var operatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -37,7 +37,7 @@ namespace MicroHelio.Controllers
 
         // Decodes the QR payload, validates the HMAC signature, and confirms the linked reservation is 'Approved'
         [HttpPost("verify")]
-        [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
         public async Task<IActionResult> VerifyQrCode([FromBody] string qrPayload)
         {
             var isVerified = await _transactionService.VerifyQrPayloadAsync(qrPayload);
@@ -51,7 +51,7 @@ namespace MicroHelio.Controllers
 
         // Operator confirms energy transfer is done; updates status to 'Completed' and stores energyTransferredKWh
         [HttpPatch("{id}/complete")]
-        [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
         public async Task<IActionResult> CompleteTransaction(string id, [FromBody] double energyTransferredKWh)
         {
             var result = await _transactionService.CompleteTransactionAsync(id, energyTransferredKWh);
@@ -65,7 +65,7 @@ namespace MicroHelio.Controllers
 
         // Retrieves full transaction history for a Prosumer (via NIC) or a Grid Operator (via operatorId)
         [HttpGet]
-        [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
+        // [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
         public async Task<IActionResult> GetTransactions([FromQuery] string? prosumerNic, [FromQuery] string? operatorId)
         {
             var transactions = await _transactionService.GetFilteredTransactionsAsync(prosumerNic, operatorId);
@@ -74,7 +74,7 @@ namespace MicroHelio.Controllers
 
         // Retrieves a single transaction detail for specific view screens
         [HttpGet("{id}")]
-        [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
+        // [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
         public async Task<IActionResult> GetTransactionById(string id)
         {
             var transaction = await _transactionService.GetTransactionByIdAsync(id);

@@ -62,23 +62,23 @@ builder.Services.AddScoped<TransactionService>();
 // Registers the FAT business logic service for Reservation management
 builder.Services.AddScoped<ReservationService>();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
-        
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-        };
-    });
+// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//     .AddJwtBearer(options =>
+//     {
+//         var jwtSettings = builder.Configuration.GetSection("Jwt");
+//         var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+//         
+//         options.TokenValidationParameters = new TokenValidationParameters
+//         {
+//             ValidateIssuer = true,
+//             ValidateAudience = true,
+//             ValidateLifetime = true,
+//             ValidateIssuerSigningKey = true,
+//             ValidIssuer = jwtSettings["Issuer"],
+//             ValidAudience = jwtSettings["Audience"],
+//             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+//         };
+//     });
 
 var app = builder.Build();
 
@@ -92,9 +92,9 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
 
-app.UseAuthentication();
+// app.UseAuthentication();
 
-app.UseAuthorization();
+// app.UseAuthorization();
 
 app.MapControllers();
 
