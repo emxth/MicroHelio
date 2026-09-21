@@ -12,38 +12,232 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/src/css/common.css" />
     <style>
-    .hero-gradient { background: linear-gradient(135deg, #1B2621 0%, #2D6A4F 50%, #3a8a68 100%); }
-    .feature-card:hover { transform: translateY(-3px); }
-    .feature-card { transition: transform 0.2s, box-shadow 0.2s; }
-    .glow { box-shadow: 0 0 40px rgba(82,183,136,0.25); }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-    .float { animation: float 4s ease-in-out infinite; }
-  </style>
+      .hero-gradient {
+        background: linear-gradient(
+          135deg,
+          #1b2621 0%,
+          #2d6a4f 50%,
+          #3a8a68 100%
+        );
+      }
+      .feature-card:hover {
+        transform: translateY(-3px);
+      }
+      .feature-card {
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .glow {
+        box-shadow: 0 0 40px rgba(82, 183, 136, 0.25);
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      .float {
+        animation: float 4s ease-in-out infinite;
+      }
+    </style>
   </head>
 
   <body>
     <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-primary" style="box-shadow:0 2px 12px rgba(0,0,0,0.15)">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <nav
+      class="fixed top-0 left-0 right-0 z-50 bg-primary"
+      style="box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15)"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
+      >
         <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:#E9C46A">
-            <svg class="w-5 h-5" fill="none" stroke="#1B2621" viewBox="0 0 24 24" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707"/>
-                <circle cx="12" cy="12" r="4"/>
+          <div
+            class="w-9 h-9 rounded-xl flex items-center justify-center"
+            style="background: #e9c46a"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="#1B2621"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707"
+              />
+              <circle cx="12" cy="12" r="4" />
             </svg>
-            </div>
-            <span class="text-white font-bold text-lg tracking-tight">MicroHelio</span>
+          </div>
+          <span class="text-white font-bold text-lg tracking-tight"
+            >MicroHelio</span
+          >
         </div>
         <div class="flex items-center gap-3">
-            <a href="#features" class="text-green-200 hover:text-white text-sm font-medium transition-colors hidden sm:block">Features</a>
-            <a href="#how-it-works" class="text-green-200 hover:text-white text-sm font-medium transition-colors hidden sm:block">How it works</a>
-            <a href="/src/pages/auth/login.html"
+          <a
+            href="#features"
+            class="text-green-200 hover:text-white text-sm font-medium transition-colors hidden sm:block"
+            >Features</a
+          >
+          <a
+            href="#how-it-works"
+            class="text-green-200 hover:text-white text-sm font-medium transition-colors hidden sm:block"
+            >How it works</a
+          >
+          <a
+            href="/src/pages/auth/login.html"
             class="btn btn-sm ml-2"
-            style="background:#E9C46A;color:#1B2621;font-weight:600">
-            Sign in →
-            </a>
+            style="background: #e9c46a; color: #1b2621; font-weight: 600"
+          >
+            Sign in
+          </a>
         </div>
-        </div>
+      </div>
     </nav>
+
+    <!-- Hero section -->
+    <section class="hero-gradient pt-32 pb-32 px-6 relative overflow-hidden">
+      <!-- Background grid -->
+      <div
+        class="absolute inset-0 opacity-5"
+        style="
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.1) 1px,
+              transparent 1px
+            );
+          background-size: 40px 40px;
+        "
+      ></div>
+
+      <div class="max-w-6xl mx-auto relative">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <!-- Left -->
+          <div>
+            <h1
+              class="text-4xl sm:text-5xl font-bold text-white leading-tight mb-5"
+            >
+              Smart Solar<br />
+              <span style="color: #e9c46a">Microgrid Trading</span><br />
+              System
+            </h1>
+            <p class="text-green-100 text-lg leading-relaxed mb-8 opacity-90">
+              Peer-to-peer solar energy trading platform connecting prosumers,
+              grid operators, and backoffice administrators in real time.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <a
+                href="/src/pages/auth/login.html"
+                class="btn px-6 py-3 text-base font-semibold"
+                style="background: #e9c46a; color: #1b2621"
+              >
+                Access Platform
+              </a>
+              <a
+                href="#how-it-works"
+                class="btn btn-secondary px-6 py-3 text-base"
+                style="
+                  background: rgba(255, 255, 255, 0.1);
+                  color: white;
+                  border-color: rgba(255, 255, 255, 0.2);
+                "
+              >
+                Learn more
+              </a>
+            </div>
+            <!-- Stats row -->
+            <div
+              class="flex flex-wrap gap-8 mt-10 pt-8 border-t border-white border-opacity-20"
+            >
+              <div>
+                <div class="text-2xl font-bold text-white">QR</div>
+                <div class="text-green-200 text-sm">Secure transfers</div>
+              </div>
+              <div>
+                <div class="text-2xl font-bold text-white">GPS</div>
+                <div class="text-green-200 text-sm">Node mapping</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual card -->
+          <!-- TODO: Add real values by replacing dummy data -->
+          <div class="flex justify-center">
+            <div class="float">
+              <div
+                class="bg-white bg-opacity-10 backdrop-blur rounded-2xl p-6 glow border border-white border-opacity-20 w-72"
+              >
+                <div class="flex items-center gap-3 mb-5">
+                  <div
+                    class="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style="background: #e9c46a"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="#1B2621"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="text-white font-semibold text-sm">
+                      Energy Transfer
+                    </div>
+                    <div class="text-green-200 text-xs">Node #HUB-042</div>
+                  </div>
+                  <span class="ml-auto badge badge-success text-xs">Live</span>
+                </div>
+                <div class="space-y-3">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-green-200">Capacity</span
+                    ><span class="text-white font-medium">48 kWh</span>
+                  </div>
+                  <div class="w-full h-2 rounded-full bg-white bg-opacity-20">
+                    <div
+                      class="h-2 rounded-full"
+                      style="width: 68%; background: #52b788"
+                    ></div>
+                  </div>
+                  <div class="flex justify-between text-xs text-green-200">
+                    <span>32.6 kWh used</span><span>68%</span>
+                  </div>
+                </div>
+                <div
+                  class="mt-5 pt-4 border-t border-white border-opacity-20 grid grid-cols-2 gap-3"
+                >
+                  <div
+                    class="bg-white bg-opacity-10 rounded-lg p-3 text-center"
+                  >
+                    <div class="text-white font-bold text-lg">12</div>
+                    <div class="text-green-200 text-xs">Active slots</div>
+                  </div>
+                  <div
+                    class="bg-white bg-opacity-10 rounded-lg p-3 text-center"
+                  >
+                    <div class="text-white font-bold text-lg">4</div>
+                    <div class="text-green-200 text-xs">Pending QR</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>
