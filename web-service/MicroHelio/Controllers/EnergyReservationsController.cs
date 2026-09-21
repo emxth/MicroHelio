@@ -2,10 +2,14 @@
  * Author: Ashwin
  * Purpose: API Controller routing RESTful requests to the Reservation Service
  */
+using MicroHelio.Config;
 using MicroHelio.DTOs;
+using MicroHelio.Models;
 using MicroHelio.Services;
 // using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 namespace MicroHelio.Controllers
 {
@@ -14,11 +18,14 @@ namespace MicroHelio.Controllers
     public class EnergyReservationsController : ControllerBase
     {
         private readonly ReservationService _reservationService;
+        private readonly IMongoCollection<EnergyBookingSlot> _slots;
 
         // Injects the service layer for reservation logic
-        public EnergyReservationsController(ReservationService reservationService)
+        public EnergyReservationsController(ReservationService reservationService, IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings)
         {
             _reservationService = reservationService;
+            var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
+            _slots = database.GetCollection<EnergyBookingSlot>(settings.Value.EnergyBookingSlotsCollectionName);
         }
 
         // POST /api/reservations - Creates a new reservation
@@ -76,6 +83,61 @@ namespace MicroHelio.Controllers
             {
                 return NotFound();
             }
+        }
+
+        // GET /api/nodes - Returns available microgrid nodes for dropdowns
+        [HttpGet("/api/nodes")]
+        public async Task<IActionResult> GetNodes()
+        {
+            var nodeIds = await _slots.Find(_ => true)
+                .Project(s => s.NodeId)
+                .ToListAsync();
+
+            var uniqueNodeIds = nodeIds
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(id => id)
+                .ToList();
+
+            var nodes = uniqueNodeIds.Select((nodeId, index) => new
+            {
+                id = nodeId,
+                _id = nodeId,
+                nodeCode = $"NODE-{nodeId.Substring(0, Math.Min(6, nodeId.Length)).ToUpperInvariant()}",
+                name = $"Microgrid Node {index + 1}"
+            }).ToList();
+
+            return Ok(nodes);
+        }
+
+        // GET /api/slots?nodeId={id} - Returns booking slots for a selected node
+        [HttpGet("/api/slots")]
+        public async Task<IActionResult> GetSlotsForNode([FromQuery] string nodeId)
+        {
+            if (string.IsNullOrWhiteSpace(nodeId))
+                return BadRequest("nodeId is required.");
+
+            var slots = await _slots.Find(s => s.NodeId == nodeId)
+                .SortBy(s => s.SlotDate)
+                .ThenBy(s => s.SlotStartTime)
+                .ToListAsync();
+
+            var payload = slots.Select(s => new
+            {
+                id = s.Id,
+                _id = s.Id,
+                nodeId = s.NodeId,
+                slotDate = s.SlotDate,
+                slotStartTime = s.SlotStartTime,
+                slotEndTime = s.SlotEndTime,
+                availableCapacityKWh = s.AvailableCapacityKWh,
+                totalCapacityKWh = s.TotalCapacityKWh,
+                reservedCapacityKWh = s.ReservedCapacityKWh,
+                slotType = s.SlotType,
+                isAvailable = s.IsAvailable
+            }).ToList();
+
+            return Ok(payload);
         }
 
         // GET /api/reservations?prosumerNic={nic} - Retrieves a prosumer's bookings
