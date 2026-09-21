@@ -25,7 +25,7 @@ class BookingHistoryActivity : AppCompatActivity() {
     private lateinit var btnSearch: Button
     private lateinit var rvHistoryList: RecyclerView
 
-    private val baseUrl = "https://10.0.2.2:5056/api"
+    private val baseUrl = "http://localhost:5056/api"
     private val prosumerNic = "981234567V"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,10 +36,8 @@ class BookingHistoryActivity : AppCompatActivity() {
         etFilterDate = findViewById(R.id.etFilterDate)
         btnSearch = findViewById(R.id.btnSearch)
         rvHistoryList = findViewById(R.id.rvHistoryList)
-
         rvHistoryList.layoutManager = LinearLayoutManager(this)
 
-        // Load initial list for prosumer
         fetchReservations(null, null)
 
         btnSearch.setOnClickListener {
@@ -52,8 +50,7 @@ class BookingHistoryActivity : AppCompatActivity() {
     private fun fetchReservations(status: String?, date: String?) {
         thread {
             try {
-                // Build dynamic query URL matching backend search endpoint
-                val urlString = StringBuilder("$baseUrl/reservations/search?nic=$prosumerNic")
+                val urlString = java.lang.StringBuilder("$baseUrl/reservations/search?nic=$prosumerNic")
                 if (!status.isNullOrEmpty()) urlString.append("&status=$status")
                 if (!date.isNullOrEmpty()) urlString.append("&date=$date")
 
@@ -61,8 +58,11 @@ class BookingHistoryActivity : AppCompatActivity() {
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("Accept", "application/json")
+                connection.connectTimeout = 5000
+                connection.readTimeout = 5000
 
-                if (connection.responseCode == 200) {
+                val code = connection.responseCode
+                if (code == 200) {
                     val responseString = connection.inputStream.bufferedReader().use { it.readText() }
                     val jsonArray = JSONArray(responseString)
                     val list = ArrayList<JSONObject>()
@@ -73,17 +73,17 @@ class BookingHistoryActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         rvHistoryList.adapter = ReservationAdapter(list)
+                        if (list.isEmpty()) {
+                            Toast.makeText(this@BookingHistoryActivity, "No bookings found", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Failed to retrieve history", Toast.LENGTH_SHORT).show()
-                    }
+                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Unknown Error"
+                    runOnUiThread { Toast.makeText(this@BookingHistoryActivity, "Search Failed ($code): $errorStream", Toast.LENGTH_LONG).show() }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+                runOnUiThread { Toast.makeText(this@BookingHistoryActivity, "Network Error: ${e.message}", Toast.LENGTH_LONG).show() }
             }
         }
     }

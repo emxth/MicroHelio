@@ -10,8 +10,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -23,10 +21,9 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tvApprovedCount: TextView
     private lateinit var tvUpcomingCount: TextView
     private lateinit var tvWelcomeNic: TextView
-    private lateinit var rvBookings: RecyclerView
 
-    private val baseUrl = "https://10.0.2.2:5056/api" // Use 10.0.2.2 for Android Emulator connecting to local IIS/.NET API
-    private val prosumerNic = "981234567V" // Normally fetched from SQLite local_session table
+    private val baseUrl = "http://localhost:5056/api"
+    private val prosumerNic = "981234567V"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,55 +33,56 @@ class DashboardActivity : AppCompatActivity() {
         tvApprovedCount = findViewById(R.id.tvApprovedCount)
         tvUpcomingCount = findViewById(R.id.tvUpcomingCount)
         tvWelcomeNic = findViewById(R.id.tvWelcomeNic)
-        rvBookings = findViewById(R.id.rvBookings)
 
         tvWelcomeNic.text = "Prosumer NIC: $prosumerNic"
 
-        rvBookings.layoutManager = LinearLayoutManager(this)
-
-        // Load dashboard metrics and bookings from API
         fetchDashboardData()
 
         findViewById<Button>(R.id.btnCreateReservation).setOnClickListener {
-            val intent = Intent(this, CreateReservationActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, CreateReservationActivity::class.java))
         }
 
         findViewById<Button>(R.id.btnViewHistory).setOnClickListener {
-            val intent = Intent(this, BookingHistoryActivity::class.java)
-            startActivity(intent)
-//            Toast.makeText(this, "Navigate to Booking History", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, BookingHistoryActivity::class.java))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchDashboardData()
     }
 
     private fun fetchDashboardData() {
         thread {
             try {
-                // 1. Fetch Dashboard Counts: GET /api/reservations/dashboard?prosumerNic={nic}
-                val countUrl = URL("$baseUrl/reservations/dashboard?prosumerNic=$prosumerNic")
-                val countConnection = countUrl.openConnection() as HttpURLConnection
-                countConnection.requestMethod = "GET"
-                countConnection.setRequestProperty("Accept", "application/json")
+                val url = URL("$baseUrl/reservations/dashboard?prosumerNic=$prosumerNic")
+                val connection = url.openConnection() as HttpURLConnection
+                connection.requestMethod = "GET"
+                connection.setRequestProperty("Accept", "application/json")
+                connection.connectTimeout = 5000 // 5 second timeout
+                connection.readTimeout = 5000
 
-                if (countConnection.responseCode == 200) {
-                    val responseString = countConnection.inputStream.bufferedReader().use { it.readText() }
+                val code = connection.responseCode
+                if (code == 200) {
+                    val responseString = connection.inputStream.bufferedReader().use { it.readText() }
                     val json = JSONObject(responseString)
 
-                    val pending = json.optInt("pendingCount", 0)
-                    val approved = json.optInt("approvedCount", 0)
-                    val upcoming = json.optInt("upcomingCount", 0)
+                    // Safely check for both camelCase and PascalCase
+                    val pending = json.optInt("pendingCount", json.optInt("PendingCount", 0))
+                    val approved = json.optInt("approvedCount", json.optInt("ApprovedCount", 0))
 
                     runOnUiThread {
                         tvPendingCount.text = pending.toString()
                         tvApprovedCount.text = approved.toString()
-                        tvUpcomingCount.text = upcoming.toString()
+                        tvUpcomingCount.text = "0"
                     }
+                } else {
+                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Unknown API Error"
+                    runOnUiThread { Toast.makeText(this@DashboardActivity, "API Error $code: $errorStream", Toast.LENGTH_LONG).show() }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this, "Failed to load dashboard counts", Toast.LENGTH_SHORT).show()
-                }
+                runOnUiThread { Toast.makeText(this@DashboardActivity, "Network Error: ${e.message}", Toast.LENGTH_LONG).show() }
             }
         }
     }
