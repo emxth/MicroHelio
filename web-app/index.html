@@ -8,10 +8,14 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>"
     />
-    <script src="/src/js/tailwind-config.js"></script>
+    <script src="./src/js/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="/src/css/common.css" />
+    <link rel="stylesheet" href="./src/css/common.css" />
     <style>
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 5rem;
+      }
       .hero-gradient {
         background: linear-gradient(
           135deg,
@@ -49,8 +53,8 @@
   <body>
     <!-- Navbar -->
     <nav
-      class="fixed top-0 left-0 right-0 z-50 bg-primary"
-      style="box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15)"
+      class="fixed top-0 left-0 right-0 z-50"
+      style="background: #1b2621; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15)"
     >
       <div
         class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between"
@@ -91,7 +95,7 @@
             >How it works</a
           >
           <a
-            href="/src/pages/auth/login.html"
+            href="./src/pages/auth/login.html"
             class="btn btn-sm ml-2"
             style="background: #e9c46a; color: #1b2621; font-weight: 600"
           >
@@ -135,7 +139,7 @@
             </p>
             <div class="flex flex-wrap gap-3">
               <a
-                href="/src/pages/auth/login.html"
+                href="./src/pages/auth/login.html"
                 class="btn px-6 py-3 text-base font-semibold"
                 style="background: #e9c46a; color: #1b2621"
               >
@@ -241,7 +245,7 @@
     </section>
 
     <!-- How it works section -->
-    <section id="how-it-works" class="py-20 px-6 bg-bg-app">
+    <section id="how-it-works" class="py-20 px-6" style="background: #f8fafc">
       <div class="max-w-5xl mx-auto">
         <div class="text-center mb-12">
           <div
@@ -307,7 +311,7 @@
                 class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-primary relative z-10"
               >
                 <svg
-                  class="w-7 h-7 text-white"
+                  class="w-7 h-7 text-success"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -333,7 +337,7 @@
     </section>
 
     <!-- Features section -->
-    <section id="features" class="py-20 px-6 bg-surface">
+    <section id="features" class="py-20 px-6" style="background: #ffffff">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-12">
           <div
@@ -547,7 +551,7 @@
           Smart Solar Microgrid Trading System
         </p>
         <a
-          href="/src/pages/auth/login.html"
+          href="./src/pages/auth/login.html"
           class="btn px-8 py-2 text-base font-semibold"
           style="background: #e9c46a; color: #1b2621"
         >
@@ -558,5 +562,14 @@
         </div>
       </div>
     </footer>
+
+    <script src="./src/js/auth.js"></script>
+    <script>
+      // If already logged in, skip landing and go to first dashboard page
+      const session = getSession();
+      if (session && session.token) {
+        window.location.href = "/src/pages/transactions/transaction-list.html";
+      };
+    </script>
   </body>
 </html>
