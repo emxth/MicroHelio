@@ -6,34 +6,54 @@
     android:orientation="vertical"
     android:background="@color/eco_off_white">
 
-    <!-- Top Header Bar -->
+    <!-- Top Header Bar with Back Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/deep_canopy_green"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Manage Reservation"
-            android:textColor="@color/pure_white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_back_arrow"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:layout_marginEnd="12dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Go Back" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Update slot details or cancel booking"
-            android:textColor="@color/soft_sunlight"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage Reservation"
+                android:textColor="@color/pure_white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update slot details or cancel booking"
+                android:textColor="@color/soft_sunlight"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:padding="16dp">
 
         <LinearLayout
@@ -72,23 +92,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="20dp">
-
-                    <!-- Reservation ID Reference -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reservation ID"
-                        android:textColor="@color/moss_gray"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
-                    <EditText
-                        android:id="@+id/etReservationId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:enabled="false"
-                        android:textColor="@color/dark_pine"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="14dp"/>
 
                     <!-- Microgrid Node Dropdown -->
                     <TextView
@@ -144,7 +147,7 @@
                         android:id="@+id/btnUpdateReservation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Save Changes (PUT)"
+                        android:text="Save Changes"
                         android:backgroundTint="@color/deep_canopy_green"
                         android:textColor="@color/pure_white"
                         app:cornerRadius="8dp"
@@ -179,7 +182,7 @@
                         android:id="@+id/btnCancelReservation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Cancel Booking (PATCH)"
+                        android:text="Cancel Booking"
                         android:backgroundTint="#C92A2A"
                         android:textColor="@color/pure_white"
                         app:cornerRadius="8dp"
@@ -189,4 +192,7 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
+
+    <!-- Shared Bottom Navigation Bar -->
+    <include layout="@layout/layout_bottom_nav" />
 </LinearLayout>
