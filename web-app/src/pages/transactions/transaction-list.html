@@ -53,6 +53,30 @@
             </button>
           </div>
         </div>
+
+        <!-- Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="stat-card">
+            <div class="stat-label">Total Transactions</div>
+            <div class="stat-value" id="stat-total">-</div>
+            <div class="stat-sub">All time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Completed</div>
+            <div class="stat-value text-secondary" id="stat-completed">-</div>
+            <div class="stat-sub">Energy transferred</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending Verify</div>
+            <div class="stat-value text-accent" id="stat-pending">-</div>
+            <div class="stat-sub">Awaiting QR scan</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Energy Total</div>
+            <div class="stat-value text-primary" id="stat-energy">-</div>
+            <div class="stat-sub">kWh transferred</div>
+          </div>
+        </div>
       </div>
     </div>
   </body>
