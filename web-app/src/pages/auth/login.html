@@ -124,5 +124,134 @@
         </div>
       </div>
     </div>
+
+    <!-- Right panel (Login form) -->
+    <div class="flex-1 flex items-center justify-center p-8">
+      <div class="w-full max-w-md">
+        <!-- Mobile logo -->
+        <a href="/index.html" class="flex items-center gap-3 mb-8 lg:hidden">
+          <div
+            class="w-9 h-9 rounded-xl flex items-center justify-center"
+            style="background: #e9c46a"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="#1B2621"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3"
+              />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </div>
+          <span class="font-bold text-xl text-text-dark">MicroHelio</span>
+        </a>
+
+        <h1 class="text-2xl font-bold text-text-dark mb-1">Welcome back</h1>
+        <p class="text-text-muted text-sm mb-8">
+          Sign in to your operator account
+        </p>
+
+        <!-- Error banner -->
+        <div
+          id="error-banner"
+          class="hidden mb-5 p-4 rounded-xl border border-red-200 flex items-start gap-3"
+          style="background: #fee2e2"
+        >
+          <svg
+            class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+          <p id="error-text" class="text-red-700 text-sm"></p>
+        </div>
+
+        <form id="login-form" class="space-y-5" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Email address</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="operator@microhelio.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                class="form-input pr-10"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                onclick="togglePassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-dark"
+              >
+                <svg
+                  id="eye-icon"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            id="login-btn"
+            class="btn btn-primary w-full justify-center py-3 text-base font-semibold"
+          >
+            <span id="btn-text">Sign in</span>
+            <span
+              id="btn-spinner"
+              class="hidden spinner ml-2"
+              style="
+                border-top-color: white;
+                border-color: rgba(255, 255, 255, 0.3);
+              "
+            ></span>
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-text-muted mt-8">
+          This portal is for <strong>Backoffice</strong> and
+          <strong>Grid Operator</strong> accounts only.<br />
+          Prosumers use the MicroHelio Android app.
+        </p>
+      </div>
+    </div>
   </body>
 </html>
