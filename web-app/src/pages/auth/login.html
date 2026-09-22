@@ -128,7 +128,6 @@
     <!-- Right panel (Login form) -->
     <div class="flex-1 flex items-center justify-center p-8">
       <div class="w-full max-w-md">
-        <!-- Mobile logo -->
         <a href="/index.html" class="flex items-center gap-3 mb-8 lg:hidden">
           <div
             class="w-9 h-9 rounded-xl flex items-center justify-center"
@@ -253,5 +252,60 @@
         </p>
       </div>
     </div>
+
+    <script src="/src/js/auth.js"></script>
+    <script src="/src/js/api-client.js"></script>
+    <script src="/src/js/auth-page.js"></script>
+    <script>
+      // If already logged in, redirect
+      if (getSession())
+        window.location.href = "/src/pages/transactions/transaction-list.html";
+
+      function togglePassword() {
+        const input = document.getElementById("password");
+        input.type = input.type === "password" ? "text" : "password";
+      }
+
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          const btn = document.getElementById("login-btn");
+          const errBanner = document.getElementById("error-banner");
+          const errText = document.getElementById("error-text");
+
+          if (!email || !password) {
+            errText.textContent = "Please enter your email and password.";
+            errBanner.classList.remove("hidden");
+            return;
+          }
+
+          // Loading state
+          btn.disabled = true;
+          document.getElementById("btn-text").textContent = "Signing in…";
+          document.getElementById("btn-spinner").classList.remove("hidden");
+          errBanner.classList.add("hidden");
+
+          try {
+            const data = await apiPost("/auth/login", { email, password });
+            if (data && data.token) {
+              setSession(data);
+              window.location.href =
+                "/src/pages/transactions/transaction-list.html";
+            } else {
+              throw { message: "Invalid credentials. Please try again." };
+            }
+          } catch (err) {
+            errText.textContent =
+              err.message || "Login failed. Check your credentials.";
+            errBanner.classList.remove("hidden");
+            btn.disabled = false;
+            document.getElementById("btn-text").textContent = "Sign in";
+            document.getElementById("btn-spinner").classList.add("hidden");
+          }
+        });
+    </script>
   </body>
 </html>
