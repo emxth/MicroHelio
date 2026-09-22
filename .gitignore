@@ -1,19 +1,47 @@
-# C# Web API
+# ==========================================
+# C# / ASP.NET Core / Visual Studio Build
+# ==========================================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
 web-service/**/bin/
 web-service/**/obj/
 web-service/**/.vs/
-web-service/**/appsettings.json
 web-service/**/*.user
 
-# Web App
+# ==========================================
+# Web App / Node
+# ==========================================
+node_modules/
 web-app/node_modules/
+dist/
+build/
+.cache/
 
-# Android
+# ==========================================
+# Android / Gradle Build
+# ==========================================
+.gradle/
+**/build/
 mobile-app/.gradle/
 mobile-app/app/build/
+mobile-app/build/
+local.properties
 mobile-app/local.properties
-mobile-app/app/google-services.json
+*.apk
+*.aar
 
-# General
+# ==========================================
+# IDE & System Files
+# ==========================================
+.idea/
+.vscode/
 .DS_Store
-*.log 
+Thumbs.db
+*.log
