@@ -10,7 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Bind database settings from appsettings.json
+// Bind database settings from configuration
 builder.Services.Configure<MicroHelioDatabaseSettings>(
     builder.Configuration.GetSection("MicroHelioDatabase"));
 
@@ -121,33 +121,6 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
     }
 });
 
-// Temporary test endpoint to generate a valid GridOperator token
-app.MapGet("/api/test-token", (IConfiguration config) =>
-{
-    var jwtSettings = config.GetSection("Jwt");
-    var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
 
-    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-    var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
-
-    var claims = new[]
-    {
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "64f1a2b3c4d5e6f7a8b9c099"),
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "GridOperator")
-    };
-
-    var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
-        issuer: jwtSettings["Issuer"],
-        audience: jwtSettings["Audience"],
-        claims: claims,
-        expires: DateTime.UtcNow.AddHours(1),
-        signingCredentials: creds
-    );
-
-    return Results.Ok(new
-    {
-        token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token)
-    });
-});
 
 app.Run();
