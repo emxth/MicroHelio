@@ -187,5 +187,18 @@
         </div>
       </div>
     </div>
+
+    <script src="/src/js/auth.js"></script>
+    <script src="/src/js/api-client.js"></script>
+    <script src="/src/js/nav.js"></script>
+    <script src="/src/js/transactions.js"></script>
+    <script>
+      // Guard: redirect to login if not authenticated
+      const session = requireAuth();
+      if (session) {
+        renderNav("Transaction History");
+        loadTransactions();
+      }
+    </script>
   </body>
 </html>
