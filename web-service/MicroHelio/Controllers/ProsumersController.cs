@@ -45,11 +45,18 @@ namespace MicroHelio.Controllers
         [Authorize(Roles = "Backoffice,GridOperator")]
         public async Task<IActionResult> GetAll([FromQuery] string? status)
         {
-            var prosumers = string.IsNullOrWhiteSpace(status)
-                ? await _prosumerService.GetAllAsync()
-                : await _prosumerService.GetByStatusAsync(status);
+            try
+            {
+                var prosumers = string.IsNullOrWhiteSpace(status)
+                    ? await _prosumerService.GetAllAsync()
+                    : await _prosumerService.GetByStatusAsync(status);
 
-            return Ok(prosumers);
+                return Ok(prosumers);
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(new { message = exception.Message });
+            }
         }
 
         [HttpGet("{nic}")]
