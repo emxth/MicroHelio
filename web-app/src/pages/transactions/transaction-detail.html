@@ -209,6 +209,49 @@
                   </dl>
                 </div>
               </div>
+
+              <!-- QR Verification block -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="font-semibold text-text-dark text-sm">
+                    QR Verification
+                  </h3>
+                </div>
+                <div class="card-body">
+                  <div class="flex items-center gap-3 mb-4">
+                    <div
+                      id="verify-icon"
+                      class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                    >
+                      <!-- filled by JS -->
+                    </div>
+                    <div>
+                      <div
+                        class="font-semibold text-sm text-text-dark"
+                        id="verify-label"
+                      >
+                        -
+                      </div>
+                      <div class="text-xs text-text-muted" id="verify-time">
+                        -
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bg-bg-app rounded-lg p-3 border border-border">
+                    <div
+                      class="text-xs text-text-muted uppercase tracking-widest font-semibold mb-1"
+                    >
+                      Scanned QR Payload
+                    </div>
+                    <div
+                      class="font-mono text-xs text-text-dark break-all"
+                      id="detail-qr-payload"
+                    >
+                      -
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
