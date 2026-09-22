@@ -7,8 +7,13 @@ web-service/**/*.user
 
 # Web App
 web-app/node_modules/
+web-app/react-app/node_modules/
+web-app/react-app/dist/
+web-app/react-app/.vite/
+web-app/react-app/npm-debug.log*
 
 # Android
+mobile-app/.idea/
 mobile-app/.gradle/
 mobile-app/app/build/
 mobile-app/local.properties
