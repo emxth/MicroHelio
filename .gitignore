@@ -1,0 +1,45 @@
+# C# Web API
+web-service/**/bin/
+web-service/**/obj/
+web-service/**/.vs/
+web-service/**/appsettings.json
+web-service/**/*.user
+
+# Web App
+web-app/node_modules/
+web-app/npm-debug.log*
+web-app/yarn-error.log*
+web-app/yarn-debug.log*
+
+# Build outputs
+web-app/dist/
+web-app/build/
+web-app/.cache/
+
+# OS-generated files
+web-app/.DS_Store
+web-app/.DS_Store?
+web-app/._*
+web-app/.Spotlight-V100
+web-app/.Trashes
+web-app/ehthumbs.db
+web-app/Thumbs.db
+
+# IDEs and Editors
+web-app/.vscode/
+web-app/.idea/
+web-app/*.suo
+web-app/*.ntvs*
+web-app/*.njsproj
+web-app/*.sln
+web-app/*.sw?
+
+# Android
+mobile-app/.gradle/
+mobile-app/app/build/
+mobile-app/local.properties
+mobile-app/app/google-services.json
+
+# General
+.DS_Store
+*.log 

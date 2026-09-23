@@ -2,11 +2,13 @@
 {
     public class MicroHelioDatabaseSettings
     {
-        public string ConnectionString { get; set; } = "mongodb://localhost:27017";
-        public string DatabaseName { get; set; } = "MicroHelioDb";
-        public string TransactionsCollectionName { get; set; } = "Transaction";
-        public string MicrogridNodesCollectionName { get; set; } = "microgrid_node";
-        public string EnergyBookingSlotsCollectionName { get; set; } = "energy_booking_slot";
-        public string EnergyReservationsCollectionName { get; set; } = "energy_reservation";
+        public string ConnectionString { get; set; } = null!;
+        public string DatabaseName { get; set; } = null!;
+        public string TransactionsCollectionName { get; set; } = null!;
+        public string EnergyReservationsCollectionName { get; set; } = null!;
+        public string EnergyBookingSlotsCollectionName { get; set; } = null!;
+        public string MicrogridNodesCollectionName { get; set; } = null!;
+        public string UsersCollectionName { get; set; } = null!;
+        public string ProsumersCollectionName { get; set; } = null!;
     }
 }

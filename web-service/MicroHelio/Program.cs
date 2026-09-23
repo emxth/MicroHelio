@@ -10,7 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Bind database settings from appsettings.json
+// Bind database settings from configuration
 builder.Services.Configure<MicroHelioDatabaseSettings>(
     builder.Configuration.GetSection("MicroHelioDatabase"));
 
@@ -27,7 +27,9 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -55,13 +57,27 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add the TransactionService to the DI container
+// Component 4 (Transactions)
 builder.Services.AddScoped<TransactionService>();
+
+// Component 3 (Reservations)
+builder.Services.AddScoped<ReservationService>();
+builder.Services.AddScoped<INodeService, NodeService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
+
+// Component 1 (Auth & Users)
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ProsumerService>();
+builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<AuthService>();
+
+// Authentication Middleware 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var secretKey = jwtSettings["Key"] ?? "SuperSecretKeyThatIsAtLeast32BytesLongForHMACSHA256";
+        var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+        
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -74,11 +90,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Registration of services for microgrid node and slot management
-builder.Services.AddScoped<INodeService, NodeService>();
-builder.Services.AddScoped<ISlotService, SlotService>();
-
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -88,6 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -112,33 +125,6 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
     {
         return Results.Problem($"Database connection failed: {ex.Message}");
     }
-});
-
-// Temporary test endpoint to generate a valid GridOperator token
-app.MapGet("/api/test-token", (IConfiguration config) =>
-{
-    var jwtSettings = config.GetSection("Jwt");
-    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
-    var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
-
-    var claims = new[]
-    {
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "mock-operator-67890"),
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "GridOperator")
-    };
-
-    var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
-        issuer: jwtSettings["Issuer"],
-        audience: jwtSettings["Audience"],
-        claims: claims,
-        expires: DateTime.UtcNow.AddHours(1),
-        signingCredentials: creds
-    );
-
-    return Results.Ok(new
-    {
-        token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token)
-    });
 });
 
 app.Run();

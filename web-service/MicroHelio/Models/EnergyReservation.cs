@@ -1,5 +1,5 @@
 ﻿/* 
- * Author: Randiv (Ashwin change this when you updating, into your name)
+ * Author: Ashwin
  * Purpose: Represents the ENERGY_RESERVATION collection in MongoDB.
  */
 using MongoDB.Bson;
@@ -16,7 +16,6 @@ namespace MicroHelio.Models
         [BsonElement("reservationCode")]
         public string ReservationCode { get; set; } = null!;
 
-        // Prosumer NIC is the natural key stored as a string FK
         [BsonElement("prosumerNic")]
         public string ProsumerNic { get; set; } = null!;
 
@@ -43,7 +42,6 @@ namespace MicroHelio.Models
         [BsonElement("requestedCapacityKWh")]
         public double RequestedCapacityKWh { get; set; }
 
-        // "Pending" | "Approved" | "Cancelled" | "Completed"
         [BsonElement("status")]
         public string Status { get; set; } = null!;
 
@@ -60,7 +58,6 @@ namespace MicroHelio.Models
         [BsonElement("cancelledAt")]
         public DateTime? CancelledAt { get; set; }
 
-        // Populated only after status becomes "Approved"
         [BsonElement("qrCodeData")]
         public string? QrCodeData { get; set; }
 
@@ -72,5 +69,10 @@ namespace MicroHelio.Models
 
         [BsonElement("updatedAt")]
         public DateTime UpdatedAt { get; set; }
+        [BsonIgnore]
+        public string NodeCode { get; set; } = string.Empty;
+
+        [BsonIgnore]
+        public string NodeName { get; set; } = string.Empty;
     }
 }
