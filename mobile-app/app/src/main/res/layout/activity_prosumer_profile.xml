@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#F7FAF7"
+    android:gravity="center"
+    tools:context=".ProsumerProfileActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prosumer Profile"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#1B2621"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="(Placeholder for Profile Details)"
+        android:textSize="18sp"
+        android:textColor="#748C7E"
+        android:gravity="center" />
+
+</LinearLayout>
