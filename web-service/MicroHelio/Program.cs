@@ -10,7 +10,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Bind database settings from appsettings.json
+// Bind database settings from configuration
 builder.Services.Configure<MicroHelioDatabaseSettings>(
     builder.Configuration.GetSection("MicroHelioDatabase"));
 
@@ -57,28 +57,36 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add the TransactionService to the DI container
+// Component 4 (Transactions)
 builder.Services.AddScoped<TransactionService>();
-// Registers the FAT business logic service for Reservation management
+
+// Component 3 (Reservations)
 builder.Services.AddScoped<ReservationService>();
 
-// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//     .AddJwtBearer(options =>
-//     {
-//         var jwtSettings = builder.Configuration.GetSection("Jwt");
-//         var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
-//         
-//         options.TokenValidationParameters = new TokenValidationParameters
-//         {
-//             ValidateIssuer = true,
-//             ValidateAudience = true,
-//             ValidateLifetime = true,
-//             ValidateIssuerSigningKey = true,
-//             ValidIssuer = jwtSettings["Issuer"],
-//             ValidAudience = jwtSettings["Audience"],
-//             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-//         };
-//     });
+// Component 1 (Auth & Users)
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ProsumerService>();
+builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<AuthService>();
+
+// Authentication Middleware 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+        var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+        
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+        };
+    });
 
 var app = builder.Build();
 
@@ -92,9 +100,8 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
 
-// app.UseAuthentication();
-
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
@@ -116,35 +123,6 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
     {
         return Results.Problem($"Database connection failed: {ex.Message}");
     }
-});
-
-// Temporary test endpoint to generate a valid GridOperator token
-app.MapGet("/api/test-token", (IConfiguration config) =>
-{
-    var jwtSettings = config.GetSection("Jwt");
-    var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
-
-    var key = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(secretKey));
-    var creds = new Microsoft.IdentityModel.Tokens.SigningCredentials(key, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
-
-    var claims = new[]
-    {
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, "64f1a2b3c4d5e6f7a8b9c099"),
-        new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "Prosumer")
-    };
-
-    var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
-        issuer: jwtSettings["Issuer"],
-        audience: jwtSettings["Audience"],
-        claims: claims,
-        expires: DateTime.UtcNow.AddHours(1),
-        signingCredentials: creds
-    );
-
-    return Results.Ok(new
-    {
-        token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(token)
-    });
 });
 
 app.Run();

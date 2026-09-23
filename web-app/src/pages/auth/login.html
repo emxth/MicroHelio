@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MicroHelio</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>"
+    />
+    <script src="/src/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/src/css/common.css" />
+    <link rel="stylesheet" href="/src/css/login.css" />
+  </head>
+
+  <body class="min-h-screen flex" style="background: #f7faf7">
+    <!-- Left panel -->
+    <div
+      class="hidden lg:flex flex-col justify-between w-1/2 p-12 text-white"
+      style="
+        background: linear-gradient(
+          160deg,
+          #1b2621 0%,
+          #2d6a4f 60%,
+          #3a8a68 100%
+        );
+      "
+    >
+      <a href="/index.html" class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+          style="background: #e9c46a"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="#1B2621"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707"
+            />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        </div>
+        <span class="font-bold text-xl">MicroHelio</span>
+      </a>
+      <div>
+        <h2 class="text-3xl font-bold mb-4 leading-tight">
+          Solar energy trading,<br />intelligently managed.
+        </h2>
+        <p class="text-green-200 leading-relaxed">
+          Manage prosumers, grid nodes, reservations and energy transfers - all
+          from one secure platform.
+        </p>
+        <div class="mt-8 space-y-3">
+          <div class="flex items-center gap-3 text-green-100 text-sm">
+            <div
+              class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+              style="background: #52b788"
+            >
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="white"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            Secured access control
+          </div>
+          <div class="flex items-center gap-3 text-green-100 text-sm">
+            <div
+              class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+              style="background: #52b788"
+            >
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="white"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            Secure QR energy transfer verification
+          </div>
+          <div class="flex items-center gap-3 text-green-100 text-sm">
+            <div
+              class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+              style="background: #52b788"
+            >
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="white"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            Real-time booking and reservation management
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right panel (Login form) -->
+    <div class="flex-1 flex items-center justify-center p-8">
+      <div class="w-full max-w-md">
+        <a href="/index.html" class="flex items-center gap-3 mb-8 lg:hidden">
+          <div
+            class="w-9 h-9 rounded-xl flex items-center justify-center"
+            style="background: #e9c46a"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="#1B2621"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3"
+              />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </div>
+          <span class="font-bold text-xl text-text-dark">MicroHelio</span>
+        </a>
+
+        <h1 class="text-2xl font-bold text-text-dark mb-1">Welcome back</h1>
+        <p class="text-text-muted text-sm mb-8">
+          Sign in to your operator account
+        </p>
+
+        <!-- Error banner -->
+        <div
+          id="error-banner"
+          class="hidden mb-5 p-4 rounded-xl border border-red-200 flex items-start gap-3"
+          style="background: #fee2e2"
+        >
+          <svg
+            class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+          <p id="error-text" class="text-red-700 text-sm"></p>
+        </div>
+
+        <form id="login-form" class="space-y-5" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="email">Email address</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="operator@microhelio.com"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                class="form-input pr-10"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                onclick="togglePassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-dark"
+              >
+                <svg
+                  id="eye-icon"
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            id="login-btn"
+            class="btn btn-primary w-full justify-center py-3 text-base font-semibold"
+          >
+            <span id="btn-text">Sign in</span>
+            <span
+              id="btn-spinner"
+              class="hidden spinner ml-2"
+              style="
+                border-top-color: white;
+                border-color: rgba(255, 255, 255, 0.3);
+              "
+            ></span>
+          </button>
+        </form>
+
+        <p class="text-center text-xs text-text-muted mt-8">
+          This portal is for <strong>Backoffice</strong> and
+          <strong>Grid Operator</strong> accounts only.<br />
+          Prosumers use the MicroHelio Android app.
+        </p>
+      </div>
+    </div>
+
+    <script src="/src/js/auth.js"></script>
+    <script src="/src/js/api-client.js"></script>
+    <script src="/src/js/auth-page.js"></script>
+    <script>
+      // If already logged in, redirect
+      if (getSession())
+        window.location.href = "/src/pages/transactions/transaction-list.html";
+
+      function togglePassword() {
+        const input = document.getElementById("password");
+        input.type = input.type === "password" ? "text" : "password";
+      }
+
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          const btn = document.getElementById("login-btn");
+          const errBanner = document.getElementById("error-banner");
+          const errText = document.getElementById("error-text");
+
+          if (!email || !password) {
+            errText.textContent = "Please enter your email and password.";
+            errBanner.classList.remove("hidden");
+            return;
+          }
+
+          // Loading state
+          btn.disabled = true;
+          document.getElementById("btn-text").textContent = "Signing in…";
+          document.getElementById("btn-spinner").classList.remove("hidden");
+          errBanner.classList.add("hidden");
+
+          try {
+            const data = await apiPost("/auth/login", { email, password });
+            if (data && data.token) {
+              setSession(data);
+              window.location.href =
+                "/src/pages/transactions/transaction-list.html";
+            } else {
+              throw { message: "Invalid credentials. Please try again." };
+            }
+          } catch (err) {
+            errText.textContent =
+              err.message || "Login failed. Check your credentials.";
+            errBanner.classList.remove("hidden");
+            btn.disabled = false;
+            document.getElementById("btn-text").textContent = "Sign in";
+            document.getElementById("btn-spinner").classList.add("hidden");
+          }
+        });
+    </script>
+  </body>
+</html>
