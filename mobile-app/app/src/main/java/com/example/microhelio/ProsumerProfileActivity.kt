@@ -24,6 +24,7 @@ class ProsumerProfileActivity : AppCompatActivity() {
     private lateinit var tvCreatedDate: TextView
     private lateinit var btnEditProfile: Button
     private lateinit var btnLogout: Button
+    private lateinit var btnDeactivate: Button
 
     private lateinit var sessionManager: SessionManager
     private var currentProfile: ProsumerProfileResponse? = null
@@ -44,6 +45,7 @@ class ProsumerProfileActivity : AppCompatActivity() {
         tvCreatedDate = findViewById(R.id.tvCreatedDate)
         btnEditProfile = findViewById(R.id.btnEditProfile)
         btnLogout = findViewById(R.id.btnLogout)
+        btnDeactivate = findViewById(R.id.btnDeactivate)
 
         // Back arrow
         findViewById<android.widget.ImageView>(R.id.ivBack).setOnClickListener {
@@ -52,6 +54,10 @@ class ProsumerProfileActivity : AppCompatActivity() {
 
         btnLogout.setOnClickListener {
             logout()
+        }
+
+        btnDeactivate.setOnClickListener {
+            showDeactivateConfirmationDialog()
         }
 
         btnEditProfile.setOnClickListener {
@@ -137,5 +143,61 @@ class ProsumerProfileActivity : AppCompatActivity() {
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
+    }
+
+    private fun showDeactivateConfirmationDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Deactivate Account?")
+            .setMessage("You will not be able to log in again until Backoffice reactivates your account.")
+            .setPositiveButton("Confirm Deactivation") { dialog, _ ->
+                deactivateAccount()
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun deactivateAccount() {
+        val session = sessionManager.getSession()
+        if (session == null || session.accountIdentifier.isBlank() || session.token.isBlank()) {
+            logout()
+            return
+        }
+
+        btnDeactivate.isEnabled = false
+        val nic = session.accountIdentifier
+        val token = "Bearer ${session.token}"
+
+        ApiClient.apiService.deactivateProsumer(nic, token).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                btnDeactivate.isEnabled = true
+                when {
+                    response.isSuccessful -> {
+                        Toast.makeText(this@ProsumerProfileActivity, "Account deactivated successfully", Toast.LENGTH_LONG).show()
+                        logout()
+                    }
+                    response.code() == 400 -> {
+                        Toast.makeText(this@ProsumerProfileActivity, "Failed to deactivate account (Validation Error)", Toast.LENGTH_LONG).show()
+                    }
+                    response.code() == 401 || response.code() == 403 -> {
+                        Toast.makeText(this@ProsumerProfileActivity, "Session expired or unauthorized", Toast.LENGTH_LONG).show()
+                        logout()
+                    }
+                    response.code() == 404 -> {
+                        Toast.makeText(this@ProsumerProfileActivity, "Account not found", Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        Toast.makeText(this@ProsumerProfileActivity, "Failed to deactivate: ${response.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                btnDeactivate.isEnabled = true
+                Toast.makeText(this@ProsumerProfileActivity, "Network error: Cannot reach server", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

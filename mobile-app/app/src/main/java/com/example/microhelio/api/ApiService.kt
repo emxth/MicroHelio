@@ -25,4 +25,9 @@ interface ApiService {
         @retrofit2.http.Header("Authorization") token: String,
         @Body request: com.example.microhelio.models.UpdateProsumerRequest
     ): Call<com.example.microhelio.models.ProsumerProfileResponse>
+    @retrofit2.http.PATCH("api/prosumers/{nic}/deactivate")
+    fun deactivateProsumer(
+        @retrofit2.http.Path("nic") nic: String,
+        @retrofit2.http.Header("Authorization") token: String
+    ): Call<Void>
 }

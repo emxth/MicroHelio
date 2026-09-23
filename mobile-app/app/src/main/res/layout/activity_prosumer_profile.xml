@@ -219,7 +219,20 @@
                 android:textSize="16sp"
                 app:cornerRadius="12dp"
                 app:strokeColor="#E53935"
-                app:strokeWidth="1.5dp" />
+                app:strokeWidth="1.5dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Deactivate Button -->
+            <Button
+                android:id="@+id/btnDeactivate"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="Deactivate Account"
+                android:backgroundTint="#E53935"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
 
         </LinearLayout>
     </ScrollView>
