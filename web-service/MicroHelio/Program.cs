@@ -62,6 +62,8 @@ builder.Services.AddScoped<TransactionService>();
 
 // Component 3 (Reservations)
 builder.Services.AddScoped<ReservationService>();
+builder.Services.AddScoped<INodeService, NodeService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
 
 // Component 1 (Auth & Users)
 builder.Services.AddScoped<UserService>();

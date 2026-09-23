@@ -18,13 +18,19 @@ namespace MicroHelio.Controllers
     public class EnergyReservationsController : ControllerBase
     {
         private readonly ReservationService _reservationService;
+        private readonly TransactionService _transactionService;
         private readonly IMongoCollection<EnergyBookingSlot> _slots;
         private readonly IMongoCollection<MicrogridNode> _nodesCollection;
 
         // Injects the service layer and MongoDB collections for reservation and node logic
-        public EnergyReservationsController(ReservationService reservationService, IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings)
+        public EnergyReservationsController(
+            ReservationService reservationService,
+            TransactionService transactionService,
+            IMongoClient mongoClient,
+            IOptions<MicroHelioDatabaseSettings> settings)
         {
             _reservationService = reservationService;
+            _transactionService = transactionService;
             var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _slots = database.GetCollection<EnergyBookingSlot>(settings.Value.EnergyBookingSlotsCollectionName);
             _nodesCollection = database.GetCollection<MicrogridNode>("MICROGRID_NODE");
@@ -221,6 +227,18 @@ namespace MicroHelio.Controllers
         {
             var results = await _reservationService.SearchReservationsAsync(nodeId, date, status, nic);
             return Ok(results);
+        }
+
+        [HttpPost("{id}/generate-qr")]
+        public async Task<IActionResult> GenerateQr(string id)
+        {
+            var qrData = await _transactionService.GenerateQrPayloadAsync(id);
+            if (qrData == null)
+            {
+                return BadRequest("Cannot generate QR. Reservation not found or not in 'Approved' status.");
+            }
+
+            return Ok(new { message = "QR Payload generated successfully.", payload = qrData });
         }
     }
 }
