@@ -48,3 +48,4 @@ mobile-app/app/google-services.json
 # General
 .DS_Store
 *.log 
+.vscode/
