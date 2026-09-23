@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+    <!-- Outer circle background -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,20m-19,0a19,19 0,1 1,38 0a19,19 0,1 1,-38 0" />
+    <!-- Circle border -->
+    <path
+        android:fillColor="#52B788"
+        android:pathData="M20,20m-20,0a20,20 0,1 1,40 0a20,20 0,1 1,-40 0M20,20m-19,0a19,19 0,1 0,38 0a19,19 0,1 0,-38 0" />
+    <!-- Head (circle) -->
+    <path
+        android:fillColor="#2D6A4F"
+        android:pathData="M20,12m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+    <!-- Body (torso shape clipped by outer circle) -->
+    <path
+        android:fillColor="#2D6A4F"
+        android:pathData="M20,20 C13,20 8,25 8,31 L8,39 Q14,41 20,41 Q26,41 32,39 L32,31 C32,25 27,20 20,20 Z" />
+</vector>

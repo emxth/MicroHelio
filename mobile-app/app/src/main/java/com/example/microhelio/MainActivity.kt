@@ -16,9 +16,9 @@ class MainActivity : AppCompatActivity() {
         if (sessionManager.isSessionValid()) {
             val session = sessionManager.getSession()
             if (session?.role == "GridOperator") {
-                startActivity(Intent(this, DashboardActivity::class.java))
+                startActivity(Intent(this, GridOperatorDashboardActivity::class.java))
             } else if (session?.role == "Prosumer") {
-                startActivity(Intent(this, ProsumerProfileActivity::class.java))
+                startActivity(Intent(this, DashboardActivity::class.java))
             } else {
                 sessionManager.clearSession()
                 startActivity(Intent(this, LoginActivity::class.java))

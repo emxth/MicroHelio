@@ -76,6 +76,16 @@ class SessionManager(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return session
     }
 
+    fun updateFullName(newName: String) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_FULL_NAME, newName)
+        }
+        // Since there is only one session row, we can just update without WHERE clause
+        db.update(TABLE_SESSION, values, null, null)
+        db.close()
+    }
+
     fun clearSession() {
         val db = this.writableDatabase
         db.execSQL("DELETE FROM $TABLE_SESSION")

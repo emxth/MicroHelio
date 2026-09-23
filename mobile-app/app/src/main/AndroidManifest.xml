@@ -41,6 +41,14 @@
             android:name=".ProsumerProfileActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GridOperatorDashboardActivity"
+            android:exported="false" />
+
         <!-- Component 3: Create Reservation Screen -->
         <activity
             android:name=".CreateReservationActivity"

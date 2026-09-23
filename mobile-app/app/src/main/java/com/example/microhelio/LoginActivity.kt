@@ -54,9 +54,9 @@ class LoginActivity : AppCompatActivity() {
                         sessionManager.saveSession(response.body()!!)
 
                         if (role == "GridOperator") {
-                            startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
+                            startActivity(Intent(this@LoginActivity, GridOperatorDashboardActivity::class.java))
                         } else if (role == "Prosumer") {
-                            startActivity(Intent(this@LoginActivity, ProsumerProfileActivity::class.java))
+                            startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
                         }
                         finish()
                     } else if (response.code() == 400 || response.code() == 401) {
