@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="deep_canopy_green">#2D6A4F</color>
+    <color name="vibrant_leaf_green">#52B788</color>
+    <color name="soft_sunlight">#E9C46A</color>
+    <color name="dark_pine">#1B2621</color>
+    <color name="moss_gray">#748C7E</color>
+    <color name="eco_off_white">#F7FAF7</color>
+    <color name="pure_white">#FFFFFF</color>
 </resources>

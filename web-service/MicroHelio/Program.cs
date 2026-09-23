@@ -57,14 +57,19 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Add the TransactionService to the DI container
+// Component 4 (Transactions)
 builder.Services.AddScoped<TransactionService>();
 
+// Component 3 (Reservations)
+builder.Services.AddScoped<ReservationService>();
+
+// Component 1 (Auth & Users)
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ProsumerService>();
 builder.Services.AddScoped<JwtTokenService>();
 builder.Services.AddScoped<AuthService>();
 
+// Authentication Middleware 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -96,7 +101,6 @@ app.UseHttpsRedirection();
 app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
@@ -120,7 +124,5 @@ app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
         return Results.Problem($"Database connection failed: {ex.Message}");
     }
 });
-
-
 
 app.Run();

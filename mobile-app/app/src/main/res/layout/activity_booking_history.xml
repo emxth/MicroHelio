@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/eco_off_white">
+
+    <!-- Top Header Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/deep_canopy_green"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Booking History &amp; Search"
+            android:textColor="@color/pure_white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter past and active reservations"
+            android:textColor="@color/soft_sunlight"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"/>
+    </LinearLayout>
+
+    <!-- Search & Filter Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@color/pure_white"
+        android:elevation="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical">
+
+            <!-- Status Dropdown Spinner -->
+            <Spinner
+                android:id="@+id/spinnerFilterStatus"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@android:drawable/btn_dropdown"
+                android:layout_marginEnd="6dp"/>
+
+            <!-- Date Picker EditText -->
+            <EditText
+                android:id="@+id/etFilterDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Select Date"
+                android:textSize="13sp"
+                android:focusable="false"
+                android:clickable="true"
+                android:layout_marginStart="6dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Search / Refresh History"
+            android:backgroundTint="@color/deep_canopy_green"
+            android:textColor="@color/pure_white"
+            app:cornerRadius="8dp"/>
+    </LinearLayout>
+
+    <!-- RecyclerView List Container (Takes remaining height via weight) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHistoryList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp"
+        android:clipToPadding="false"/>
+
+    <!-- Shared Bottom Navigation Bar (Pinned at bottom) -->
+    <include layout="@layout/layout_bottom_nav" />
+
+</LinearLayout>
