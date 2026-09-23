@@ -1,5 +1,5 @@
 /*
- * Author: Ashwin
+ * Author: Arshvinth S
  * Purpose: RecyclerView adapter for displaying energy reservations in lists.
  */
 
@@ -17,6 +17,7 @@ import org.json.JSONObject
 class ReservationAdapter(private val reservations: List<JSONObject>) :
     RecyclerView.Adapter<ReservationAdapter.ViewHolder>() {
 
+    // Cache list item view references
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvCode: TextView = view.findViewById(R.id.tvReservationCode)
         val tvStatus: TextView = view.findViewById(R.id.tvStatusBadge)
@@ -26,6 +27,7 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        // Inflate card layout for each row
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_reservation, parent, false)
         return ViewHolder(view)
@@ -38,6 +40,7 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
         val status = res.optString("status", "Unknown")
         holder.tvStatus.text = status
 
+        // Color code status badge based on booking state
         when (status) {
             "Approved" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#52B788"))
             "Pending" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#E9C46A"))
@@ -45,8 +48,12 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
             else -> holder.tvStatus.setBackgroundColor(Color.parseColor("#748C7E"))
         }
 
-        holder.tvNodeAndType.text = "Node ID: ${res.optString("nodeId")} | Type: ${res.optString("reservationType")}"
+        // Display readable microgrid details instead of raw ID
+        val nodeName = res.optString("nodeName", res.optString("nodeCode", "Microgrid Node"))
+        val resType = res.optString("reservationType", "DropOff")
+        holder.tvNodeAndType.text = "$nodeName | Type: $resType"
 
+        // Format date string and display times
         val rawDate = res.optString("scheduledDate").split("T")[0]
         holder.tvDateTime.text = "Date: $rawDate | ${res.optString("scheduledStartTime")} - ${res.optString("scheduledEndTime")}"
 
@@ -55,9 +62,10 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
         // TAP TO EDIT/MANAGE BOOKING
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
-            // Extract the MongoDB _id string (handles both "id" and "$oid" formats)
+            // Extract MongoDB ID safely
             val resId = res.optString("id", res.optString("_id"))
 
+            // Launch update screen passing the selected booking ID
             val intent = Intent(context, UpdateReservationActivity::class.java).apply {
                 putExtra("RESERVATION_ID", resId)
             }

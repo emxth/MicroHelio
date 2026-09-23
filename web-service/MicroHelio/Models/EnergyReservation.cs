@@ -69,5 +69,10 @@ namespace MicroHelio.Models
 
         [BsonElement("updatedAt")]
         public DateTime UpdatedAt { get; set; }
+        [BsonIgnore]
+        public string NodeCode { get; set; } = string.Empty;
+
+        [BsonIgnore]
+        public string NodeName { get; set; } = string.Empty;
     }
 }

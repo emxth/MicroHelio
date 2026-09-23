@@ -11,6 +11,32 @@ web-app/react-app/node_modules/
 web-app/react-app/dist/
 web-app/react-app/.vite/
 web-app/react-app/npm-debug.log*
+web-app/npm-debug.log*
+web-app/yarn-error.log*
+web-app/yarn-debug.log*
+
+# Build outputs
+web-app/dist/
+web-app/build/
+web-app/.cache/
+
+# OS-generated files
+web-app/.DS_Store
+web-app/.DS_Store?
+web-app/._*
+web-app/.Spotlight-V100
+web-app/.Trashes
+web-app/ehthumbs.db
+web-app/Thumbs.db
+
+# IDEs and Editors
+web-app/.vscode/
+web-app/.idea/
+web-app/*.suo
+web-app/*.ntvs*
+web-app/*.njsproj
+web-app/*.sln
+web-app/*.sw?
 
 # Android
 mobile-app/.idea/

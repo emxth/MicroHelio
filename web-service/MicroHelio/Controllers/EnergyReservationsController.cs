@@ -18,14 +18,22 @@ namespace MicroHelio.Controllers
     public class EnergyReservationsController : ControllerBase
     {
         private readonly ReservationService _reservationService;
+        private readonly TransactionService _transactionService;
         private readonly IMongoCollection<EnergyBookingSlot> _slots;
+        private readonly IMongoCollection<MicrogridNode> _nodesCollection;
 
-        // Injects the service layer for reservation logic
-        public EnergyReservationsController(ReservationService reservationService, IMongoClient mongoClient, IOptions<MicroHelioDatabaseSettings> settings)
+        // Injects the service layer and MongoDB collections for reservation and node logic
+        public EnergyReservationsController(
+            ReservationService reservationService,
+            TransactionService transactionService,
+            IMongoClient mongoClient,
+            IOptions<MicroHelioDatabaseSettings> settings)
         {
             _reservationService = reservationService;
+            _transactionService = transactionService;
             var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _slots = database.GetCollection<EnergyBookingSlot>(settings.Value.EnergyBookingSlotsCollectionName);
+            _nodesCollection = database.GetCollection<MicrogridNode>("MICROGRID_NODE");
         }
 
         // POST /api/reservations - Creates a new reservation
@@ -36,11 +44,13 @@ namespace MicroHelio.Controllers
         {
             try
             {
+                // Process booking request and save to database
                 var reservation = await _reservationService.CreateReservationAsync(dto);
                 return CreatedAtAction(nameof(GetReservationById), new { id = reservation.Id }, reservation);
             }
             catch (InvalidOperationException ex)
             {
+                // Handle capacity or validation failures
                 return BadRequest(new { error = ex.Message });
             }
         }
@@ -52,6 +62,7 @@ namespace MicroHelio.Controllers
         {
             try
             {
+                // Update booking slot and adjust capacity metrics
                 await _reservationService.UpdateReservationAsync(id, dto);
                 return NoContent();
             }
@@ -72,6 +83,7 @@ namespace MicroHelio.Controllers
         {
             try
             {
+                // Cancel booking and restore slot capacity
                 await _reservationService.CancelReservationAsync(id, reason);
                 return NoContent();
             }
@@ -85,29 +97,30 @@ namespace MicroHelio.Controllers
             }
         }
 
-        // GET /api/nodes - Returns available microgrid nodes for dropdowns
+        // GET /api/nodes - Returns real microgrid nodes from MongoDB for dropdowns
         [HttpGet("/api/nodes")]
         public async Task<IActionResult> GetNodes()
         {
-            var nodeIds = await _slots.Find(_ => true)
-                .Project(s => s.NodeId)
-                .ToListAsync();
+            // Fetch active nodes from MongoDB collection
+            var nodes = await _nodesCollection.Find(n => n.IsActive).ToListAsync();
 
-            var uniqueNodeIds = nodeIds
-                .Where(id => !string.IsNullOrWhiteSpace(id))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .OrderBy(id => id)
-                .ToList();
-
-            var nodes = uniqueNodeIds.Select((nodeId, index) => new
+            // Fallback if active filter returns empty list
+            if (!nodes.Any())
             {
-                id = nodeId,
-                _id = nodeId,
-                nodeCode = $"NODE-{nodeId.Substring(0, Math.Min(6, nodeId.Length)).ToUpperInvariant()}",
-                name = $"Microgrid Node {index + 1}"
+                nodes = await _nodesCollection.Find(_ => true).ToListAsync();
+            }
+
+            // Map database models to clean response DTOs
+            var payload = nodes.Select(n => new
+            {
+                id = n.Id,
+                _id = n.Id,
+                nodeCode = n.NodeCode,
+                name = n.Name,
+                address = n.Address
             }).ToList();
 
-            return Ok(nodes);
+            return Ok(payload);
         }
 
         // GET /api/slots?nodeId={id} - Returns booking slots for a selected node
@@ -117,6 +130,7 @@ namespace MicroHelio.Controllers
             if (string.IsNullOrWhiteSpace(nodeId))
                 return BadRequest("nodeId is required.");
 
+            // Query slots filtered by node ID and sorted by date/time
             var slots = await _slots.Find(s => s.NodeId == nodeId)
                 .SortBy(s => s.SlotDate)
                 .ThenBy(s => s.SlotStartTime)
@@ -213,6 +227,18 @@ namespace MicroHelio.Controllers
         {
             var results = await _reservationService.SearchReservationsAsync(nodeId, date, status, nic);
             return Ok(results);
+        }
+
+        [HttpPost("{id}/generate-qr")]
+        public async Task<IActionResult> GenerateQr(string id)
+        {
+            var qrData = await _transactionService.GenerateQrPayloadAsync(id);
+            if (qrData == null)
+            {
+                return BadRequest("Cannot generate QR. Reservation not found or not in 'Approved' status.");
+            }
+
+            return Ok(new { message = "QR Payload generated successfully.", payload = qrData });
         }
     }
 }
