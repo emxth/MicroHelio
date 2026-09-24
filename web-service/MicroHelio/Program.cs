@@ -27,6 +27,17 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 builder.Services.AddControllers();
+// Randiv Vite URL: http://localhost:5173
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -99,6 +110,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowReactApp");
 
 app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
 

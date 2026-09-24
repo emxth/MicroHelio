@@ -23,7 +23,7 @@ export default function Landing() {
           </div>
           <Link to="/login"
             className="px-4 py-2 text-sm font-semibold transition-opacity rounded-lg bg-accent text-text-dark hover:opacity-90">
-            Sign in →
+            Sign in
           </Link>
         </div>
       </nav>
@@ -32,10 +32,6 @@ export default function Landing() {
       <section className="relative px-6 pt-32 pb-24 overflow-hidden"
         style={{ background: 'linear-gradient(135deg,#1B2621 0%,#2D6A4F 50%,#3a8a68 100%)' }}>
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-green-200 text-sm font-medium mb-6">
-            <span className="inline-block w-2 h-2 rounded-full bg-secondary" />
-            SE4040 Enterprise Application Development
-          </div>
           <h1 className="mb-5 text-5xl font-bold leading-tight">
             Smart Solar<br />
             <span className="text-accent">Microgrid Trading</span><br />
@@ -48,13 +44,13 @@ export default function Landing() {
           <div className="flex flex-wrap justify-center gap-3">
             <Link to="/login"
               className="px-6 py-3 text-base font-semibold transition-opacity rounded-xl bg-accent text-text-dark hover:opacity-90">
-              Access Platform →
+              Access Platform
             </Link>
           </div>
 
           {/* Stats */}
           <div className="flex flex-wrap justify-center gap-10 pt-10 border-t mt-14 border-white/20">
-            {[['3', 'User roles'], ['QR', 'Secure transfers'], ['GPS', 'Node mapping'], ['REST', 'API driven']].map(([v, l]) => (
+            {[['QR', 'Secure transfers'], ['GPS', 'Node mapping']].map(([v, l]) => (
               <div key={l} className="text-center">
                 <div className="text-2xl font-bold text-white">{v}</div>
                 <div className="text-sm text-green-200">{l}</div>
@@ -68,7 +64,6 @@ export default function Landing() {
       <section className="px-6 py-20 bg-surface">
         <div className="max-w-5xl mx-auto">
           <div className="mb-12 text-center">
-            <div className="mb-2 text-sm font-semibold tracking-widest uppercase text-secondary">Roles</div>
             <h2 className="text-3xl font-bold text-text-dark">Built for every stakeholder</h2>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -90,14 +85,13 @@ export default function Landing() {
         <div className="flex items-center justify-center mx-auto mb-4 w-14 h-14 rounded-2xl bg-accent">
           <SunIcon />
         </div>
-        <h2 className="mb-2 text-xl font-bold text-white">MicroHelio</h2>
-        <p className="mb-6 text-sm text-gray-400">SE4040 — Enterprise Application Development · SLIIT 2026</p>
+        <h2 className="mb-6 text-xl font-bold text-white">MicroHelio</h2>
         <Link to="/login"
           className="px-8 py-3 font-semibold rounded-xl bg-accent text-text-dark">
-          Sign in to platform →
+          Sign in to platform
         </Link>
         <div className="pt-6 mt-10 text-xs text-gray-600 border-t border-gray-800">
-          Dewmi · Sewwandi · Ashwin · Randiv — SLIIT Faculty of Computing
+          Bits & Pieces - SLIIT Faculty of Computing
         </div>
       </footer>
     </div>
@@ -105,7 +99,7 @@ export default function Landing() {
 }
 
 const ROLES = [
-  { title: 'Backoffice', desc: 'Full system administration — users, prosumers, and grid infrastructure.', iconBg: 'bg-primary-light', icon: <ShieldIcon /> },
+  { title: 'Backoffice', desc: 'Full system administration - users, prosumers, and grid infrastructure.', iconBg: 'bg-primary-light', icon: <ShieldIcon /> },
   { title: 'Grid Operator', desc: 'Approve bookings, scan QR codes, confirm energy transfers on-site.', iconBg: 'bg-success-light', icon: <BoltIcon /> },
   { title: 'Prosumer', desc: 'Reserve energy slots, manage bookings, view nearby nodes via mobile app.', iconBg: 'bg-accent-light', icon: <HomeIcon /> },
 ];
