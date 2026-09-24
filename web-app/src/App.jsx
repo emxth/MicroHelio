@@ -30,8 +30,8 @@ import Login from './pages/auth/Login';
 // import ReservationDetail from './pages/reservations/ReservationDetail';
 // import PendingBookings from './pages/reservations/PendingBookings';
 
-// // Transactions
-// import TransactionList from './pages/transactions/TransactionList';
+// Transactions
+import TransactionList from './pages/transactions/TransactionList';
 // import TransactionDetail from './pages/transactions/TransactionDetail';
 
 export default function App() {
@@ -54,6 +54,7 @@ export default function App() {
           </Route> */}
 
           {/* Both roles */}
+          <Route path="/transactions" element={<TransactionList />} />
           {/* <Route path="/prosumers" element={<ProsumerList />} />
           <Route path="/prosumers/:nic" element={<ProsumerDetail />} />
 
