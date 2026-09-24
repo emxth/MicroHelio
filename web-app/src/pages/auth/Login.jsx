@@ -42,7 +42,7 @@ export default function Login() {
         </Link>
         <div>
           <h2 className="mb-4 text-3xl font-bold leading-tight">Solar energy trading,<br />intelligently managed.</h2>
-          <p className="mb-8 leading-relaxed text-green-200">Manage prosumers, grid nodes, reservations and energy transfers — all from one secure platform.</p>
+          <p className="mb-8 leading-relaxed text-green-200">Manage prosumers, grid nodes, reservations and energy transfers - all from one secure platform.</p>
           {['Role-based access control', 'Secure QR energy transfer verification', 'Real-time booking and reservation management'].map(t => (
             <div key={t} className="flex items-center gap-3 mb-3 text-sm text-green-100">
               <div className="flex items-center justify-center flex-shrink-0 w-5 h-5 rounded-full bg-secondary">
@@ -52,7 +52,6 @@ export default function Login() {
             </div>
           ))}
         </div>
-        <p className="text-xs text-green-300">SE4040 Enterprise Application Development · SLIIT 2026</p>
       </div>
 
       {/* Right panel - form */}
@@ -69,18 +68,22 @@ export default function Login() {
           <ErrorBanner message={error} />
 
           <form onSubmit={handleSubmit} noValidate>
-            <div className="mb-5">
+            <div className="flex flex-col gap-1.5 mb-5">
               <label className="form-label">Email address</label>
               <input type="email" value={form.email}
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                className="form-input" placeholder="operator@microhelio.com" required />
+                className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
+                placeholder="operator@microhelio.com" required />
             </div>
-            <div className="mb-6">
-              <label className="form-label">Password</label>
-              <div className="relative">
+            
+            <div className="flex flex-col gap-1.5 mb-6">
+              <label className="block form-label">Password</label>
+              <div className="relative w-full">
                 <input type={showPw ? 'text' : 'password'} value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  className="pr-10 form-input" placeholder="••••••••" required />
+                  className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
+                  placeholder="••••••••" required />
+                
                 <button type="button" onClick={() => setShowPw(p => !p)}
                   className="absolute -translate-y-1/2 right-3 top-1/2 text-text-muted hover:text-text-dark">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
