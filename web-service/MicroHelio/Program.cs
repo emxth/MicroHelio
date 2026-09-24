@@ -27,15 +27,14 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 builder.Services.AddControllers();
-// Randiv Vite URL: http://localhost:5173
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.AllowAnyOrigin() // Temp
               .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+              .AllowAnyMethod(); // Temp
     });
 });
 
