@@ -33,6 +33,7 @@ import Login from './pages/auth/Login';
 // Transactions
 import TransactionList from './pages/transactions/TransactionList';
 import TransactionDetail from './pages/transactions/TransactionDetail';
+import OperatorDashboard from './pages/transactions/OperatorDashboard';
 
 export default function App() {
   return (
@@ -72,7 +73,7 @@ export default function App() {
 
           <Route path="/transactions" element={<TransactionList />} />
           <Route path="/transactions/:id" element={<TransactionDetail />} />
-
+          <Route path="/operator-dashboard" element={<OperatorDashboard />} />
           {/* Default redirect */}
           {/* <Route path="*" element={<Navigate to="/transactions" replace />} /> */}
         </Route>
