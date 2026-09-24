@@ -43,7 +43,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
 
       {/* Authenticated — all inside AppLayout */}
-      <Route element={<ProtectedRoute />}>
+      <Route element={<ProtectedRoute roles={['Backoffice', 'GridOperator']} />}>
         <Route element={<AppLayout />}>
 
           {/* Backoffice only */}

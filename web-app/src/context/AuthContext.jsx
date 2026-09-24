@@ -5,23 +5,31 @@ const SESSION_KEY = 'microhelio_session';
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(() => {
-    try { const s = JSON.parse(localStorage.getItem(SESSION_KEY)); if (s) return s; }
-    // eslint-disable-next-line no-empty
-    catch { } return { token: "DUMMY", role: "Backoffice", fullName: "Randiv", email: "randiv@gmail.com" };
+    try {
+      const stored = JSON.parse(localStorage.getItem(SESSION_KEY));
+      const expiresAt = stored?.expiresAtUtc && Date.parse(stored.expiresAtUtc);
 
-    // TODO: Temporary
-    // try { return JSON.parse(localStorage.getItem(SESSION_KEY)); }
-    // catch { return null; }
+      if (!stored?.token || !stored?.role || !Number.isFinite(expiresAt) || expiresAt <= Date.now()) {
+        localStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+
+      return stored;
+    } catch {
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
   });
 
   /** Call after a successful API login. Persists session to localStorage. */
   const login = useCallback((data) => {
     const s = {
       token: data.token,
+      expiresAtUtc: data.expiresAtUtc,
+      accountId: data.accountId,
+      accountIdentifier: data.accountIdentifier,
       role: data.role,
-      userId: data.userId,
       fullName: data.fullName,
-      email: data.email,
     };
     localStorage.setItem(SESSION_KEY, JSON.stringify(s));
     setSession(s);
