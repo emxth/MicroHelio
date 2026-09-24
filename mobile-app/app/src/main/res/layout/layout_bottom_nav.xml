@@ -6,7 +6,7 @@
     android:background="@color/pure_white"
     android:elevation="8dp"
     android:gravity="center_vertical"
-    android:weightSum="3">
+    android:weightSum="4">
 
     <Button
         android:id="@+id/navDashboard"
@@ -14,7 +14,18 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="Dashboard"
-        android:textSize="12sp"
+        android:textSize="11sp"
+        android:backgroundTint="@android:color/transparent"
+        android:textColor="@color/deep_canopy_green"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/navNodes"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="Nodes"
+        android:textSize="11sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
@@ -25,7 +36,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="New Booking"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
@@ -36,7 +47,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="History"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>

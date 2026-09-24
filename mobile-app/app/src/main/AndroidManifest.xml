@@ -37,9 +37,19 @@
             android:name=".UpdateReservationActivity"
             android:exported="false" />
 
-<!--        &lt;!&ndash; Component 3: Booking History & Search Screen &ndash;&gt;-->
+        <!-- Component 3: Booking History & Search Screen -->
         <activity
             android:name=".BookingHistoryActivity"
+            android:exported="false" />
+
+        <!-- Component 2: Microgrid Node List Screen -->
+        <activity
+            android:name=".NodeListActivity"
+            android:exported="false" />
+
+        <!-- Component 2: Microgrid Node Details Screen -->
+        <activity
+            android:name=".NodeDetailsActivity"
             android:exported="false" />
 
     </application>

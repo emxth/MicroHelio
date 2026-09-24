@@ -79,6 +79,14 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
 
+        // Navigate to Microgrid Node List if not already on it
+        findViewById<View>(R.id.navNodes)?.setOnClickListener {
+            if (javaClass != NodeListActivity::class.java) {
+                startActivity(Intent(this, NodeListActivity::class.java))
+                finish()
+            }
+        }
+
         // Navigate to Create Reservation if not already on it
         findViewById<View>(R.id.navCreate)?.setOnClickListener {
             if (javaClass != CreateReservationActivity::class.java) {
