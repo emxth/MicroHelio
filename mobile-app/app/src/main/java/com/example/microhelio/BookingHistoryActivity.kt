@@ -34,7 +34,7 @@ class BookingHistoryActivity : AppCompatActivity() {
     private lateinit var rvHistoryList: RecyclerView
 
     private val baseUrl = "http://localhost:5056/api"
-    private val prosumerNic = "981234567V"
+    private var nic: String = ""
 
     private val statusOptions = arrayOf("All Statuses", "Pending", "Approved", "Cancelled")
     private var selectedStatusFilter: String? = null
@@ -50,6 +50,10 @@ class BookingHistoryActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.btnSearch)
         rvHistoryList = findViewById(R.id.rvHistoryList)
         rvHistoryList.layoutManager = LinearLayoutManager(this)
+
+        // Load NIC from session
+        val session = SessionManager(this).getSession()
+        nic = session?.accountIdentifier ?: ""
 
         // Setup status dropdown spinner
         setupStatusSpinner()
@@ -129,7 +133,7 @@ class BookingHistoryActivity : AppCompatActivity() {
         // Query server for bookings using background thread
         thread {
             try {
-                val urlString = java.lang.StringBuilder("$baseUrl/reservations/search?nic=$prosumerNic")
+                val urlString = java.lang.StringBuilder("$baseUrl/reservations/search?nic=$nic")
                 if (!status.isNullOrEmpty()) urlString.append("&status=$status")
                 if (!date.isNullOrEmpty()) urlString.append("&date=$date")
 
