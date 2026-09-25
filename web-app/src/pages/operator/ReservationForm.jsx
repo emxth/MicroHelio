@@ -28,8 +28,8 @@ export default function ReservationForm() {
   const [nodes, setNodes] = useState([]);
   const [slots, setSlots] = useState([]);
   const [originalReservation, setOriginalReservation] = useState(null);
-  
-  const [loading, setLoading] = useState(isEditMode); // True initially if editing
+  // True initially if editing
+  const [loading, setLoading] = useState(isEditMode); 
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -71,7 +71,7 @@ export default function ReservationForm() {
 
     const fetchInitialData = async () => {
       await fetchNodes();
-      
+      // If editing, load the reservation details and its original slot.
       if (isEditMode) {
         try {
           const res = await fetch(`${baseUrl}/reservations/${id}`);
@@ -121,7 +121,7 @@ export default function ReservationForm() {
       showToast('Network error while loading slots.', 'error');
     }
   };
-
+  
   const handleNodeChange = (e) => {
     const selectedNodeId = e.target.value;
     setFormData((prev) => ({ ...prev, nodeId: selectedNodeId, slotId: '' }));

@@ -24,7 +24,7 @@ export default function PendingApprovals() {
   const { session } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState(null); // { message: string, type: 'success' | 'error' }
+  const [toast, setToast] = useState(null);  
   const [processingId, setProcessingId] = useState(null);
 
   useEffect(() => {
