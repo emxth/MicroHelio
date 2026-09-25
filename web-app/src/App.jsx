@@ -1,7 +1,8 @@
-import { Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import FloatingOperatorNav from './components/layout/FloatingOperatorNav';
 
 // Public
 import Landing from './pages/Landing';
@@ -34,50 +35,65 @@ import Login from './pages/auth/Login';
 import TransactionList from './pages/transactions/TransactionList';
 // import TransactionDetail from './pages/transactions/TransactionDetail';
 
+// Grid Operator
+import PendingApprovals from './pages/operator/PendingApprovals';
+import ReservationSearch from './pages/operator/ReservationSearch';
+import ReservationForm from './pages/operator/ReservationForm';
+import UpdateReservationForm from './pages/operator/UpdateReservationForm';
+
 export default function App() {
   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
+    <>
+      <FloatingOperatorNav />
+      <Routes>
+        {/* Public */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
 
-      {/* Authenticated — all inside AppLayout */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
+        {/* TEMP: Public for development */}
+        <Route path="/operator/pending-approvals" element={<PendingApprovals />} />
+        <Route path="/operator/reservation-search" element={<ReservationSearch />} />
+        <Route path="/operator/reservations/new" element={<ReservationForm />} />
+        <Route path="/operator/reservations/:id/edit" element={<UpdateReservationForm />} />
 
-          {/* Backoffice only */}
-          {/* <Route element={<ProtectedRoute roles={['Backoffice']} />}>
-            <Route path="/users" element={<UserList />} />
-            <Route path="/users/new" element={<UserForm />} />
-            <Route path="/users/:id/edit" element={<UserForm />} />
-            <Route path="/pending-activations" element={<PendingActivations />} />
-          </Route> */}
+        {/* Authenticated — all inside AppLayout */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
 
-          {/* Both roles */}
-          <Route path="/transactions" element={<TransactionList />} />
-          {/* <Route path="/prosumers" element={<ProsumerList />} />
-          <Route path="/prosumers/:nic" element={<ProsumerDetail />} />
+            {/* Backoffice only */}
+            {/* <Route element={<ProtectedRoute roles={['Backoffice']} />}>
+              <Route path="/users" element={<UserList />} />
+              <Route path="/users/new" element={<UserForm />} />
+              <Route path="/users/:id/edit" element={<UserForm />} />
+              <Route path="/pending-activations" element={<PendingActivations />} />
+            </Route> */}
 
-          <Route path="/nodes" element={<NodeList />} />
-          <Route path="/nodes/new" element={<NodeForm />} />
-          <Route path="/nodes/:id" element={<NodeDetail />} />
-          <Route path="/nodes/:id/edit" element={<NodeForm />} />
+            {/* Both roles */}
+            <Route path="/transactions" element={<TransactionList />} />
+            {/* <Route path="/prosumers" element={<ProsumerList />} />
+            <Route path="/prosumers/:nic" element={<ProsumerDetail />} />
 
-          <Route path="/slots" element={<SlotList />} />
-          <Route path="/slots/new" element={<SlotForm />} />
-          <Route path="/slots/:id/edit" element={<SlotForm />} />
+            <Route path="/nodes" element={<NodeList />} />
+            <Route path="/nodes/new" element={<NodeForm />} />
+            <Route path="/nodes/:id" element={<NodeDetail />} />
+            <Route path="/nodes/:id/edit" element={<NodeForm />} />
 
-          <Route path="/reservations" element={<ReservationList />} />
-          <Route path="/reservations/:id" element={<ReservationDetail />} />
-          <Route path="/pending-bookings" element={<PendingBookings />} />
+            <Route path="/slots" element={<SlotList />} />
+            <Route path="/slots/new" element={<SlotForm />} />
+            <Route path="/slots/:id/edit" element={<SlotForm />} />
 
-          <Route path="/transactions" element={<TransactionList />} />
-          <Route path="/transactions/:id" element={<TransactionDetail />} /> */}
+            <Route path="/reservations" element={<ReservationList />} />
+            <Route path="/reservations/:id" element={<ReservationDetail />} />
+            <Route path="/pending-bookings" element={<PendingBookings />} />
 
-          {/* Default redirect */}
-          {/* <Route path="*" element={<Navigate to="/transactions" replace />} /> */}
+            <Route path="/transactions" element={<TransactionList />} />
+            <Route path="/transactions/:id" element={<TransactionDetail />} /> */}
+
+            {/* Default redirect */}
+            {/* <Route path="*" element={<Navigate to="/transactions" replace />} /> */}
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </>
   );
 }
