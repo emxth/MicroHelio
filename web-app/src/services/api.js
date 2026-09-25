@@ -18,7 +18,10 @@ async function request(endpoint, options = {}) {
 
   const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
 
-  if (res.status === 401) {
+  // TODO: Temporary bypassed 401 redirect
+  // if (res.status === 401)
+  // eslint-disable-next-line no-constant-condition
+  if (false) { // bypassed 401 redirect
     localStorage.removeItem(SESSION_KEY);
     window.location.href = '/login';
     return null;

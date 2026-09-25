@@ -33,7 +33,8 @@ import Login from './pages/auth/Login';
 
 // Transactions
 import TransactionList from './pages/transactions/TransactionList';
-// import TransactionDetail from './pages/transactions/TransactionDetail';
+import TransactionDetail from './pages/transactions/TransactionDetail';
+import OperatorDashboard from './pages/transactions/OperatorDashboard';
 
 // Grid Operator
 import PendingApprovals from './pages/operator/PendingApprovals';
@@ -60,13 +61,9 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
 
-            {/* Backoffice only */}
-            {/* <Route element={<ProtectedRoute roles={['Backoffice']} />}>
-              <Route path="/users" element={<UserList />} />
-              <Route path="/users/new" element={<UserForm />} />
-              <Route path="/users/:id/edit" element={<UserForm />} />
-              <Route path="/pending-activations" element={<PendingActivations />} />
-            </Route> */}
+          {/* Both roles */}
+          {/* <Route path="/prosumers" element={<ProsumerList />} />
+          <Route path="/prosumers/:nic" element={<ProsumerDetail />} />
 
             {/* Both roles */}
             <Route path="/transactions" element={<TransactionList />} />

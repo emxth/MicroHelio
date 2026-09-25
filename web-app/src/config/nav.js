@@ -30,6 +30,7 @@ export const NAV_CONFIG = [
     category: 'Transactions',
     items: [
       { label: 'Transaction History', path: '/transactions', roles: ['Backoffice', 'GridOperator'] },
+      { label: 'Operator Dashboard', path: '/operator-dashboard', roles: ['Backoffice', 'GridOperator'] },
     ],
   },
 ];

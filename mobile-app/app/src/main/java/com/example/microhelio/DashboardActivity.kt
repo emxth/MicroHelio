@@ -25,10 +25,11 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tvPendingCount: TextView
     private lateinit var tvApprovedCount: TextView
     private lateinit var tvUpcomingCount: TextView
+    private lateinit var tvWelcomeName: TextView
     private lateinit var tvWelcomeNic: TextView
     private lateinit var rvBookings: RecyclerView
 
-    private val baseUrl = "http://localhost:5056/api"
+    private val baseUrl = "http://10.0.2.2:5056/api"
     private val prosumerNic = "981234567V"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,14 +41,22 @@ class DashboardActivity : AppCompatActivity() {
         tvApprovedCount = findViewById(R.id.tvApprovedCount)
         tvUpcomingCount = findViewById(R.id.tvUpcomingCount)
         tvWelcomeNic = findViewById(R.id.tvWelcomeNic)
+        tvWelcomeName = findViewById(R.id.tvWelcomeName)
         rvBookings = findViewById(R.id.rvBookings)
 
         rvBookings.layoutManager = LinearLayoutManager(this)
-        tvWelcomeNic.text = "Prosumer NIC: $prosumerNic"
+
+        // Load name and NIC from saved session instead of hardcoded value
+        val sessionManager = SessionManager(this)
+        val session = sessionManager.getSession()
+        val nic = session?.accountIdentifier ?: prosumerNic
+        val name = session?.fullName ?: ""
+        tvWelcomeName.text = if (name.isNotBlank()) "Welcome, $name" else "Welcome!"
+        tvWelcomeNic.text = "NIC: $nic"
 
         // Fetch metrics and active bookings on startup
-        fetchDashboardData()
-        fetchApprovedActiveBookings()
+        fetchDashboardData(nic)
+        fetchApprovedActiveBookings(nic)
 
         // Button to open reservation creation form
         findViewById<Button>(R.id.btnCreateReservation).setOnClickListener {
@@ -61,13 +70,20 @@ class DashboardActivity : AppCompatActivity() {
 
         // Initialize bottom navigation bar actions here
         setupBottomNav()
+
+        // Profile icon click listener
+        findViewById<android.widget.ImageView>(R.id.ivProfileIcon).setOnClickListener {
+            startActivity(Intent(this, ProsumerProfileActivity::class.java))
+        }
     }
 
     override fun onResume() {
         super.onResume()
         // Refresh dashboard counts and active bookings whenever returning to the screen
-        fetchDashboardData()
-        fetchApprovedActiveBookings()
+        val session = SessionManager(this).getSession()
+        val nic = session?.accountIdentifier ?: prosumerNic
+        fetchDashboardData(nic)
+        fetchApprovedActiveBookings(nic)
     }
 
     private fun setupBottomNav() {
@@ -96,11 +112,11 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchDashboardData() {
+    private fun fetchDashboardData(nic: String) {
         // Fetch dashboard counts in background thread
         thread {
             try {
-                val url = URL("$baseUrl/reservations/dashboard?prosumerNic=$prosumerNic")
+                val url = URL("$baseUrl/reservations/dashboard?prosumerNic=$nic")
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("Accept", "application/json")
@@ -133,11 +149,11 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchApprovedActiveBookings() {
+    private fun fetchApprovedActiveBookings(nic: String) {
         // Fetch prosumer bookings and filter for approved upcoming sessions
         thread {
             try {
-                val url = URL("$baseUrl/reservations?prosumerNic=$prosumerNic")
+                val url = URL("$baseUrl/reservations?prosumerNic=$nic")
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
                 connection.setRequestProperty("Accept", "application/json")

@@ -5,8 +5,13 @@ const SESSION_KEY = 'microhelio_session';
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(SESSION_KEY)); }
-    catch { return null; }
+    try { const s = JSON.parse(localStorage.getItem(SESSION_KEY)); if (s) return s; }
+    // eslint-disable-next-line no-empty
+    catch { } return { token: "DUMMY", role: "Backoffice", fullName: "Randiv", email: "randiv@gmail.com" };
+
+    // TODO: Temporary
+    // try { return JSON.parse(localStorage.getItem(SESSION_KEY)); }
+    // catch { return null; }
   });
 
   /** Call after a successful API login. Persists session to localStorage. */
