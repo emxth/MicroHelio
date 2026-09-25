@@ -7,7 +7,7 @@ import { ErrorBanner, Spinner } from '../../components/ui/index';
 export default function Login() {
   const { session, login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ identifier: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
@@ -18,7 +18,7 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.email || !form.password) { setError('Please enter your email and password.'); return; }
+    if (!form.identifier || !form.password) { setError('Please enter your email and password.'); return; }
     setError(''); setLoading(true);
     try {
       const data = await api.post('/auth/login', form);
@@ -70,8 +70,8 @@ export default function Login() {
           <form onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col gap-1.5 mb-5">
               <label className="form-label">Email address</label>
-              <input type="email" value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+              <input type="email" value={form.identifier}
+                onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
                 className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
                 placeholder="operator@microhelio.com" required />
             </div>
