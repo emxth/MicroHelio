@@ -14,6 +14,10 @@ web-service/**/*.user
 
 # Web App
 web-app/node_modules/
+web-app/react-app/node_modules/
+web-app/react-app/dist/
+web-app/react-app/.vite/
+web-app/react-app/npm-debug.log*
 web-app/npm-debug.log*
 web-app/yarn-error.log*
 web-app/yarn-debug.log*
@@ -42,6 +46,7 @@ web-app/*.sln
 web-app/*.sw?
 
 # Android
+mobile-app/.idea/
 mobile-app/.gradle/
 mobile-app/app/build/
 mobile-app/local.properties
@@ -50,3 +55,4 @@ mobile-app/app/google-services.json
 # General
 .DS_Store
 *.log 
+.vscode/

@@ -30,6 +30,16 @@ builder.Services.AddSingleton<IMongoClient>(_ =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.AllowAnyOrigin() // Temp
+              .AllowAnyHeader()
+              .AllowAnyMethod(); // Temp
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -101,6 +111,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowReactApp");
 
 app.UseMiddleware<MicroHelio.Middleware.GlobalExceptionHandlerMiddleware>();
 
