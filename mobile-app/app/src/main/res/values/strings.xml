@@ -21,4 +21,12 @@
     <string name="qrGenScreenHint">Show this QR code to the Grid Operator at the Microgrid Node station. The operator will scan this code to verify your reservation and initiate energy transfer.</string>
     <string name="btnRegenerateQr">Refresh QR Payload</string>
     <string name="btnDone">Back to Dashboard</string>
+
+    <!-- item_reservation screen -->
+    <string name="tvStatusBadge">Pending</string>
+    <string name="tvProsumerNic">Prosumer NIC: 981234567V</string>
+    <string name="tvNodeAndType">Node: Badulla Central | Type: DropOff</string>
+    <string name="tvDateTime">Date: 2026-09-24 | 14:00 - 15:00</string>
+    <string name="tvCapacity">Requested Capacity: 4.0 KWh</string>
+    <string name="btnViewQrCode">Show QR Code</string>
 </resources>
