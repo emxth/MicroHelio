@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">MicroHelio</string>
+
+    <!-- qr_code_generation screen -->
+    <string name="tvHmacBadge">Cryptographically Signed (HMAC-SHA256)</string>
+    <string name="bnBack">Back</string>
+    <string name="reservationQr">Reservation QR Code</string>
+    <string name="tvQrStatusBadge">Status: Approved</string>
+    <string name="ivQrCode">Reservation QR Code</string>
+    <string name="listResCode">Reservation Code:</string>
+    <string name="tvResCode">RES-1234ABCD</string>
+    <string name="listNic">Prosumer NIC:</string>
+    <string name="tvProsumerNicDetail">981234567V</string>
+    <string name="listNode">Microgrid Node:</string>
+    <string name="tvNodeDetail">Node #1</string>
+    <string name="listScheTime">Scheduled Time:</string>
+    <string name="tvScheduledTimeDetail">2026-09-24 | 14:00 - 15:00</string>
+    <string name="listCapacity">Capacity:</string>
+    <string name="tvCapacityDetail">4.0 KWh</string>
+    <string name="hintBulb">💡</string>
+    <string name="qrGenScreenHint">Show this QR code to the Grid Operator at the Microgrid Node station. The operator will scan this code to verify your reservation and initiate energy transfer.</string>
+    <string name="btnRegenerateQr">Refresh QR Payload</string>
+    <string name="btnDone">Back to Dashboard</string>
 </resources>
