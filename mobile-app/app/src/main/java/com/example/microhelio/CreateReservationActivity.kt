@@ -47,6 +47,8 @@ class CreateReservationActivity : AppCompatActivity() {
     private var selectedEndTime: String = ""
     private var selectedReservationType: String = "DropOff"
     private var maxAvailableCapacity: Double = 0.0
+    // Prosumer NIC field (read‑only)
+    private lateinit var etProsumerNic: EditText
     private var selectedNodeAvailBatterySlots: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +62,10 @@ class CreateReservationActivity : AppCompatActivity() {
         tvSelectedSlotDetails = findViewById(R.id.tvSelectedSlotDetails)
         etCapacity = findViewById(R.id.etCapacity)
         btnSubmitReservation = findViewById(R.id.btnSubmitReservation)
+        // Bind NIC field and populate from session (read‑only)
+        etProsumerNic = findViewById(R.id.etProsumerNic)
+        val sess = SessionManager(this).getSession()
+        etProsumerNic.setText(sess?.accountIdentifier ?: "")
 
         // Handle professional back icon click to return to previous screen
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
@@ -289,8 +295,11 @@ class CreateReservationActivity : AppCompatActivity() {
                 connection.doOutput = true
 
                 // Build JSON payload
+                // Build JSON payload using logged-in user's NIC
+                val session = SessionManager(this).getSession()
+                val nic = session?.accountIdentifier ?: ""
                 val jsonBody = JSONObject().apply {
-                    put("prosumerNic", "981234567V")
+                    put("prosumerNic", nic)
                     put("nodeId", selectedNodeId)
                     put("slotId", selectedSlotId)
                     put("reservationType", selectedReservationType)

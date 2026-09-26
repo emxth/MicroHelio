@@ -29,7 +29,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tvWelcomeNic: TextView
     private lateinit var rvBookings: RecyclerView
 
-    private val baseUrl = "http://10.0.2.2:5056/api"
+    private val baseUrl = "http://localhost:5056/api"
     private val prosumerNic = "981234567V"
 
     override fun onCreate(savedInstanceState: Bundle?) {

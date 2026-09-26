@@ -61,6 +61,11 @@ class UpdateReservationActivity : AppCompatActivity() {
         btnCancelReservation = findViewById(R.id.btnCancelReservation)
         btnBack = findViewById(R.id.btnBack)
 
+        // Populate logged-in user's NIC
+        val etNic = findViewById<EditText>(R.id.etProsumerNic)
+        val sess = SessionManager(this).getSession()
+        etNic?.setText(sess?.accountIdentifier ?: "")
+
         // Handle back button click to return to previous screen
         btnBack.setOnClickListener {
             finish()
