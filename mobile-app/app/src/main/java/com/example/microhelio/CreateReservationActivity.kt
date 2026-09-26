@@ -49,6 +49,7 @@ class CreateReservationActivity : AppCompatActivity() {
     private var maxAvailableCapacity: Double = 0.0
     // Prosumer NIC field (read‑only)
     private lateinit var etProsumerNic: EditText
+    private var selectedNodeAvailBatterySlots: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +88,14 @@ class CreateReservationActivity : AppCompatActivity() {
         findViewById<View>(R.id.navDashboard)?.setOnClickListener {
             if (javaClass != DashboardActivity::class.java) {
                 startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
+            }
+        }
+
+        // Navigate to Microgrid Node List if not already on it
+        findViewById<View>(R.id.navNodes)?.setOnClickListener {
+            if (javaClass != NodeListActivity::class.java) {
+                startActivity(Intent(this, NodeListActivity::class.java))
                 finish()
             }
         }
@@ -165,6 +174,7 @@ class CreateReservationActivity : AppCompatActivity() {
                             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                                 val node = nodeList[position]
                                 selectedNodeId = node.optString("id", node.optString("_id"))
+                                selectedNodeAvailBatterySlots = node.optInt("availableBatterySlots", node.optInt("AvailableBatterySlots", 1))
                                 fetchSlotsForNode(selectedNodeId)
                             }
                             override fun onNothingSelected(parent: AdapterView<*>) {}
@@ -235,6 +245,12 @@ class CreateReservationActivity : AppCompatActivity() {
     }
 
     private fun validateAndSubmit() {
+        // Validate physical battery slot availability for DropOff or Charging
+        if (selectedNodeAvailBatterySlots <= 0) {
+            Toast.makeText(this, "No battery slots are currently available at this node.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         // Check if node and slot are selected
         if (selectedSlotId.isEmpty() || selectedNodeId.isEmpty()) {
             Toast.makeText(this, "Please select a valid node and slot", Toast.LENGTH_SHORT).show()

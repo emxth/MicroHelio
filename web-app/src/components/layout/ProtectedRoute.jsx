@@ -6,7 +6,9 @@ export default function ProtectedRoute({ roles }) {
 
   if (!session) return <Navigate to="/login" replace />;
 
-  if (roles && !hasRole(roles)) return <Navigate to="/transactions" replace />;
+  if (roles && !hasRole(roles)) {
+    return <Navigate to={session.role === 'Prosumer' ? '/login' : '/transactions'} replace />;
+  }
 
   return <Outlet />;
 }
