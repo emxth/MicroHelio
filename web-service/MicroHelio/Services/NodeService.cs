@@ -22,22 +22,56 @@ namespace MicroHelio.Services
             _reservationsCollection = mongoDatabase.GetCollection<EnergyReservation>(settings.Value.EnergyReservationsCollectionName);
         }
 
+        // Helper method to dynamically recalculate available battery slots based on active reservations
+        private async Task EnrichNodeBatterySlotsAsync(MicrogridNode node)
+        {
+            if (node == null || string.IsNullOrEmpty(node.Id)) return;
+            try
+            {
+                var activeFilter = Builders<EnergyReservation>.Filter.And(
+                    Builders<EnergyReservation>.Filter.Eq(r => r.NodeId, node.Id),
+                    Builders<EnergyReservation>.Filter.In(r => r.Status, new[] { "Pending", "Approved" })
+                );
+                var activeCount = (int)await _reservationsCollection.CountDocumentsAsync(activeFilter);
+                node.AvailableBatterySlots = Math.Max(0, node.TotalBatterySlots - activeCount);
+            }
+            catch
+            {
+                // Preserve default AvailableBatterySlots if count query fails
+            }
+        }
+
         // Get all microgrid nodes
         public async Task<IEnumerable<MicrogridNode>> GetAllNodesAsync()
         {
-            return await _nodesCollection.Find(_ => true).ToListAsync();
+            var nodes = await _nodesCollection.Find(_ => true).ToListAsync();
+            foreach (var node in nodes)
+            {
+                await EnrichNodeBatterySlotsAsync(node);
+            }
+            return nodes;
         }
 
         // Get node by unique ID
         public async Task<MicrogridNode?> GetNodeByIdAsync(string id)
         {
-            return await _nodesCollection.Find(n => n.Id == id).FirstOrDefaultAsync();
+            var node = await _nodesCollection.Find(n => n.Id == id).FirstOrDefaultAsync();
+            if (node != null)
+            {
+                await EnrichNodeBatterySlotsAsync(node);
+            }
+            return node;
         }
 
         // Get node by unique node code
         public async Task<MicrogridNode?> GetNodeByCodeAsync(string nodeCode)
         {
-            return await _nodesCollection.Find(n => n.NodeCode == nodeCode).FirstOrDefaultAsync();
+            var node = await _nodesCollection.Find(n => n.NodeCode == nodeCode).FirstOrDefaultAsync();
+            if (node != null)
+            {
+                await EnrichNodeBatterySlotsAsync(node);
+            }
+            return node;
         }
 
         // Create new microgrid node

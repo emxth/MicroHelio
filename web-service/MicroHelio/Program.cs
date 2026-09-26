@@ -14,16 +14,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<MicroHelioDatabaseSettings>(
     builder.Configuration.GetSection("MicroHelioDatabase"));
 
+var connectionString = Environment.GetEnvironmentVariable("MICROHELIO_MONGODB_CONNECTIONSTRING")
+    ?? builder.Configuration["MicroHelioDatabase:ConnectionString"];
+
 // Register MongoClient as a Singleton
-builder.Services.AddSingleton<IMongoClient>(sp =>
+builder.Services.AddSingleton<IMongoClient>(_ =>
 {
-    var options = sp.GetRequiredService<IOptions<MicroHelioDatabaseSettings>>().Value;
-    if (string.IsNullOrWhiteSpace(options?.ConnectionString))
+    if (string.IsNullOrWhiteSpace(connectionString))
     {
-        throw new InvalidOperationException("MicroHelioDatabase:ConnectionString is not configured.");
+        throw new InvalidOperationException("MicroHelioDatabase:ConnectionString is not configured. Set the MICROHELIO_MONGODB_CONNECTIONSTRING environment variable.");
     }
 
-    return new MongoClient(options.ConnectionString);
+    return new MongoClient(connectionString);
 });
 
 builder.Services.AddControllers();

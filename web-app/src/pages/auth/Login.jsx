@@ -80,8 +80,8 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col gap-1.5 mb-5">
-              <label className="form-label">Username, email, or NIC</label>
-              <input type="text" value={form.identifier}
+              <label className="form-label">Email address</label>
+              <input type="email" value={form.identifier}
                 onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
                 className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
                 placeholder="operator@microhelio.com, username, or NIC" required />
