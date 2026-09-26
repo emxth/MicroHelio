@@ -28,7 +28,7 @@ class NodeListActivity : AppCompatActivity() {
     private lateinit var adapter: NodeAdapter
     private val nodeList = ArrayList<JSONObject>()
 
-    private val baseUrl = "http://localhost:5056/api"
+    private val baseUrl = "http://10.0.2.2:5056/api"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

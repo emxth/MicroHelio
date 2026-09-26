@@ -64,6 +64,11 @@
             android:name=".BookingHistoryActivity"
             android:exported="false" />
 
+        <!-- Component 4: Prosumer QR Code Generator Screen -->
+        <activity
+            android:name=".QrCodeGeneratorActivity"
+            android:exported="false" />
+
         <!-- Component 2: Microgrid Node List Screen -->
         <activity
             android:name=".NodeListActivity"
