@@ -7,14 +7,13 @@ import ProtectedRoute from './components/layout/ProtectedRoute';
 import Landing from './pages/Landing';
 import Login from './pages/auth/Login';
 
-// // Users — Backoffice only
-// import UserList from './pages/users/UserList';
-// import UserForm from './pages/users/UserForm';
+// Users — Backoffice only
+import UserList from './pages/users/UserList';
+import UserForm from './pages/users/UserForm';
 
-// // Prosumers
-// import ProsumerList from './pages/prosumers/ProsumerList';
-// import ProsumerDetail from './pages/prosumers/ProsumerDetail';
-// import PendingActivations from './pages/prosumers/PendingActivations';
+// Prosumers
+import ProsumerList from './pages/prosumers/ProsumerList';
+import ProsumerDetail from './pages/prosumers/ProsumerDetail';
 
 // // Nodes
 // import NodeList from './pages/nodes/NodeList';
@@ -43,22 +42,22 @@ export default function App() {
       <Route path="/login" element={<Login />} />
 
       {/* Authenticated — all inside AppLayout */}
-      <Route element={<ProtectedRoute />}>
+      <Route element={<ProtectedRoute roles={['Backoffice', 'GridOperator']} />}>
         <Route element={<AppLayout />}>
 
           {/* Backoffice only */}
-          {/* <Route element={<ProtectedRoute roles={['Backoffice']} />}>
+          <Route element={<ProtectedRoute roles={['Backoffice']} />}>
             <Route path="/users" element={<UserList />} />
             <Route path="/users/new" element={<UserForm />} />
             <Route path="/users/:id/edit" element={<UserForm />} />
-            <Route path="/pending-activations" element={<PendingActivations />} />
-          </Route> */}
+            <Route path="/pending-activations" element={<ProsumerList defaultStatus="Pending" />} />
+          </Route>
 
           {/* Both roles */}
-          {/* <Route path="/prosumers" element={<ProsumerList />} />
+          <Route path="/prosumers" element={<ProsumerList />} />
           <Route path="/prosumers/:nic" element={<ProsumerDetail />} />
 
-          <Route path="/nodes" element={<NodeList />} />
+          {/* <Route path="/nodes" element={<NodeList />} />
           <Route path="/nodes/new" element={<NodeForm />} />
           <Route path="/nodes/:id" element={<NodeDetail />} />
           <Route path="/nodes/:id/edit" element={<NodeForm />} />
