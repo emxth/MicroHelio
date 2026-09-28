@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Booking History &amp; Search"
+            android:text="@string/header_booking_history_title"
             android:textColor="@color/pure_white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Filter past and active reservations"
+            android:text="@string/header_booking_history_sub"
             android:textColor="@color/soft_sunlight"
             android:textSize="14sp"
             android:layout_marginTop="4dp"/>
@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:hint="Select Date"
+                android:hint="@string/hint_select_date"
                 android:textSize="13sp"
                 android:focusable="false"
                 android:clickable="true"
@@ -74,7 +74,7 @@
             android:id="@+id/btnSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Search / Refresh History"
+            android:text="@string/btn_search_refresh"
             android:backgroundTint="@color/deep_canopy_green"
             android:textColor="@color/pure_white"
             app:cornerRadius="8dp"/>

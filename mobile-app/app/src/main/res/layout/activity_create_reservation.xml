@@ -25,7 +25,7 @@
             android:layout_marginEnd="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Go Back" />
+            android:contentDescription="@string/desc_go_back" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="New Energy Reservation"
+                android:text="@string/header_new_reservation_title"
                 android:textColor="@color/pure_white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select station, pick time slot &amp; request capacity"
+                android:text="@string/header_new_reservation_sub"
                 android:textColor="@color/soft_sunlight"
                 android:textSize="13sp"
                 android:layout_marginTop="2dp"/>
@@ -79,7 +79,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Prosumer NIC Identifier"
+                        android:text="@string/label_prosumer_nic"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -101,7 +101,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Microgrid Station"
+                        android:text="@string/label_select_station"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -131,7 +131,7 @@
                                 android:id="@+id/tvSelectedNodeTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tap to Select Station"
+                                android:text="@string/hint_tap_select_station"
                                 android:textColor="@color/dark_pine"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -140,7 +140,7 @@
                                 android:id="@+id/tvSelectedNodeSub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Choose station location"
+                                android:text="@string/hint_choose_station_location"
                                 android:textColor="@color/moss_gray"
                                 android:textSize="12sp"
                                 android:layout_marginTop="2dp" />
@@ -165,7 +165,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Booking Time Slot"
+                        android:text="@string/label_select_slot"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -195,7 +195,7 @@
                                 android:id="@+id/tvSelectedSlotTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tap to Choose Time Slot"
+                                android:text="@string/hint_tap_choose_slot"
                                 android:textColor="@color/dark_pine"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -204,7 +204,7 @@
                                 android:id="@+id/tvSelectedSlotSub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="View available &amp; reserved slots"
+                                android:text="@string/hint_view_available_reserved_slots"
                                 android:textColor="@color/moss_gray"
                                 android:textSize="12sp"
                                 android:layout_marginTop="2dp" />
@@ -229,7 +229,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Reservation Type"
+                        android:text="@string/label_reservation_type"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -248,7 +248,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="DropOff"
+                            android:text="@string/type_dropoff"
                             android:textColor="@color/pure_white"
                             android:textSize="13sp"
                             android:textStyle="bold"
@@ -260,7 +260,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="Charging"
+                            android:text="@string/type_charging"
                             android:textColor="@color/dark_pine"
                             android:textSize="13sp"
                             android:backgroundTint="@color/eco_off_white"
@@ -287,7 +287,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Selected Slot Summary"
+                            android:text="@string/summary_selected_slot"
                             android:textColor="@color/deep_canopy_green"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -296,7 +296,7 @@
                             android:id="@+id/tvSelectedSlotDetails"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="No slot selected yet"
+                            android:text="@string/summary_no_slot_selected"
                             android:textColor="@color/dark_pine"
                             android:textSize="13sp"
                             android:layout_marginTop="4dp" />
@@ -306,7 +306,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Requested Capacity (kWh)"
+                        android:text="@string/label_requested_capacity"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -316,7 +316,7 @@
                         android:id="@+id/etCapacity"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:hint="Enter capacity (e.g. 10.0)"
+                        android:hint="@string/hint_enter_capacity"
                         android:inputType="numberDecimal"
                         android:textColor="@color/dark_pine"
                         android:textSize="14sp"
@@ -329,7 +329,7 @@
                         android:id="@+id/btnSubmitReservation"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
-                        android:text="Confirm Reservation"
+                        android:text="@string/btn_confirm_reservation"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:backgroundTint="@color/deep_canopy_green"

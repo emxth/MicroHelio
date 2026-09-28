@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Booking Time Slot"
+                android:text="@string/dialog_select_slot_title"
                 android:textColor="@color/dark_pine"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -32,7 +32,7 @@
                 android:id="@+id/tvDialogSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select an available time slot for your station"
+                android:text="@string/dialog_select_slot_sub"
                 android:textColor="@color/moss_gray"
                 android:textSize="13sp"
                 android:layout_marginTop="2dp" />
@@ -45,7 +45,7 @@
             android:layout_alignParentEnd="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:contentDescription="Close Dialog" />
+            android:contentDescription="@string/desc_close_dialog" />
     </RelativeLayout>
 
     <!-- Date Filter Bar for Future Dates / Specific Date -->
@@ -60,7 +60,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date Filter Options:"
+            android:text="@string/dialog_date_filter_options"
             android:textColor="@color/dark_pine"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -80,7 +80,7 @@
                     android:id="@+id/btnFilterAllDates"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="All Dates"
+                    android:text="@string/dialog_filter_all_dates"
                     android:textSize="11sp"
                     android:textColor="@color/pure_white"
                     android:backgroundTint="@color/deep_canopy_green"
@@ -92,7 +92,7 @@
                     android:id="@+id/btnFilterFutureDates"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="From Today Onwards"
+                    android:text="@string/dialog_filter_future_dates"
                     android:textSize="11sp"
                     android:textColor="@color/dark_pine"
                     android:backgroundTint="@color/eco_off_white"
@@ -104,7 +104,7 @@
                     android:id="@+id/btnFilterPickDate"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="Select Date"
+                    android:text="@string/dialog_filter_pick_date"
                     android:textSize="11sp"
                     android:textColor="@color/dark_pine"
                     android:backgroundTint="@color/eco_off_white"
@@ -128,7 +128,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status Legend:"
+            android:text="@string/dialog_status_legend"
             android:textColor="@color/dark_pine"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -137,7 +137,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="● Available"
+            android:text="@string/badge_status_available"
             android:textColor="#2D6A4F"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -149,7 +149,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="● Reserved"
+            android:text="@string/badge_status_reserved"
             android:textColor="#C62828"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -178,7 +178,7 @@
             android:id="@+id/tvEmptySlotsMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No booking slots found matching selected date filter."
+            android:text="@string/msg_no_slots_matching_filter"
             android:textColor="@color/moss_gray"
             android:textSize="14sp" />
     </LinearLayout>

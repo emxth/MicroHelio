@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MicroHelio Prosumer"
+                android:text="@string/header_prosumer_app_title"
                 android:textColor="@color/pure_white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -33,7 +33,7 @@
                 android:id="@+id/tvWelcomeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome!"
+                android:text="@string/dashboard_welcome_default"
                 android:textColor="@color/pure_white"
                 android:textSize="15sp"
                 android:textStyle="bold"
@@ -43,7 +43,7 @@
                 android:id="@+id/tvWelcomeNic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NIC: —"
+                android:text="@string/dashboard_nic_default"
                 android:textColor="@color/soft_sunlight"
                 android:textSize="12sp"
                 android:layout_marginTop="2dp"/>
@@ -57,7 +57,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="View Profile" />
+            android:contentDescription="@string/desc_view_profile" />
     </LinearLayout>
 
     <ScrollView
@@ -97,7 +97,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pending"
+                            android:text="@string/dashboard_pending"
                             android:textColor="@color/moss_gray"
                             android:textSize="12sp"/>
                         <TextView
@@ -130,7 +130,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Approved"
+                            android:text="@string/dashboard_approved"
                             android:textColor="@color/moss_gray"
                             android:textSize="12sp"/>
                         <TextView
@@ -163,7 +163,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Upcoming"
+                            android:text="@string/dashboard_upcoming"
                             android:textColor="@color/moss_gray"
                             android:textSize="12sp"/>
                         <TextView
@@ -184,7 +184,7 @@
                 android:id="@+id/btnCreateReservation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="+ Create New Reservation"
+                android:text="@string/dashboard_btn_create_reservation"
                 android:textColor="@color/pure_white"
                 android:backgroundTint="@color/deep_canopy_green"
                 android:layout_marginBottom="12dp"
@@ -195,7 +195,7 @@
                 android:id="@+id/btnViewHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Booking History"
+                android:text="@string/dashboard_btn_view_history"
                 android:textColor="@color/deep_canopy_green"
                 android:backgroundTint="@color/soft_sunlight"
                 android:layout_marginBottom="24dp"
@@ -206,7 +206,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Recent / Active Bookings"
+                android:text="@string/dashboard_recent_active_bookings"
                 android:textColor="@color/dark_pine"
                 android:textSize="16sp"
                 android:textStyle="bold"

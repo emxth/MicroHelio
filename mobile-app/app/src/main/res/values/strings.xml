@@ -1,3 +1,80 @@
 <resources>
     <string name="app_name">MicroHelio</string>
+
+    <!-- Navigation Strings -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_nodes">Nodes</string>
+    <string name="nav_new_booking">New Booking</string>
+    <string name="nav_history">History</string>
+
+    <!-- Header Strings -->
+    <string name="header_booking_history_title">Booking History &amp; Search</string>
+    <string name="header_booking_history_sub">Filter past and active reservations</string>
+    <string name="header_new_reservation_title">New Energy Reservation</string>
+    <string name="header_new_reservation_sub">Select station, pick time slot &amp; request capacity</string>
+    <string name="header_manage_reservation_title">Manage Reservation</string>
+    <string name="header_manage_reservation_sub">Update station, pick time slot or cancel booking</string>
+    <string name="header_prosumer_app_title">MicroHelio Prosumer</string>
+
+    <!-- Dashboard Strings -->
+    <string name="dashboard_welcome_default">Welcome!</string>
+    <string name="dashboard_nic_default">NIC: —</string>
+    <string name="dashboard_pending">Pending</string>
+    <string name="dashboard_approved">Approved</string>
+    <string name="dashboard_upcoming">Upcoming</string>
+    <string name="dashboard_btn_create_reservation">+ Create New Reservation</string>
+    <string name="dashboard_btn_view_history">View Booking History</string>
+    <string name="dashboard_recent_active_bookings">Recent / Active Bookings</string>
+    <string name="desc_view_profile">View Profile</string>
+    <string name="desc_go_back">Go Back</string>
+
+    <!-- Create & Manage Reservation Form Strings -->
+    <string name="label_prosumer_nic">Prosumer NIC Identifier</string>
+    <string name="label_select_station">Select Microgrid Station</string>
+    <string name="label_select_slot">Select Booking Time Slot</string>
+    <string name="label_select_new_slot">Select New Time Slot</string>
+    <string name="label_reservation_type">Reservation Type</string>
+    <string name="label_requested_capacity">Requested Capacity (kWh)</string>
+    <string name="label_cancel_reason">Cancellation Reason (Required to Cancel)</string>
+    <string name="hint_tap_select_station">Tap to Select Station</string>
+    <string name="hint_choose_station_location">Choose station location</string>
+    <string name="hint_loading_station">Loading station details...</string>
+    <string name="hint_tap_change_station">Tap to change station</string>
+    <string name="hint_tap_choose_slot">Tap to Choose Time Slot</string>
+    <string name="hint_view_available_reserved_slots">View available &amp; reserved slots</string>
+    <string name="hint_loading_slot">Loading slot details...</string>
+    <string name="hint_tap_pick_new_slot">Tap to pick a new slot</string>
+    <string name="hint_enter_capacity">Enter capacity (e.g. 10.0)</string>
+    <string name="hint_provide_cancel_reason">Provide reason for cancelling</string>
+    <string name="type_dropoff">DropOff</string>
+    <string name="type_charging">Charging</string>
+    <string name="summary_selected_slot">Selected Slot Summary</string>
+    <string name="summary_no_slot_selected">No slot selected yet</string>
+    <string name="summary_current_booking_details">Current Booking Details</string>
+    <string name="summary_loading_slot_info">Current: Loading slot info...</string>
+    <string name="btn_confirm_reservation">Confirm Reservation</string>
+    <string name="btn_save_changes">Save Changes</string>
+    <string name="btn_cancel_booking">Cancel Booking</string>
+    <string name="notice_twelve_hour_rule">Notice: Updates and cancellations require at least 12 hours\' notice prior to the scheduled slot time.</string>
+
+    <!-- Booking History & Filter Strings -->
+    <string name="hint_select_date">Select Date</string>
+    <string name="btn_search_refresh">Search / Refresh History</string>
+
+    <!-- Slot Picker Dialog & Status Legend Strings -->
+    <string name="dialog_select_slot_title">Select Booking Time Slot</string>
+    <string name="dialog_select_slot_sub">Select an available time slot for your station</string>
+    <string name="dialog_date_filter_options">Date Filter Options:</string>
+    <string name="dialog_filter_all_dates">All Dates</string>
+    <string name="dialog_filter_future_dates">From Today Onwards</string>
+    <string name="dialog_filter_pick_date">Select Date</string>
+    <string name="dialog_status_legend">Status Legend:</string>
+    <string name="badge_status_available">● Available</string>
+    <string name="badge_status_reserved">● Reserved</string>
+    <string name="msg_no_slots_matching_filter">No booking slots found matching selected date filter.</string>
+    <string name="desc_close_dialog">Close Dialog</string>
+
+    <!-- List Item Card Strings -->
+    <string name="item_capacity_label">Capacity</string>
+    <string name="btn_book_slot">Book Slot</string>
 </resources>

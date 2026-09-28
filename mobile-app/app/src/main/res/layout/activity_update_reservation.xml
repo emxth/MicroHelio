@@ -25,7 +25,7 @@
             android:layout_marginEnd="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Go Back" />
+            android:contentDescription="@string/desc_go_back" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Reservation"
+                android:text="@string/header_manage_reservation_title"
                 android:textColor="@color/pure_white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -43,7 +43,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update station, pick time slot or cancel booking"
+                android:text="@string/header_manage_reservation_sub"
                 android:textColor="@color/soft_sunlight"
                 android:textSize="13sp"
                 android:layout_marginTop="2dp"/>
@@ -73,7 +73,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Notice: Updates and cancellations require at least 12 hours' notice prior to the scheduled slot time."
+                    android:text="@string/notice_twelve_hour_rule"
                     android:textColor="#856404"
                     android:textSize="13sp"
                     android:padding="14dp"/>
@@ -97,7 +97,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Prosumer NIC Identifier"
+                        android:text="@string/label_prosumer_nic"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -119,7 +119,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Microgrid Station"
+                        android:text="@string/label_select_station"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -149,7 +149,7 @@
                                 android:id="@+id/tvSelectedNodeTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Loading station details..."
+                                android:text="@string/hint_loading_station"
                                 android:textColor="@color/dark_pine"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -158,7 +158,7 @@
                                 android:id="@+id/tvSelectedNodeSub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tap to change station"
+                                android:text="@string/hint_tap_change_station"
                                 android:textColor="@color/moss_gray"
                                 android:textSize="12sp"
                                 android:layout_marginTop="2dp" />
@@ -183,7 +183,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select New Time Slot"
+                        android:text="@string/label_select_new_slot"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -213,7 +213,7 @@
                                 android:id="@+id/tvSelectedSlotTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Loading slot details..."
+                                android:text="@string/hint_loading_slot"
                                 android:textColor="@color/dark_pine"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -222,7 +222,7 @@
                                 android:id="@+id/tvSelectedSlotSub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tap to pick a new slot"
+                                android:text="@string/hint_tap_pick_new_slot"
                                 android:textColor="@color/moss_gray"
                                 android:textSize="12sp"
                                 android:layout_marginTop="2dp" />
@@ -256,7 +256,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Current Booking Details"
+                            android:text="@string/summary_current_booking_details"
                             android:textColor="@color/deep_canopy_green"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -265,7 +265,7 @@
                             android:id="@+id/tvSelectedSlotDetails"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Current: Loading slot info..."
+                            android:text="@string/summary_loading_slot_info"
                             android:textColor="@color/dark_pine"
                             android:textSize="13sp"
                             android:layout_marginTop="4dp" />
@@ -276,7 +276,7 @@
                         android:id="@+id/btnUpdateReservation"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
-                        android:text="Save Changes"
+                        android:text="@string/btn_save_changes"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:backgroundTint="@color/deep_canopy_green"
@@ -294,7 +294,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cancellation Reason (Required to Cancel)"
+                        android:text="@string/label_cancel_reason"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
                         android:textStyle="bold"
@@ -304,7 +304,7 @@
                         android:id="@+id/etCancelReason"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:hint="Provide reason for cancelling"
+                        android:hint="@string/hint_provide_cancel_reason"
                         android:textColor="@color/dark_pine"
                         android:textSize="14sp"
                         android:paddingHorizontal="14dp"
@@ -316,7 +316,7 @@
                         android:id="@+id/btnCancelReservation"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
-                        android:text="Cancel Booking"
+                        android:text="@string/btn_cancel_booking"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:backgroundTint="#C92A2A"
