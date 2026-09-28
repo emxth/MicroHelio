@@ -42,6 +42,12 @@ import ReservationSearch from './pages/operator/ReservationSearch';
 import ReservationForm from './pages/operator/ReservationForm';
 import UpdateReservationForm from './pages/operator/UpdateReservationForm';
 
+// Microgrid Nodes Directory, Creation, Editing & Slot Management
+import NodesDirectory from './pages/NodesDirectory';
+import CreateNode from './pages/CreateNode';
+import EditNode from './pages/EditNode';
+import NodeSlotManagement from './pages/NodeSlotManagement';
+
 export default function App() {
   return (
     <>
@@ -52,6 +58,13 @@ export default function App() {
         <Route path="/login" element={<Login />} />
 
         {/* TEMP: Public for development */}
+        <Route path="/nodes" element={<NodesDirectory />} />
+        <Route path="/nodes/create" element={<CreateNode />} />
+        <Route path="/nodes/new" element={<CreateNode />} />
+        <Route path="/nodes/edit/:id" element={<EditNode />} />
+        <Route path="/nodes/:id/edit" element={<EditNode />} />
+        <Route path="/nodes/:id/slots" element={<NodeSlotManagement />} />
+        <Route path="/nodes/slots/:id" element={<NodeSlotManagement />} />
         <Route path="/operator/pending-approvals" element={<PendingApprovals />} />
         <Route path="/operator/reservation-search" element={<ReservationSearch />} />
         <Route path="/operator/reservations/new" element={<ReservationForm />} />
