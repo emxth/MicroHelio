@@ -14,6 +14,10 @@ const PAGE_TITLES = {
   '/reservations': 'All Reservations',
   '/pending-bookings': 'Pending Bookings',
   '/transactions': 'Transaction History',
+  '/operator-dashboard': 'Operator Dashboard',
+  '/operator/pending-approvals': 'Pending Approvals',
+  '/operator/reservation-search': 'Reservation Tracker',
+  '/operator/reservations/new': 'New Reservation',
 };
 
 function getTitle(pathname) {

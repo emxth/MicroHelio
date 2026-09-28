@@ -5,7 +5,7 @@ export default function FloatingOperatorNav() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // The navigation links for the Grid Operator
+  // Navigation links for the Grid Operator
   const links = [
     { 
       name: 'Pending Approvals', 
@@ -24,10 +24,21 @@ export default function FloatingOperatorNav() {
     },
   ];
 
+  // Grid Operator pages where floating quick menu is active
+  const isOperatorPage =
+    location.pathname.startsWith('/operator') ||
+    location.pathname === '/pending-bookings' ||
+    location.pathname === '/reservations';
+
   // Automatically close the menu when the route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
+
+  // Only render inside Grid Operator pages
+  if (!isOperatorPage) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-6 left-6 z-[100] flex flex-col items-start">
