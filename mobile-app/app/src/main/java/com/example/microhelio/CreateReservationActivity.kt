@@ -33,7 +33,7 @@ class CreateReservationActivity : AppCompatActivity() {
     private lateinit var etCapacity: EditText
     private lateinit var btnSubmitReservation: Button
 
-    private val baseUrl = "http://10.0.2.2:5056/api"
+    private val baseUrl = com.example.microhelio.api.ApiConfig.getApiBaseUrl()
 
     // Lists to hold server data for dropdowns
     private val nodeList = ArrayList<JSONObject>()

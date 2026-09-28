@@ -33,7 +33,7 @@ class BookingHistoryActivity : AppCompatActivity() {
     private lateinit var btnSearch: Button
     private lateinit var rvHistoryList: RecyclerView
 
-    private val baseUrl = "http://10.0.2.2:5056/api"
+    private val baseUrl = com.example.microhelio.api.ApiConfig.getApiBaseUrl()
     private var nic: String = ""
 
     private val statusOptions = arrayOf("All Statuses", "Pending", "Approved", "Cancelled")

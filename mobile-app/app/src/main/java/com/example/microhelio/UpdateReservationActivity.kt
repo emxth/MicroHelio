@@ -34,7 +34,7 @@ class UpdateReservationActivity : AppCompatActivity() {
     private lateinit var btnCancelReservation: Button
     private lateinit var btnBack: ImageView
 
-    private val baseUrl = "http://10.0.2.2:5056/api"
+    private val baseUrl = com.example.microhelio.api.ApiConfig.getApiBaseUrl()
 
     private val nodeList = ArrayList<JSONObject>()
     private val slotList = ArrayList<JSONObject>()
