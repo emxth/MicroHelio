@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7FAF7"
+    android:background="@color/eco_off_white"
     android:fillViewport="true"
     tools:context=".RegisterProsumerActivity">
 
@@ -18,10 +18,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:text="@string/str_register"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#1B2621"
+            android:textColor="@color/dark_pine"
             android:gravity="center"
             android:layout_marginBottom="24dp" />
 
@@ -36,9 +36,9 @@
                 android:id="@+id/etNic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="NIC Number"
+                android:hint="@string/str_nic_number"
                 android:inputType="text"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -52,9 +52,9 @@
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Full Name"
+                android:hint="@string/str_full_name"
                 android:inputType="textPersonName"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -68,9 +68,9 @@
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email Address"
+                android:hint="@string/str_email_address"
                 android:inputType="textEmailAddress"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -84,9 +84,9 @@
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Phone Number"
+                android:hint="@string/str_phone_number"
                 android:inputType="phone"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -100,9 +100,9 @@
                 android:id="@+id/etAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"
+                android:hint="@string/str_address"
                 android:inputType="textPostalAddress"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -117,9 +117,9 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password"
+                android:hint="@string/str_password"
                 android:inputType="textPassword"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -134,19 +134,19 @@
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Confirm Password"
+                android:hint="@string/str_confirm_password"
                 android:inputType="textPassword"
-                android:textColor="#1B2621" />
+                android:textColor="@color/dark_pine" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Register"
+            android:text="@string/str_register"
             android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#2D6A4F"
+            android:textColor="@color/pure_white"
+            android:backgroundTint="@color/deep_canopy_green"
             app:cornerRadius="8dp"
             android:layout_marginBottom="16dp" />
 
@@ -154,9 +154,9 @@
             android:id="@+id/tvLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Already have an account? Login"
+            android:text="@string/str_already_have_an_account_login"
             android:textSize="16sp"
-            android:textColor="#52B788"
+            android:textColor="@color/vibrant_leaf_green"
             android:textStyle="bold"
             android:padding="8dp" />
 

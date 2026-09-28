@@ -7,4 +7,14 @@
     <color name="moss_gray">#748C7E</color>
     <color name="eco_off_white">#F7FAF7</color>
     <color name="pure_white">#FFFFFF</color>
+    <color name="color_F0F4F0">#F0F4F0</color>
+    <color name="color_757575">#757575</color>
+    <color name="color_4CAF50">#4CAF50</color>
+    <color name="color_9E9E9E">#9E9E9E</color>
+    <color name="color_F44336">#F44336</color>
+    <color name="color_E9F5EE">#E9F5EE</color>
+    <color name="color_E53935">#E53935</color>
+    <color name="color_856404">#856404</color>
+    <color name="color_E0E0E0">#E0E0E0</color>
+    <color name="color_C92A2A">#C92A2A</color>
 </resources>

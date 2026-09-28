@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:background="@color/eco_off_white">
 
-    <!-- Top Header Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MicroHelio"
+            android:text="@string/app_name"
             android:textColor="@color/pure_white"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -25,7 +24,7 @@
             android:id="@+id/tvGridOpWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome, Grid Operator"
+            android:text="@string/str_welcome_grid_operator"
             android:textColor="@color/soft_sunlight"
             android:textSize="14sp"
             android:layout_marginTop="4dp"/>
@@ -41,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Grid Operator Dashboard"
+            android:text="@string/str_grid_operator_dashboard"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/dark_pine"
@@ -50,7 +49,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Grid Operator features will appear here."
+            android:text="@string/str_grid_operator_features_will_ap"
             android:textSize="16sp"
             android:textColor="@color/moss_gray"
             android:gravity="center"
@@ -60,8 +59,8 @@
             android:id="@+id/btnGridOpLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Logout"
-            android:backgroundTint="#F44336"
+            android:text="@string/str_logout"
+            android:backgroundTint="@color/color_F44336"
             android:textColor="@android:color/white" />
 
     </LinearLayout>

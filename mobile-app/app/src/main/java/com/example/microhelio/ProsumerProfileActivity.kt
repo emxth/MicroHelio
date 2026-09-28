@@ -148,7 +148,7 @@ class ProsumerProfileActivity : AppCompatActivity() {
     private fun showDeactivateConfirmationDialog() {
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Deactivate Account?")
-            .setMessage("You will not be able to log in again until Backoffice reactivates your account.")
+            .setMessage("If you deactivate your account, you will not be able to sign in again until a Backoffice administrator reactivates it.")
             .setPositiveButton("Confirm Deactivation") { dialog, _ ->
                 deactivateAccount()
                 dialog.dismiss()
@@ -175,8 +175,12 @@ class ProsumerProfileActivity : AppCompatActivity() {
                 btnDeactivate.isEnabled = true
                 when {
                     response.isSuccessful -> {
-                        Toast.makeText(this@ProsumerProfileActivity, "Account deactivated successfully", Toast.LENGTH_LONG).show()
-                        logout()
+                        androidx.appcompat.app.AlertDialog.Builder(this@ProsumerProfileActivity)
+                            .setTitle("Account Deactivated")
+                            .setMessage("Your account has been deactivated successfully. Please contact MicroHelio Backoffice if you want to reactivate your account.")
+                            .setPositiveButton("OK") { _, _ -> logout() }
+                            .setCancelable(false)
+                            .show()
                     }
                     response.code() == 400 -> {
                         Toast.makeText(this@ProsumerProfileActivity, "Failed to deactivate account (Validation Error)", Toast.LENGTH_LONG).show()

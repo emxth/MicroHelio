@@ -59,8 +59,18 @@ class LoginActivity : AppCompatActivity() {
                             startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
                         }
                         finish()
+                    } else if (response.code() == 403) {
+                        androidx.appcompat.app.AlertDialog.Builder(this@LoginActivity)
+                            .setTitle("Account Deactivated")
+                            .setMessage("Your account is deactivated. Please contact MicroHelio Backoffice for reactivation.")
+                            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                            .show()
                     } else if (response.code() == 400 || response.code() == 401) {
-                        Toast.makeText(this@LoginActivity, "Invalid credentials or account unavailable", Toast.LENGTH_SHORT).show()
+                        androidx.appcompat.app.AlertDialog.Builder(this@LoginActivity)
+                            .setTitle("Login Failed")
+                            .setMessage("Invalid credentials or your account may be deactivated. Please check your details or contact MicroHelio Backoffice.")
+                            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+                            .show()
                     } else {
                         Toast.makeText(this@LoginActivity, "Server error: ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
