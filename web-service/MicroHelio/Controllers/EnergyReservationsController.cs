@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * Author: Ashwin
  * Purpose: API Controller routing RESTful requests to the Reservation Service
  */
@@ -21,6 +21,7 @@ namespace MicroHelio.Controllers
         private readonly TransactionService _transactionService;
         private readonly IMongoCollection<EnergyBookingSlot> _slots;
         private readonly IMongoCollection<MicrogridNode> _nodesCollection;
+        private readonly IMongoCollection<EnergyReservation> _reservationsCollection;
 
         // Injects the service layer and MongoDB collections for reservation and node logic
         public EnergyReservationsController(
@@ -34,6 +35,7 @@ namespace MicroHelio.Controllers
             var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _slots = database.GetCollection<EnergyBookingSlot>(settings.Value.EnergyBookingSlotsCollectionName);
             _nodesCollection = database.GetCollection<MicrogridNode>("MICROGRID_NODE");
+            _reservationsCollection = database.GetCollection<EnergyReservation>(settings.Value.EnergyReservationsCollectionName);
         }
 
         // POST /api/reservations - Creates a new reservation
@@ -136,6 +138,12 @@ namespace MicroHelio.Controllers
                 .ThenBy(s => s.SlotStartTime)
                 .ToListAsync();
 
+            // Find all active (Pending or Approved) reservations for this node
+            var activeSlotIds = (await _reservationsCollection.Find(r => r.NodeId == nodeId && (r.Status == "Pending" || r.Status == "Approved"))
+                .Project(r => r.SlotId)
+                .ToListAsync())
+                .ToHashSet();
+
             var payload = slots.Select(s => new
             {
                 id = s.Id,
@@ -144,11 +152,11 @@ namespace MicroHelio.Controllers
                 slotDate = s.SlotDate,
                 slotStartTime = s.SlotStartTime,
                 slotEndTime = s.SlotEndTime,
-                availableCapacityKWh = s.AvailableCapacityKWh,
+                availableCapacityKWh = (s.Id != null && activeSlotIds.Contains(s.Id)) ? 0.0 : s.AvailableCapacityKWh,
                 totalCapacityKWh = s.TotalCapacityKWh,
                 reservedCapacityKWh = s.ReservedCapacityKWh,
                 slotType = s.SlotType,
-                isAvailable = s.IsAvailable
+                isAvailable = s.IsAvailable && s.AvailableCapacityKWh > 0 && (s.Id == null || !activeSlotIds.Contains(s.Id))
             }).ToList();
 
             return Ok(payload);

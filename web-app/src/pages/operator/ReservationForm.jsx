@@ -1,6 +1,6 @@
 /*
- * Author: Ashwin
- * Purpose: Create and update energy reservations with the same slot capacity rules as the mobile app.
+ * Author: Arshvinth S
+ * Purpose: Create and update energy reservations with interactive station and slot picker modal windows, red/green availability badges, date filter options, and capacity validation rules.
  */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -28,10 +28,17 @@ export default function ReservationForm() {
   const [nodes, setNodes] = useState([]);
   const [slots, setSlots] = useState([]);
   const [originalReservation, setOriginalReservation] = useState(null);
-  // True initially if editing
   const [loading, setLoading] = useState(isEditMode); 
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
+
+  // Modal window visibility states
+  const [isNodeModalOpen, setIsNodeModalOpen] = useState(false);
+  const [isSlotModalOpen, setIsSlotModalOpen] = useState(false);
+
+  // Date filter state inside slot picker modal: 'all' | 'future' | 'date'
+  const [slotDateFilter, setSlotDateFilter] = useState('all');
+  const [filterCustomDate, setFilterCustomDate] = useState('');
 
   const [formData, setFormData] = useState({
     prosumerNic: '',
@@ -43,7 +50,7 @@ export default function ReservationForm() {
 
   // Auto-hide toast after 5 seconds
   useEffect(() => {
-    if (toast && toast.type !== 'error') { // Keep errors visible until dismissed
+    if (toast && toast.type !== 'error') {
       const timer = setTimeout(() => {
         setToast(null);
       }, 5000);
@@ -56,7 +63,6 @@ export default function ReservationForm() {
   };
 
   useEffect(() => {
-    // Load nodes first, then load the existing reservation when editing.
     const fetchNodes = async () => {
       try {
         const res = await fetch(`${baseUrl}/nodes`);
@@ -71,7 +77,6 @@ export default function ReservationForm() {
 
     const fetchInitialData = async () => {
       await fetchNodes();
-      // If editing, load the reservation details and its original slot.
       if (isEditMode) {
         try {
           const res = await fetch(`${baseUrl}/reservations/${id}`);
@@ -85,7 +90,6 @@ export default function ReservationForm() {
               slotId: data.slotId || '',
               requestedCapacityKWh: data.requestedCapacityKWh || '',
             });
-            // Editing needs the old node's slots so its current slot can be selected.
             if (data.nodeId) {
               await fetchSlots(data.nodeId);
             }
@@ -103,7 +107,6 @@ export default function ReservationForm() {
     fetchInitialData();
   }, [id, isEditMode]);
 
-  // Refresh the slot choices whenever the operator selects another node.
   const fetchSlots = async (selectedNodeId) => {
     if (!selectedNodeId) {
       setSlots([]);
@@ -121,11 +124,20 @@ export default function ReservationForm() {
       showToast('Network error while loading slots.', 'error');
     }
   };
-  
-  const handleNodeChange = (e) => {
-    const selectedNodeId = e.target.value;
-    setFormData((prev) => ({ ...prev, nodeId: selectedNodeId, slotId: '' }));
-    fetchSlots(selectedNodeId);
+
+  const selectNode = (node) => {
+    setFormData((prev) => ({ ...prev, nodeId: node.id, slotId: '' }));
+    fetchSlots(node.id);
+    setIsNodeModalOpen(false);
+  };
+
+  const selectSlot = (slot) => {
+    setFormData((prev) => ({
+      ...prev,
+      slotId: slot.id,
+      requestedCapacityKWh: prev.requestedCapacityKWh || (slot.availableCapacityKWh ? String(slot.availableCapacityKWh) : prev.requestedCapacityKWh)
+    }));
+    setIsSlotModalOpen(false);
   };
 
   const handleChange = (e) => {
@@ -138,7 +150,6 @@ export default function ReservationForm() {
     setSubmitting(true);
     setToast(null);
 
-    // The selected slot supplies the date and exact start/end times.
     const selectedSlot = slots.find((s) => s.id === formData.slotId);
     if (!selectedSlot) {
       showToast('Please select a valid time slot.', 'error');
@@ -149,7 +160,6 @@ export default function ReservationForm() {
     const requestedCapacity = Number(formData.requestedCapacityKWh);
     const availableCapacity = Number(selectedSlot.availableCapacityKWh);
 
-    // Match mobile create validation: capacity must be positive and fit the slot.
     if (!Number.isFinite(requestedCapacity) || requestedCapacity <= 0) {
       showToast('Capacity must be greater than zero.', 'error');
       setSubmitting(false);
@@ -162,7 +172,6 @@ export default function ReservationForm() {
       return;
     }
 
-    // Updates keep the original capacity; a different slot must have enough room.
     if (isEditMode && formData.slotId !== originalReservation?.slotId && originalReservation?.requestedCapacityKWh > availableCapacity) {
       showToast(`The selected slot does not have enough capacity (${availableCapacity} KWh available).`, 'error');
       setSubmitting(false);
@@ -216,6 +225,28 @@ export default function ReservationForm() {
     }
   };
 
+  // Filter slots for modal window
+  const getFilteredSlots = () => {
+    if (!slots || slots.length === 0) return [];
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    return slots.filter(slot => {
+      const rawDate = slot.slotDate || '';
+      const dateStr = rawDate.includes('T') ? rawDate.split('T')[0] : rawDate;
+
+      if (slotDateFilter === 'future') {
+        return dateStr >= todayStr;
+      }
+      if (slotDateFilter === 'date' && filterCustomDate) {
+        return dateStr === filterCustomDate;
+      }
+      return true;
+    });
+  };
+
+  const selectedNode = nodes.find(n => n.id === formData.nodeId);
+  const selectedSlot = slots.find(s => s.id === formData.slotId);
+
   const renderToast = () => {
     if (!toast) return null;
     const isSuccess = toast.type === 'success';
@@ -248,6 +279,8 @@ export default function ReservationForm() {
       </div>
     );
   }
+
+  const filteredSlotsList = getFilteredSlots();
 
   return (
     <div className="relative min-h-full bg-bg-app text-text-dark font-sans p-4 sm:p-6 lg:p-8 flex items-center justify-center">
@@ -287,10 +320,11 @@ export default function ReservationForm() {
                   type="text"
                   name="prosumerNic"
                   required
+                  disabled={isEditMode}
                   value={formData.prosumerNic}
                   onChange={handleChange}
                   placeholder="e.g. 199012345678"
-                  className="w-full px-4 py-2.5 bg-bg-app border border-text-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-dark"
+                  className="w-full px-4 py-2.5 bg-bg-app border border-text-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-dark disabled:opacity-60"
                 />
               </div>
 
@@ -299,62 +333,86 @@ export default function ReservationForm() {
                 <label className="block text-sm font-medium text-text-muted mb-1">
                   Reservation Type <span className="text-danger">*</span>
                 </label>
-                <select
-                  name="reservationType"
-                  required
-                  value={formData.reservationType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2.5 bg-bg-app border border-text-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-dark appearance-none"
-                >
-                  <option value="Charging">Charging (Consume Energy)</option>
-                  <option value="DropOff">DropOff (Supply Energy)</option>
-                </select>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <button
+                    type="button"
+                    disabled={isEditMode}
+                    onClick={() => setFormData(prev => ({ ...prev, reservationType: 'Charging' }))}
+                    className={`py-2.5 px-3 text-xs font-bold rounded-xl border transition-all ${formData.reservationType === 'Charging' ? 'bg-primary text-surface border-primary shadow-sm' : 'bg-bg-app text-text-dark border-border hover:bg-surface'}`}
+                  >
+                    Charging (Consume)
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isEditMode}
+                    onClick={() => setFormData(prev => ({ ...prev, reservationType: 'DropOff' }))}
+                    className={`py-2.5 px-3 text-xs font-bold rounded-xl border transition-all ${formData.reservationType === 'DropOff' ? 'bg-primary text-surface border-primary shadow-sm' : 'bg-bg-app text-text-dark border-border hover:bg-surface'}`}
+                  >
+                    DropOff (Supply)
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Microgrid Node */}
+            {/* Interactive Microgrid Node Selector Card */}
             <div>
               <label className="block text-sm font-medium text-text-muted mb-1">
                 Microgrid Node <span className="text-danger">*</span>
               </label>
-              <select
-                name="nodeId"
-                required
-                value={formData.nodeId}
-                onChange={handleNodeChange}
-                className="w-full px-4 py-2.5 bg-bg-app border border-text-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-dark appearance-none"
+              <div
+                onClick={() => setIsNodeModalOpen(true)}
+                className="w-full cursor-pointer p-4 bg-bg-app hover:bg-success-light/30 border border-primary/30 rounded-xl flex items-center justify-between transition-all group"
               >
-                <option value="" disabled>Select a Node</option>
-                {nodes.map(node => (
-                  <option key={node.id} value={node.id}>{node.nodeCode} - {node.name}</option>
-                ))}
-              </select>
+                <div>
+                  <h4 className="font-bold text-text-dark group-hover:text-primary">
+                    {selectedNode ? `${selectedNode.nodeCode} - ${selectedNode.name}` : 'Click to Select Station'}
+                  </h4>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    {selectedNode ? `Location: ${selectedNode.address || 'N/A'} | Battery Slots: ${selectedNode.availableBatterySlots ?? 10} avail` : 'Tap to open station picker'}
+                  </p>
+                </div>
+                <span className="text-primary text-sm font-bold">▼</span>
+              </div>
             </div>
 
-            {/* Available Time Slot */}
+            {/* Interactive Time Slot Selector Card */}
             <div>
               <label className="block text-sm font-medium text-text-muted mb-1">
                 Available Time Slot <span className="text-danger">*</span>
               </label>
-              <select
-                name="slotId"
-                required
-                value={formData.slotId}
-                onChange={handleChange}
-                disabled={!formData.nodeId}
-                className="w-full px-4 py-2.5 bg-bg-app border border-text-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-text-dark appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+              <div
+                onClick={() => {
+                  if (!formData.nodeId) {
+                    showToast('Please select a Microgrid Station first.', 'error');
+                  } else {
+                    setIsSlotModalOpen(true);
+                  }
+                }}
+                className={`w-full p-4 border rounded-xl flex items-center justify-between transition-all group ${formData.nodeId ? 'cursor-pointer bg-bg-app hover:bg-success-light/30 border-primary/30' : 'cursor-not-allowed bg-bg-app/50 border-border opacity-60'}`}
               >
-                <option value="" disabled>{formData.nodeId ? 'Select a Time Slot' : 'Please select a node first'}</option>
-                {slots.map(slot => (
-                  <option key={slot.id} value={slot.id}>
-                    {new Date(slot.slotDate).toLocaleDateString()} | {slot.slotStartTime} - {slot.slotEndTime} | Available: {slot.availableCapacityKWh} KWh
-                  </option>
-                ))}
-              </select>
-              {slots.length === 0 && formData.nodeId && (
-                <p className="mt-1 text-xs text-accent font-medium">No slots found for this node.</p>
-              )}
+                <div>
+                  <h4 className="font-bold text-text-dark group-hover:text-primary">
+                    {selectedSlot ? `${selectedSlot.slotStartTime} - ${selectedSlot.slotEndTime}` : 'Click to Choose Time Slot'}
+                  </h4>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    {selectedSlot 
+                      ? `Date: ${new Date(selectedSlot.slotDate).toLocaleDateString()} | Max Capacity: ${selectedSlot.availableCapacityKWh} KWh` 
+                      : (formData.nodeId ? 'View available & reserved slots' : 'Please select a station first')}
+                  </p>
+                </div>
+                <span className="text-primary text-sm font-bold">▼</span>
+              </div>
             </div>
+
+            {/* Selected Slot Summary Card */}
+            {selectedSlot && (
+              <div className="p-4 bg-success-light/40 border border-secondary/30 rounded-xl">
+                <span className="text-xs font-bold text-primary uppercase tracking-wider">Selected Slot Details</span>
+                <p className="text-sm font-semibold text-text-dark mt-1">
+                  Date: {new Date(selectedSlot.slotDate).toLocaleDateString()} | Time: {selectedSlot.slotStartTime} - {selectedSlot.slotEndTime} | Max Capacity Limit: {selectedSlot.availableCapacityKWh} KWh
+                </p>
+              </div>
+            )}
 
             {/* Requested Capacity */}
             <div>
@@ -405,6 +463,148 @@ export default function ReservationForm() {
           </form>
         </div>
       </div>
+
+      {/* Node Selection Modal Window */}
+      {isNodeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-surface rounded-2xl max-w-lg w-full p-6 shadow-xl border border-border max-h-[85vh] flex flex-col">
+            <div className="flex items-center justify-between pb-4 border-b border-border">
+              <div>
+                <h3 className="text-lg font-bold text-primary">Select Microgrid Station</h3>
+                <p className="text-xs text-text-muted">Choose a station location to view time slots</p>
+              </div>
+              <button onClick={() => setIsNodeModalOpen(false)} className="text-text-muted hover:text-text-dark font-bold text-lg p-1">✕</button>
+            </div>
+
+            <div className="overflow-y-auto flex-1 py-4 space-y-3">
+              {nodes.map(node => (
+                <div
+                  key={node.id}
+                  onClick={() => selectNode(node)}
+                  className={`p-4 rounded-xl border cursor-pointer transition-all hover:border-primary flex items-center justify-between ${formData.nodeId === node.id ? 'border-primary bg-success-light/40' : 'border-border bg-bg-app hover:bg-surface'}`}
+                >
+                  <div>
+                    <h4 className="font-bold text-text-dark">{node.nodeCode} - {node.name}</h4>
+                    <p className="text-xs text-text-muted mt-1">Location: {node.address || 'N/A'}</p>
+                    <p className="text-xs text-primary font-semibold mt-1">Battery Slots: {node.availableBatterySlots ?? 10} / {node.totalBatterySlots ?? 10} available</p>
+                  </div>
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-bold ${node.isActive !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
+                    {node.isActive !== false ? '● Active' : '● Inactive'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Time Slot Selection Modal Window */}
+      {isSlotModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-surface rounded-2xl max-w-xl w-full p-6 shadow-xl border border-border max-h-[85vh] flex flex-col">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-border">
+              <div>
+                <h3 className="text-lg font-bold text-primary">Select Booking Time Slot</h3>
+                <p className="text-xs text-text-muted">Station: {selectedNode ? `${selectedNode.nodeCode} - ${selectedNode.name}` : ''}</p>
+              </div>
+              <button onClick={() => setIsSlotModalOpen(false)} className="text-text-muted hover:text-text-dark font-bold text-lg p-1">✕</button>
+            </div>
+
+            {/* Date Filter Bar */}
+            <div className="py-3 border-b border-border bg-bg-app/50 -mx-6 px-6">
+              <span className="text-xs font-bold text-text-dark block mb-2">Date Filter Options:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSlotDateFilter('all')}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${slotDateFilter === 'all' ? 'bg-primary text-surface' : 'bg-surface border border-border text-text-dark hover:bg-bg-app'}`}
+                >
+                  All Dates
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSlotDateFilter('future')}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${slotDateFilter === 'future' ? 'bg-primary text-surface' : 'bg-surface border border-border text-text-dark hover:bg-bg-app'}`}
+                >
+                  From Today Onwards
+                </button>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setSlotDateFilter('date')}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${slotDateFilter === 'date' ? 'bg-primary text-surface' : 'bg-surface border border-border text-text-dark hover:bg-bg-app'}`}
+                  >
+                    Select Date
+                  </button>
+                  {slotDateFilter === 'date' && (
+                    <input
+                      type="date"
+                      value={filterCustomDate}
+                      onChange={(e) => setFilterCustomDate(e.target.value)}
+                      className="px-2 py-1 text-xs border border-border rounded-lg bg-surface text-text-dark outline-none focus:border-primary"
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="py-2.5 flex items-center gap-4 text-xs font-semibold border-b border-border bg-bg-app/30 -mx-6 px-6">
+              <span className="text-text-muted">Status Legend:</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">● Available</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 font-bold">● Reserved</span>
+            </div>
+
+            {/* Slots List */}
+            <div className="overflow-y-auto flex-1 py-4 space-y-3">
+              {filteredSlotsList.length === 0 ? (
+                <div className="text-center py-10 text-text-muted text-sm font-medium">
+                  No booking slots found for this station matching the date filter.
+                </div>
+              ) : (
+                filteredSlotsList.map((slot) => {
+                  const availCap = Number(slot.availableCapacityKWh ?? 0);
+                  const totalCap = Number(slot.totalCapacityKWh ?? 50);
+                  const isAvailableFlag = slot.isAvailable !== false && availCap > 0;
+
+                  return (
+                    <div
+                      key={slot.id}
+                      onClick={() => {
+                        if (isAvailableFlag) {
+                          selectSlot(slot);
+                        } else {
+                          showToast('This time slot is already reserved and unavailable.', 'error');
+                        }
+                      }}
+                      className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
+                        isAvailableFlag 
+                          ? 'cursor-pointer hover:border-primary bg-surface border-border hover:shadow-sm' 
+                          : 'cursor-not-allowed opacity-60 bg-red-50/40 border-red-200'
+                      } ${formData.slotId === slot.id ? 'border-primary bg-success-light/40 ring-1 ring-primary' : ''}`}
+                    >
+                      <div>
+                        <h4 className="font-bold text-text-dark">{slot.slotStartTime} - {slot.slotEndTime}</h4>
+                        <p className="text-xs text-text-muted mt-1">Scheduled Date: {new Date(slot.slotDate).toLocaleDateString()}</p>
+                        <p className={`text-xs font-bold mt-1 ${isAvailableFlag ? 'text-emerald-700' : 'text-red-700'}`}>
+                          {isAvailableFlag ? `Capacity: ${availCap} / ${totalCap} KWh available` : 'Capacity: Reserved / Fully Booked'}
+                        </p>
+                      </div>
+                      <span className={`text-xs px-3 py-1 rounded-full font-bold ${isAvailableFlag ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
+                        {isAvailableFlag ? '● Available' : '● Reserved'}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

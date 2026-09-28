@@ -40,7 +40,7 @@ namespace MicroHelio.Services
                 dto.ScheduledEndTime, dto.RequestedCapacityKWh);
             EnsureBookingWindow(dto.ScheduledDate, dto.ScheduledStartTime);
             await EnsureSlotIsAvailableAsync(dto.SlotId, dto.ScheduledDate,
-                dto.ScheduledStartTime, dto.ScheduledEndTime);
+                dto.ScheduledStartTime, dto.ScheduledEndTime, null, dto.ProsumerNic);
 
             // Build new reservation object
             var newReservation = new EnergyReservation
@@ -96,7 +96,7 @@ namespace MicroHelio.Services
                 dto.ScheduledEndTime, reservation.RequestedCapacityKWh);
             EnsureBookingWindow(dto.ScheduledDate, dto.ScheduledStartTime);
             await EnsureSlotIsAvailableAsync(dto.SlotId, dto.ScheduledDate,
-                dto.ScheduledStartTime, dto.ScheduledEndTime, id);
+                dto.ScheduledStartTime, dto.ScheduledEndTime, id, reservation.ProsumerNic);
             
             var update = Builders<EnergyReservation>.Update
                 .Set(r => r.SlotId, dto.SlotId)
@@ -303,22 +303,19 @@ namespace MicroHelio.Services
         {
             var update = Builders<EnergyBookingSlot>.Update
                 .Inc(s => s.AvailableCapacityKWh, -requestedCapacity)
-                .Inc(s => s.ReservedCapacityKWh, requestedCapacity);
+                .Inc(s => s.ReservedCapacityKWh, requestedCapacity)
+                .Set(s => s.IsAvailable, false);
             var result = await _slots.UpdateOneAsync(session,
                 s => s.Id == slot.Id && s.AvailableCapacityKWh >= requestedCapacity,
                 update);
             if (result.ModifiedCount == 0)
                 throw new InvalidOperationException("The slot does not have enough available capacity.");
-
-            var updatedSlot = await _slots.Find(session, s => s.Id == slot.Id).FirstAsync();
-            await _slots.UpdateOneAsync(session, s => s.Id == slot.Id,
-                Builders<EnergyBookingSlot>.Update.Set(s => s.IsAvailable, updatedSlot.AvailableCapacityKWh > 0));
         }
 
         // Prevents prosumers from booking overlapping time slots.
         private async Task EnsureSlotIsAvailableAsync(
             string slotId, DateTime scheduledDate, string startTimeText,
-            string endTimeText, string? reservationId = null)
+            string endTimeText, string? reservationId = null, string? prosumerNic = null)
         {
             TimeSpan.TryParseExact(startTimeText, "hh\\:mm", CultureInfo.InvariantCulture, out var startTime);
             TimeSpan.TryParseExact(endTimeText, "hh\\:mm", CultureInfo.InvariantCulture, out var endTime);
@@ -330,7 +327,8 @@ namespace MicroHelio.Services
                 r.ScheduledDate == scheduledDate.Date &&
                 r.Status != "Cancelled" &&
                 r.Status != "Completed" &&
-                r.Id != reservationId).ToListAsync();
+                r.Id != reservationId &&
+                (string.IsNullOrEmpty(prosumerNic) || r.ProsumerNic == prosumerNic)).ToListAsync();
 
             var overlaps = activeReservations.Any(reservation =>
                 TimeSpan.TryParseExact(reservation.ScheduledStartTime, "hh\\:mm", CultureInfo.InvariantCulture, out var existingStart) &&
@@ -339,7 +337,7 @@ namespace MicroHelio.Services
                 scheduledDate.Date.Add(existingStart) < requestedEnd);
 
             if (overlaps)
-                throw new InvalidOperationException("The selected slot is already reserved for that time.");
+                throw new InvalidOperationException("You already have an active reservation for this time slot.");
         }
 
         // Restricts updates and cancellations strictly to Pending or Approved bookings.
