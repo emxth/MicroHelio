@@ -29,4 +29,26 @@
     <string name="tvDateTime">Date: 2026-09-24 | 14:00 - 15:00</string>
     <string name="tvCapacity">Requested Capacity: 4.0 KWh</string>
     <string name="btnViewQrCode">Show QR Code</string>
+    
+    <!-- grid_operator_dashboard -->
+    <string name="topHeader">Operator Portal</string>
+    <string name="tvGridOpWelcome">Welcome, Grid Operator</string>
+    <string name="btnLogout">Logout</string>
+    <string name="gpHeaderDescription">Energy Transfer &amp; QR Code Verification Station</string>
+    <string name="scnannerDes">QR Code Scanner &amp; Verification</string>
+    <string name="scannerLongDes">Scan Prosumer\'s reservation QR payload to verify cryptographic HMAC signature and initiate energy transfer.</string>
+    <string name="btnScanQrCode">Scan QR Payload</string>
+    <string name="btnPastePayload">Enter QR Payload</string>
+    <string name="tvVerifyStatusHeader">Transaction Initiated</string>
+    <string name="tvTrxBadge">Verified</string>
+    <string name="tvTrxCode">Code: TRX-12345678</string>
+    <string name="tvTrxReservationId">Reservation ID: 651234...</string>
+    <string name="tvTrxNodeId">Node ID: 659876...</string>
+    <string name="actualEnTranf">Enter Actual Energy Transferred (KWh):</string>
+    <string name="etEnergyKWh">e.g. 4.5</string>
+    <string name="btnCompleteTransfer">Complete Energy Transfer</string>
+    <string name="listRecentTrans">Recent Operator Transactions</string>
+    <string name="btnRefreshTransactions">Refresh</string>
+    <string name="tvItemTrxStatus">Initiated</string>
+    <string name="tvItemKWh">Energy Transferred: 0.0 KWh</string>
 </resources>
