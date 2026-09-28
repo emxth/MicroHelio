@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ErrorBanner, LoadingState, PageHeader, DetailRow, BackLink, useConfirm } from '../../components/ui/index';
 import { formatDate, StatusBadge } from '../../utils/helpers';
 import { getProsumerByNic, activateProsumer, reactivateProsumer } from '../../services/prosumers';
+import { getUser } from '../../services/users';
 import { useAuth } from '../../context/AuthContext';
 
 export default function ProsumerDetail() {
@@ -23,6 +24,12 @@ export default function ProsumerDetail() {
       try {
         const data = await getProsumerByNic(nic);
         if (!data) throw new Error('Prosumer not found.');
+        if (data.reactivatedBy) {
+          try {
+            const u = await getUser(data.reactivatedBy);
+            data.reactivatedByName = u.fullName || u.email;
+          } catch(e) {}
+        }
         setProsumer(data);
       } catch (err) {
         setError(err.message || 'Unable to load prosumer details.');
@@ -55,6 +62,12 @@ export default function ProsumerDetail() {
     setError('');
     try {
       const updated = await reactivateProsumer(nic);
+      if (updated.reactivatedBy) {
+        try {
+          const u = await getUser(updated.reactivatedBy);
+          updated.reactivatedByName = u.fullName || u.email;
+        } catch(e) {}
+      }
       setProsumer(updated);
     } catch (err) {
       setError(err.message || 'Unable to reactivate the prosumer.');
@@ -134,7 +147,7 @@ export default function ProsumerDetail() {
               <DetailRow label="Last Reactivated At" value={formatDate(prosumer.reactivatedAt)} />
             )}
             {prosumer.reactivatedBy && (
-              <DetailRow label="Reactivated By (User ID)" value={prosumer.reactivatedBy} />
+              <DetailRow label="Reactivated By" value={prosumer.reactivatedByName || prosumer.reactivatedBy} />
             )}
           </div>
         </div>
