@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:background="@color/eco_off_white">
 
-    <!-- Top Header Bar with Back Icon -->
+    <!-- Top Header Bar with Professional Back Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,9 +43,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update slot details or cancel booking"
+                android:text="Update station, pick time slot or cancel booking"
                 android:textColor="@color/soft_sunlight"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
     </LinearLayout>
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Policy Warning Card -->
+            <!-- Policy Notice Warning Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,13 +73,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Notice: Updates and cancellations require at least 12 hours' notice prior to the scheduled start time."
+                    android:text="Notice: Updates and cancellations require at least 12 hours' notice prior to the scheduled slot time."
                     android:textColor="#856404"
                     android:textSize="13sp"
                     android:padding="14dp"/>
             </androidx.cardview.widget.CardView>
 
-            <!-- Main Form Card -->
+            <!-- Main Interactive Form Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,100 +93,235 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <!-- Microgrid Node Dropdown -->
+                    <!-- Prosumer NIC Identifier -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Microgrid Node"
+                        android:text="Prosumer NIC Identifier"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
+                    <EditText
+                        android:id="@+id/etProsumerNic"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="981234567V"
+                        android:enabled="false"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_search_input"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Select Microgrid Station Card Selector -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Microgrid Station"
+                        android:textColor="@color/moss_gray"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/cardSelectNode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="54dp"
+                        android:background="@drawable/bg_card_selector"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSelectedNodeTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Loading station details..."
+                                android:textColor="@color/dark_pine"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSelectedNodeSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tap to change station"
+                                android:textColor="@color/moss_gray"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▼"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Hidden legacy spinner for backward compatibility -->
                     <Spinner
                         android:id="@+id/spinnerNodes"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@android:drawable/btn_dropdown"
-                        android:layout_marginBottom="14dp"/>
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
-                    <!-- Energy Booking Slot Dropdown -->
+                    <!-- Select Time Slot Card Selector -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select New Available Time Slot"
+                        android:text="Select New Time Slot"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/cardSelectSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="54dp"
+                        android:background="@drawable/bg_card_selector"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSelectedSlotTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Loading slot details..."
+                                android:textColor="@color/dark_pine"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSelectedSlotSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tap to pick a new slot"
+                                android:textColor="@color/moss_gray"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▼"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Hidden legacy spinner for backward compatibility -->
                     <Spinner
                         android:id="@+id/spinnerSlots"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@android:drawable/btn_dropdown"
-                        android:layout_marginBottom="14dp"/>
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
-                    <!-- Auto-populated Date & Time Info Display -->
+                    <!-- Selected Slot Summary Container -->
                     <LinearLayout
+                        android:id="@+id/layoutSlotSummary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="@color/eco_off_white"
-                        android:padding="12dp"
-                        android:layout_marginBottom="14dp">
+                        android:background="#F0F7F4"
+                        android:padding="14dp"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current Booking Details"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvSelectedSlotDetails"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Current Slot: Loading..."
+                            android:text="Current: Loading slot info..."
                             android:textColor="@color/dark_pine"
                             android:textSize="13sp"
-                            android:textStyle="bold"/>
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
 
                     <!-- Update Action Button -->
                     <Button
                         android:id="@+id/btnUpdateReservation"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="52dp"
                         android:text="Save Changes"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         android:backgroundTint="@color/deep_canopy_green"
                         android:textColor="@color/pure_white"
-                        app:cornerRadius="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:padding="12dp"/>
+                        app:cornerRadius="12dp"
+                        android:layout_marginBottom="20dp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="#E0E0E0"
-                        android:layout_marginBottom="16dp"/>
+                        android:layout_marginBottom="20dp"/>
 
-                    <!-- Cancellation Reason -->
+                    <!-- Cancellation Section -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Cancellation Reason (Required to Cancel)"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
                     <EditText
                         android:id="@+id/etCancelReason"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="e.g. Schedule changed"
+                        android:layout_height="48dp"
+                        android:hint="Provide reason for cancelling"
                         android:textColor="@color/dark_pine"
                         android:textSize="14sp"
-                        android:layout_marginBottom="14dp"/>
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_search_input"
+                        android:layout_marginBottom="20dp"/>
 
                     <!-- Cancel Action Button -->
                     <Button
                         android:id="@+id/btnCancelReservation"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="52dp"
                         android:text="Cancel Booking"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         android:backgroundTint="#C92A2A"
                         android:textColor="@color/pure_white"
-                        app:cornerRadius="8dp"
-                        android:padding="12dp"/>
+                        app:cornerRadius="12dp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
