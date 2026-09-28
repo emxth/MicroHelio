@@ -11,7 +11,6 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object ApiClient {
-    private const val BASE_URL = "http://10.0.2.2:5056/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY 
@@ -46,7 +45,7 @@ object ApiClient {
 
     val apiService: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(ApiConfig.getBaseUrl())
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

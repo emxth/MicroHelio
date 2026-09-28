@@ -4,6 +4,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +21,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
 
-        <!-- Component 1: Login -->
+        <!-- Login -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -27,12 +31,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Component 1: Register Prosumer -->
+        <!-- Register Prosumer -->
         <activity
             android:name=".RegisterProsumerActivity"
             android:exported="false" />
 
-        <!-- Component 3: Prosumer Dashboard -->
+        <!-- Prosumer Dashboard -->
         <activity
             android:name=".DashboardActivity"
             android:exported="false" />
@@ -49,32 +53,32 @@
             android:name=".GridOperatorDashboardActivity"
             android:exported="false" />
 
-        <!-- Component 3: Create Reservation Screen -->
+        <!-- Create Reservation Screen -->
         <activity
             android:name=".CreateReservationActivity"
             android:exported="false" />
 
-        <!-- Component 3: Update & Cancel Reservation Screen -->
+        <!-- Update & Cancel Reservation Screen -->
         <activity
             android:name=".UpdateReservationActivity"
             android:exported="false" />
 
-        <!-- Component 3: Booking History & Search Screen -->
+        <!-- Booking History & Search Screen -->
         <activity
             android:name=".BookingHistoryActivity"
             android:exported="false" />
 
-        <!-- Component 4: Prosumer QR Code Generator Screen -->
+        <!-- CProsumer QR Code Generator Screen -->
         <activity
             android:name=".QrCodeGeneratorActivity"
             android:exported="false" />
 
-        <!-- Component 2: Microgrid Node List Screen -->
+        <!-- Microgrid Node List Screen -->
         <activity
             android:name=".NodeListActivity"
             android:exported="false" />
 
-        <!-- Component 2: Microgrid Node Details Screen -->
+        <!-- Microgrid Node Details Screen -->
         <activity
             android:name=".NodeDetailsActivity"
             android:exported="false" />
