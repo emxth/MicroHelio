@@ -86,7 +86,36 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         rvTransactions = findViewById(R.id.rvTransactions)
 
         rvTransactions.layoutManager = LinearLayoutManager(this)
-        adapter = TransactionAdapter(transactionList)
+        adapter = TransactionAdapter(transactionList) { selectedItem ->
+            val status = selectedItem.optString("transactionStatus", "Initiated")
+            val id = selectedItem.optString("id", selectedItem.optString("_id"))
+            val code = selectedItem.optString("transactionCode", "TRX-N/A")
+            val nic = selectedItem.optString("prosumerNic", "N/A")
+            val reservationId = selectedItem.optString("reservationId", "N/A")
+            val nodeId = selectedItem.optString("nodeId", "N/A")
+
+            currentActiveTransactionId = id
+
+            cvTransactionResult.visibility = View.VISIBLE
+            tvVerifyStatusHeader.text = if (status == "Completed") "Transaction Completed" else "Transaction Selected"
+            tvTrxBadge.text = status
+            tvTrxBadge.setBackgroundColor(
+                if (status == "Completed") Color.parseColor("#2D6A4F") else Color.parseColor("#E9C46A")
+            )
+            tvTrxCode.text = "Code: $code"
+            tvTrxProsumerNic.text = "Prosumer NIC: $nic"
+            tvTrxReservationId.text = "Reservation ID: $reservationId"
+            tvTrxNodeId.text = "Node ID: $nodeId"
+
+            if (status == "Initiated") {
+                llTransferCompletionPanel.visibility = View.VISIBLE
+                Toast.makeText(this, "Selected transaction $code for completion", Toast.LENGTH_SHORT).show()
+            } else {
+                llTransferCompletionPanel.visibility = View.GONE
+                // Show Digital Receipt for completed transactions
+                TransactionReceiptDialog.show(this, selectedItem)
+            }
+        }
         rvTransactions.adapter = adapter
 
         // Get Session Operator Data
@@ -124,6 +153,8 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
             }
             if (currentActiveTransactionId.isNotEmpty()) {
                 completeEnergyTransaction(currentActiveTransactionId, energyVal)
+            } else {
+                Toast.makeText(this, "No active transaction selected to complete", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -326,17 +357,40 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
                 val code = connection.responseCode
                 if (code == 200) {
+                    val responseText = try {
+                        connection.inputStream.bufferedReader().use { it.readText() }
+                    } catch (e: Exception) { "" }
+
+                    val completedTrxObj = JSONObject().apply {
+                        put("id", trxId)
+                        put("transactionCode", tvTrxCode.text.toString().replace("Code: ", ""))
+                        put("prosumerNic", tvTrxProsumerNic.text.toString().replace("Prosumer NIC: ", ""))
+                        put("nodeId", tvTrxNodeId.text.toString().replace("Node ID: ", ""))
+                        put("reservationId", tvTrxReservationId.text.toString().replace("Reservation ID: ", ""))
+                        put("energyTransferredKWh", energyKWh)
+                        put("transactionStatus", "Completed")
+                    }
+
                     runOnUiThread {
                         tvVerifyStatusHeader.text = "Transaction Completed"
                         tvTrxBadge.text = "Completed ⚡"
                         tvTrxBadge.setBackgroundColor(Color.parseColor("#2D6A4F"))
                         llTransferCompletionPanel.visibility = View.GONE
+                        etEnergyKWh.setText("")
                         Toast.makeText(this, "Energy transfer completed successfully!", Toast.LENGTH_LONG).show()
+
+                        // Automatically display digital receipt modal
+                        TransactionReceiptDialog.show(this@GridOperatorDashboardActivity, completedTrxObj)
                         fetchOperatorTransactions()
                     }
                 } else {
+                    val errMessage = try {
+                        connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Error $code"
+                    } catch (e: Exception) {
+                        "Server error code: $code"
+                    }
                     runOnUiThread {
-                        Toast.makeText(this, "Failed to complete transaction. Server code: $code", Toast.LENGTH_SHORT).show()
+                        showErrorDialog("Completion Failed", errMessage)
                     }
                 }
             } catch (e: Exception) {

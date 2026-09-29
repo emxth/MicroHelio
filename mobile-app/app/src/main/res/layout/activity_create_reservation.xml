@@ -55,289 +55,265 @@
         android:layout_weight="1"
         android:padding="16dp">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/pure_white">
 
-            <!-- Card Form Container -->
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="@color/pure_white">
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <!-- Prosumer NIC -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/str_prosumer_nic"
+                    android:text="@string/label_prosumer_nic"
                     android:textColor="@color/moss_gray"
                     android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp"/>
+
                 <EditText
                     android:id="@+id/etProsumerNic"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/str_981234567v"
+                    android:layout_height="48dp"
                     android:enabled="false"
                     android:textColor="@color/dark_pine"
                     android:textSize="14sp"
-                    android:layout_marginBottom="14dp"/>
+                    android:paddingHorizontal="14dp"
+                    android:background="@drawable/bg_search_input"
+                    android:layout_marginBottom="16dp"/>
 
+                <!-- Select Microgrid Station Card Selector -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/str_select_microgrid_node"
+                    android:text="@string/label_select_station"
                     android:textColor="@color/moss_gray"
                     android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <Spinner
-                    android:id="@+id/spinnerNodes"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@android:drawable/btn_dropdown"
-                    android:layout_marginBottom="14dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/str_select_available_time_slot"
-                    android:textColor="@color/moss_gray"
-                    android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <Spinner
-                    android:id="@+id/spinnerSlots"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@android:drawable/btn_dropdown"
-                    android:layout_marginBottom="14dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/str_reservation_type"
-                    android:textColor="@color/moss_gray"
-                    android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
-                <Spinner
-                    android:id="@+id/spinnerReservationType"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@android:drawable/btn_dropdown"
-                    android:layout_marginBottom="14dp"/>
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp"/>
 
                 <LinearLayout
+                    android:id="@+id/cardSelectNode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/eco_off_white"
-                    android:padding="12dp"
-                    android:layout_marginBottom="14dp">
-
-                            <TextView
-                                android:id="@+id/tvSelectedNodeSub"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/hint_choose_station_location"
-                                android:textColor="@color/moss_gray"
-                                android:textSize="12sp"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="▼"
-                            android:textColor="@color/deep_canopy_green"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <!-- Hidden legacy spinner for compatibility -->
-                    <Spinner
-                        android:id="@+id/spinnerNodes"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:visibility="gone" />
-
-                    <!-- Select Time Slot Card Selector -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_select_slot"
-                        android:textColor="@color/moss_gray"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp"/>
+                    android:minHeight="54dp"
+                    android:background="@drawable/bg_card_selector"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginBottom="16dp">
 
                     <LinearLayout
-                        android:id="@+id/cardSelectSlot"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:minHeight="54dp"
-                        android:background="@drawable/bg_card_selector"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="14dp"
-                        android:paddingVertical="10dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_marginBottom="16dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tvSelectedSlotTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/hint_tap_choose_slot"
-                                android:textColor="@color/dark_pine"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tvSelectedSlotSub"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/hint_view_available_reserved_slots"
-                                android:textColor="@color/moss_gray"
-                                android:textSize="12sp"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvSelectedNodeTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="▼"
-                            android:textColor="@color/deep_canopy_green"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <!-- Hidden legacy spinner for compatibility -->
-                    <Spinner
-                        android:id="@+id/spinnerSlots"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:visibility="gone" />
-
-                    <!-- Reservation Type Selector -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_reservation_type"
-                        android:textColor="@color/moss_gray"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp"/>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="46dp"
-                        android:orientation="horizontal"
-                        android:background="@color/eco_off_white"
-                        android:padding="4dp"
-                        android:layout_marginBottom="16dp">
-
-                        <Button
-                            android:id="@+id/btnTypeDropOff"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/type_dropoff"
-                            android:textColor="@color/pure_white"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:backgroundTint="@color/deep_canopy_green"
-                            app:cornerRadius="8dp" />
-
-                        <Button
-                            android:id="@+id/btnTypeCharging"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:text="@string/type_charging"
+                            android:text="@string/hint_tap_select_station"
                             android:textColor="@color/dark_pine"
-                            android:textSize="13sp"
-                            android:backgroundTint="@color/eco_off_white"
-                            app:cornerRadius="8dp" />
-                    </LinearLayout>
-
-                    <!-- Hidden legacy spinner for compatibility -->
-                    <Spinner
-                        android:id="@+id/spinnerReservationType"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:visibility="gone" />
-
-                    <!-- Selected Slot Summary Container -->
-                    <LinearLayout
-                        android:id="@+id/layoutSlotSummary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:background="#F0F7F4"
-                        android:padding="14dp"
-                        android:layout_marginBottom="16dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/summary_selected_slot"
-                            android:textColor="@color/deep_canopy_green"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
-                            android:id="@+id/tvSelectedSlotDetails"
-                            android:layout_width="match_parent"
+                            android:id="@+id/tvSelectedNodeSub"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/summary_no_slot_selected"
-                            android:textColor="@color/dark_pine"
-                            android:textSize="13sp"
-                            android:layout_marginTop="4dp" />
+                            android:text="@string/hint_choose_station_location"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
                     </LinearLayout>
 
-                    <!-- Requested Capacity -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_requested_capacity"
-                        android:textColor="@color/moss_gray"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="6dp"/>
+                        android:text="▼"
+                        android:textColor="@color/deep_canopy_green"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
-                    <EditText
-                        android:id="@+id/etCapacity"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:hint="@string/hint_enter_capacity"
-                        android:inputType="numberDecimal"
-                        android:textColor="@color/dark_pine"
-                        android:textSize="14sp"
-                        android:paddingHorizontal="14dp"
-                        android:background="@drawable/bg_search_input"
-                        android:layout_marginBottom="24dp"/>
+                <!-- Hidden legacy spinner for compatibility -->
+                <Spinner
+                    android:id="@+id/spinnerNodes"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
 
+                <!-- Select Time Slot Card Selector -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/str_requested_capacity_kwh"
+                    android:text="@string/label_select_slot"
                     android:textColor="@color/moss_gray"
                     android:textSize="12sp"
-                    android:layout_marginBottom="4dp"/>
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp"/>
+
+                <LinearLayout
+                    android:id="@+id/cardSelectSlot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="54dp"
+                    android:background="@drawable/bg_card_selector"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvSelectedSlotTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hint_tap_choose_slot"
+                            android:textColor="@color/dark_pine"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvSelectedSlotSub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hint_view_available_reserved_slots"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="▼"
+                        android:textColor="@color/deep_canopy_green"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Hidden legacy spinner for compatibility -->
+                <Spinner
+                    android:id="@+id/spinnerSlots"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+                <!-- Reservation Type Selector -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_reservation_type"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:orientation="horizontal"
+                    android:background="@color/eco_off_white"
+                    android:padding="4dp"
+                    android:layout_marginBottom="16dp">
+
+                    <Button
+                        android:id="@+id/btnTypeDropOff"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/type_dropoff"
+                        android:textColor="@color/pure_white"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:backgroundTint="@color/deep_canopy_green"
+                        app:cornerRadius="8dp" />
+
+                    <Button
+                        android:id="@+id/btnTypeCharging"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/type_charging"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="13sp"
+                        android:backgroundTint="@color/eco_off_white"
+                        app:cornerRadius="8dp" />
+                </LinearLayout>
+
+                <!-- Hidden legacy spinner for compatibility -->
+                <Spinner
+                    android:id="@+id/spinnerReservationType"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+                <!-- Selected Slot Summary Container -->
+                <LinearLayout
+                    android:id="@+id/layoutSlotSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#F0F7F4"
+                    android:padding="14dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/summary_selected_slot"
+                        android:textColor="@color/deep_canopy_green"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSelectedSlotDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/summary_no_slot_selected"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="13sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Requested Capacity -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_requested_capacity"
+                    android:textColor="@color/moss_gray"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp"/>
+
                 <EditText
                     android:id="@+id/etCapacity"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/str_e_g_5_0"
+                    android:layout_height="48dp"
+                    android:hint="@string/hint_enter_capacity"
                     android:inputType="numberDecimal"
                     android:textColor="@color/dark_pine"
                     android:textSize="14sp"
+                    android:paddingHorizontal="14dp"
+                    android:background="@drawable/bg_search_input"
                     android:layout_marginBottom="24dp"/>
 
                 <Button
@@ -351,7 +327,7 @@
                     android:padding="12dp"/>
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </ScrollView>
 
     <include layout="@layout/layout_bottom_nav" />

@@ -204,4 +204,18 @@
     <!-- List Item Card Strings -->
     <string name="item_capacity_label">Capacity</string>
     <string name="btn_book_slot">Book Slot</string>
+
+    <!-- dialog_transaction_receipt.xml screen -->
+    <string name="rcpHeader">MicroHelio Energy Transfer</string>
+    <string name="rcpSubHeader">Official Digital Transaction Receipt</string>
+    <string name="tvReceiptStatusBadge">Completed</string>
+    <string name="rcpTrxCode">Transaction Code:</string>
+    <string name="rcpStationId">Grid Station ID:</string>
+    <string name="rcpResFef">Reservation Ref:</string>
+    <string name="rcpResId">RES-651234ABCD</string>
+    <string name="rcpEnrTran">Energy Transferred:</string>
+    <string name="rcpDateTime">Date &amp; Time:</string>
+    <string name="rcpDateTimeVal">2026-09-29 11:45</string>
+    <string name="tvReceiptSecurityFooter">Verified via HMAC-SHA256 Cryptographic Ledger</string>
+    <string name="btnCloseReceipt">Close Receipt</string>
 </resources>
