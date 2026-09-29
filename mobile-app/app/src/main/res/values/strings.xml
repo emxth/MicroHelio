@@ -53,7 +53,7 @@
     <string name="tvItemTrxStatus">Initiated</string>
     <string name="tvItemKWh">Energy Transferred: 0.0 KWh</string>
 
-    <string name="str_booking_history_amp_search">Booking History &amp;amp; Search</string>
+    <string name="str_booking_history_amp_search">Booking History &amp; Search</string>
     <string name="str_filter_past_and_active_reserva">Filter past and active reservations</string>
     <string name="str_select_date">Select Date</string>
     <string name="str_search_refresh_history">Search / Refresh History</string>

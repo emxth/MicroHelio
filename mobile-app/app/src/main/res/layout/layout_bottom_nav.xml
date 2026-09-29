@@ -14,7 +14,18 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/str_dashboard"
-        android:textSize="12sp"
+        android:textSize="11sp"
+        android:backgroundTint="@android:color/transparent"
+        android:textColor="@color/deep_canopy_green"
+        style="?android:attr/borderlessButtonStyle"/>
+
+    <Button
+        android:id="@+id/navNodes"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="@string/nav_nodes"
+        android:textSize="11sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
@@ -25,7 +36,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/str_new_booking"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
@@ -36,7 +47,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="@string/str_history"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
