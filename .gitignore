@@ -7,6 +7,10 @@ web-service/**/*.user
 
 # Web App
 web-app/node_modules/
+web-app/react-app/
+web-app/dist/
+web-app/build/
+web-app/.cache/
 
 # Android
 mobile-app/.gradle/
