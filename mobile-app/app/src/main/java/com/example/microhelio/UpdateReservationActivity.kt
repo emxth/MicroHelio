@@ -49,7 +49,7 @@ class UpdateReservationActivity : AppCompatActivity() {
     private lateinit var btnBack: ImageView
     private lateinit var etProsumerNic: EditText
 
-    private val baseUrl = "http://localhost:5056/api"
+    private val baseUrl = com.example.microhelio.api.ApiConfig.getApiBaseUrl()
 
     private val nodeList = ArrayList<JSONObject>()
     private val slotList = ArrayList<JSONObject>()

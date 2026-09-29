@@ -34,7 +34,7 @@ class NodeDetailsActivity : AppCompatActivity() {
     private lateinit var tvDetailCoordinates: TextView
     private lateinit var btnBookSlot: Button
 
-    private val baseUrl = "http://localhost:5056/api"
+    private val baseUrl = com.example.microhelio.api.ApiConfig.getApiBaseUrl()
     private var targetNodeId: String = ""
     private var currentTotalBatterySlots: Int = 10
     private var currentAvailBatterySlots: Int = 10

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12px"
+    android:layout_marginBottom="12dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/pure_white">
@@ -26,7 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/str_res_1234abcd"
+                android:text="@string/tvResCode"
                 android:textColor="@color/dark_pine"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -35,7 +35,7 @@
                 android:id="@+id/tvStatusBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/str_pending"
+                android:text="@string/tvStatusBadge"
                 android:textColor="@color/pure_white"
                 android:textSize="11sp"
                 android:paddingHorizontal="8dp"
@@ -47,7 +47,7 @@
             android:id="@+id/tvProsumerNic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Prosumer NIC: 981234567V"
+            android:text="@string/tvProsumerNic"
             android:textColor="@color/dark_pine"
             android:textSize="12sp"
             android:layout_marginBottom="4dp" />
@@ -56,7 +56,7 @@
             android:id="@+id/tvNodeAndType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/str_node_badulla_central_type_drop"
+            android:text="@string/tvNodeAndType"
             android:textColor="@color/moss_gray"
             android:textSize="13sp"
             android:layout_marginBottom="4dp" />
@@ -65,7 +65,7 @@
             android:id="@+id/tvDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/str_date_2026_09_24_14_00_15_00"
+            android:text="@string/tvDateTime"
             android:textColor="@color/dark_pine"
             android:textSize="13sp"
             android:layout_marginBottom="4dp" />
@@ -74,10 +74,23 @@
             android:id="@+id/tvCapacity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/str_requested_capacity_4_0_kwh"
+            android:text="@string/tvCapacity"
             android:textColor="@color/deep_canopy_green"
             android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/btnViewQrCode"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/deep_canopy_green"
+            android:text="@string/btnViewQrCode"
+            android:textAllCaps="false"
+            android:textColor="@color/pure_white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

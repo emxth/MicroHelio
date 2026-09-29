@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MicroHelio</string>
+
+    <!-- qr_code_generation screen -->
+    <string name="tvHmacBadge">Cryptographically Signed (HMAC-SHA256)</string>
+    <string name="bnBack">Back</string>
+    <string name="reservationQr">Reservation QR Code</string>
+    <string name="tvQrStatusBadge">Status: Approved</string>
+    <string name="ivQrCode">Reservation QR Code</string>
+    <string name="listResCode">Reservation Code:</string>
+    <string name="tvResCode">RES-1234ABCD</string>
+    <string name="listNic">Prosumer NIC:</string>
+    <string name="tvProsumerNicDetail">981234567V</string>
+    <string name="listNode">Microgrid Node:</string>
+    <string name="tvNodeDetail">Node #1</string>
+    <string name="listScheTime">Scheduled Time:</string>
+    <string name="tvScheduledTimeDetail">2026-09-24 | 14:00 - 15:00</string>
+    <string name="listCapacity">Capacity:</string>
+    <string name="tvCapacityDetail">4.0 KWh</string>
+    <string name="hintBulb">💡</string>
+    <string name="qrGenScreenHint">Show this QR code to the Grid Operator at the Microgrid Node station. The operator will scan this code to verify your reservation and initiate energy transfer.</string>
+    <string name="btnRegenerateQr">Refresh QR Payload</string>
+    <string name="btnDone">Back to Dashboard</string>
+
+    <!-- item_reservation screen -->
+    <string name="tvStatusBadge">Pending</string>
+    <string name="tvProsumerNic">Prosumer NIC: 981234567V</string>
+    <string name="tvNodeAndType">Node: Badulla Central | Type: DropOff</string>
+    <string name="tvDateTime">Date: 2026-09-24 | 14:00 - 15:00</string>
+    <string name="tvCapacity">Requested Capacity: 4.0 KWh</string>
+    <string name="btnViewQrCode">Show QR Code</string>
+    
+    <!-- grid_operator_dashboard -->
+    <string name="topHeader">Operator Portal</string>
+    <string name="tvGridOpWelcome">Welcome, Grid Operator</string>
+    <string name="btnLogout">Logout</string>
+    <string name="gpHeaderDescription">Energy Transfer &amp; QR Code Verification Station</string>
+    <string name="scnannerDes">QR Code Scanner &amp; Verification</string>
+    <string name="scannerLongDes">Scan Prosumer\'s reservation QR payload to verify cryptographic HMAC signature and initiate energy transfer.</string>
+    <string name="btnScanQrCode">Scan QR Payload</string>
+    <string name="btnPastePayload">Enter QR Payload</string>
+    <string name="tvVerifyStatusHeader">Transaction Initiated</string>
+    <string name="tvTrxBadge">Verified</string>
+    <string name="tvTrxCode">Code: TRX-12345678</string>
+    <string name="tvTrxReservationId">Reservation ID: 651234...</string>
+    <string name="tvTrxNodeId">Node ID: 659876...</string>
+    <string name="actualEnTranf">Enter Actual Energy Transferred (KWh):</string>
+    <string name="etEnergyKWh">e.g. 4.5</string>
+    <string name="btnCompleteTransfer">Complete Energy Transfer</string>
+    <string name="listRecentTrans">Recent Operator Transactions</string>
+    <string name="btnRefreshTransactions">Refresh</string>
+    <string name="tvItemTrxStatus">Initiated</string>
+    <string name="tvItemKWh">Energy Transferred: 0.0 KWh</string>
+
     <string name="str_booking_history_amp_search">Booking History &amp;amp; Search</string>
     <string name="str_filter_past_and_active_reserva">Filter past and active reservations</string>
     <string name="str_select_date">Select Date</string>
