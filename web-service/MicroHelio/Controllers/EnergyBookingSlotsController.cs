@@ -67,13 +67,15 @@ namespace MicroHelio.Controllers
         public async Task<ActionResult<IEnumerable<EnergyBookingSlot>>> BatchGenerateSlots(
             [FromQuery] string nodeId,
             [FromQuery] DateTime date,
+            [FromQuery] string startTime,
+            [FromQuery] string endTime,
             [FromQuery] double capacityKWh = 50.0,
-            [FromQuery] int durationHours = 2)
+            [FromQuery] string slotType = "DropOff")
         {
             // Begin method execution: Generate time slots in bulk for node
             try
             {
-                var generatedSlots = await _slotService.BatchGenerateSlotsAsync(nodeId, date, capacityKWh, durationHours);
+                var generatedSlots = await _slotService.BatchGenerateSlotsAsync(nodeId, date, startTime, endTime, capacityKWh, slotType);
                 return Ok(generatedSlots);
             }
             catch (Exception ex)

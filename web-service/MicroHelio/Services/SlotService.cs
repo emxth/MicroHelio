@@ -114,43 +114,43 @@ namespace MicroHelio.Services
         }
 
         // Batch generate daily slots for node schedule
-        public async Task<IEnumerable<EnergyBookingSlot>> BatchGenerateSlotsAsync(string nodeId, DateTime date, double capacityKWh, int durationHours)
+        public async Task<IEnumerable<EnergyBookingSlot>> BatchGenerateSlotsAsync(string nodeId, DateTime date, string startTime, string endTime, double capacityKWh, string slotType = "DropOff")
         {
             var node = await _nodesCollection.Find(n => n.Id == nodeId).FirstOrDefaultAsync();
             if (node == null) throw new InvalidOperationException("Node not found.");
 
-            var createdSlots = new List<EnergyBookingSlot>();
-            int startHour = 8;
-            int closeHour = 18;
-
-            if (TimeSpan.TryParse(node.OpenTime, out var openTs)) startHour = openTs.Hours;
-            if (TimeSpan.TryParse(node.CloseTime, out var closeTs)) closeHour = closeTs.Hours;
-
-            for (int hour = startHour; hour + durationHours <= closeHour; hour += durationHours)
+            if (!TimeSpan.TryParse(startTime, out var startTs))
             {
-                var startTimeStr = $"{hour:D2}:00";
-                var endTimeStr = $"{hour + durationHours:D2}:00";
-
-                var slot = new EnergyBookingSlot
-                {
-                    NodeId = nodeId,
-                    SlotDate = date.Date,
-                    SlotStartTime = startTimeStr,
-                    SlotEndTime = endTimeStr,
-                    TotalCapacityKWh = capacityKWh > 0 ? capacityKWh : node.CapacityKWh,
-                    ReservedCapacityKWh = 0,
-                    AvailableCapacityKWh = capacityKWh > 0 ? capacityKWh : node.CapacityKWh,
-                    SlotType = "DropOff",
-                    IsAvailable = true,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
-                };
-
-                await _slotsCollection.InsertOneAsync(slot);
-                createdSlots.Add(slot);
+                throw new ArgumentException("Invalid start time format. Expected format: HH:mm");
             }
 
-            return createdSlots;
+            if (!TimeSpan.TryParse(endTime, out var endTs))
+            {
+                throw new ArgumentException("Invalid end time format. Expected format: HH:mm");
+            }
+
+            if (startTs >= endTs)
+            {
+                throw new ArgumentException("Start time must be strictly before end time.");
+            }
+
+            var slot = new EnergyBookingSlot
+            {
+                NodeId = nodeId,
+                SlotDate = date.Date,
+                SlotStartTime = startTime,
+                SlotEndTime = endTime,
+                TotalCapacityKWh = capacityKWh > 0 ? capacityKWh : node.CapacityKWh,
+                ReservedCapacityKWh = 0,
+                AvailableCapacityKWh = capacityKWh > 0 ? capacityKWh : node.CapacityKWh,
+                SlotType = !string.IsNullOrWhiteSpace(slotType) ? slotType : "DropOff",
+                IsAvailable = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            await _slotsCollection.InsertOneAsync(slot);
+            return new List<EnergyBookingSlot> { slot };
         }
     }
 }
