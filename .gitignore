@@ -3,7 +3,14 @@ web-service/**/bin/
 web-service/**/obj/
 web-service/**/.vs/
 web-service/**/appsettings.json
+web-service/**/appsettings.Local.json
+web-service/**/secrets.json
 web-service/**/*.user
+
+# Local secrets / environment values
+.env
+.env.*
+*.local.json
 
 # Web App
 web-app/node_modules/

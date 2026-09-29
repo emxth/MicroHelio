@@ -29,7 +29,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var tvWelcomeNic: TextView
     private lateinit var rvBookings: RecyclerView
 
-    private val baseUrl = "http://10.0.2.2:5056/api"
+    private val baseUrl = "http://localhost:5056/api"
     private val prosumerNic = "981234567V"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +91,14 @@ class DashboardActivity : AppCompatActivity() {
         findViewById<View>(R.id.navDashboard)?.setOnClickListener {
             if (javaClass != DashboardActivity::class.java) {
                 startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
+            }
+        }
+
+        // Navigate to Microgrid Node List if not already on it
+        findViewById<View>(R.id.navNodes)?.setOnClickListener {
+            if (javaClass != NodeListActivity::class.java) {
+                startActivity(Intent(this, NodeListActivity::class.java))
                 finish()
             }
         }

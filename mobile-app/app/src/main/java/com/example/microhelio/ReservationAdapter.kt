@@ -21,6 +21,7 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvCode: TextView = view.findViewById(R.id.tvReservationCode)
         val tvStatus: TextView = view.findViewById(R.id.tvStatusBadge)
+        val tvProsumerNic: TextView = view.findViewById(R.id.tvProsumerNic)
         val tvNodeAndType: TextView = view.findViewById(R.id.tvNodeAndType)
         val tvDateTime: TextView = view.findViewById(R.id.tvDateTime)
         val tvCapacity: TextView = view.findViewById(R.id.tvCapacity)
@@ -39,6 +40,10 @@ class ReservationAdapter(private val reservations: List<JSONObject>) :
 
         val status = res.optString("status", "Unknown")
         holder.tvStatus.text = status
+
+        // Display Prosumer NIC
+        val nic = res.optString("prosumerNic", res.optString("prosumerNIC", "N/A"))
+        holder.tvProsumerNic.text = "Prosumer NIC: $nic"
 
         // Color code status badge based on booking state
         when (status) {

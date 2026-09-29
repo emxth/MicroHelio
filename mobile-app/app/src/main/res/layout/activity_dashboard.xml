@@ -56,7 +56,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="View Profile" />
+            android:contentDescription="@string/desc_view_profile" />
     </LinearLayout>
 
     <ScrollView
