@@ -7,7 +7,6 @@ namespace MicroHelio.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    [Authorize(Roles = "Backoffice")]
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
@@ -18,6 +17,7 @@ namespace MicroHelio.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllAsync();
@@ -25,6 +25,7 @@ namespace MicroHelio.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Backoffice,GridOperator")]
         public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -38,6 +39,7 @@ namespace MicroHelio.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> Create(
             [FromBody] CreateUserDto dto)
         {
@@ -67,6 +69,7 @@ namespace MicroHelio.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> Update(
             string id,
             [FromBody] UpdateUserDto dto)
@@ -99,6 +102,7 @@ namespace MicroHelio.Controllers
         }
 
         [HttpPatch("{id}/status")]
+        [Authorize(Roles = "Backoffice")]
         public async Task<IActionResult> SetStatus(
             string id,
             [FromBody] bool isActive)

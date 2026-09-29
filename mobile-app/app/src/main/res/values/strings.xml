@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MicroHelio</string>
 
@@ -51,4 +52,156 @@
     <string name="btnRefreshTransactions">Refresh</string>
     <string name="tvItemTrxStatus">Initiated</string>
     <string name="tvItemKWh">Energy Transferred: 0.0 KWh</string>
+
+    <string name="str_booking_history_amp_search">Booking History &amp;amp; Search</string>
+    <string name="str_filter_past_and_active_reserva">Filter past and active reservations</string>
+    <string name="str_select_date">Select Date</string>
+    <string name="str_search_refresh_history">Search / Refresh History</string>
+    <string name="str_new_energy_reservation">New Energy Reservation</string>
+    <string name="str_select_microgrid_node_slot_typ">Select microgrid node, slot, type and input capacity</string>
+    <string name="str_prosumer_nic">Prosumer NIC</string>
+    <string name="str_981234567v">981234567V</string>
+    <string name="str_select_microgrid_node">Select Microgrid Node</string>
+    <string name="str_select_available_time_slot">Select Available Time Slot</string>
+    <string name="str_reservation_type">Reservation Type</string>
+    <string name="str_selected_slot_none">Selected Slot: None</string>
+    <string name="str_requested_capacity_kwh">Requested Capacity (KWh)</string>
+    <string name="str_e_g_5_0">e.g. 5.0</string>
+    <string name="str_confirm_reservation">Confirm Reservation</string>
+    <string name="str_microhelio_prosumer">MicroHelio Prosumer</string>
+    <string name="str_welcome">Welcome!</string>
+    <string name="str_nic">NIC: —</string>
+    <string name="str_pending">Pending</string>
+    <string name="str_0">0</string>
+    <string name="str_approved">Approved</string>
+    <string name="str_upcoming">Upcoming</string>
+    <string name="str_create_new_reservation">+ Create New Reservation</string>
+    <string name="str_view_booking_history">View Booking History</string>
+    <string name="str_recent_active_bookings">Recent / Active Bookings</string>
+    <string name="str_edit_profile">Edit Profile</string>
+    <string name="str_nic_read_only">NIC (Read Only)</string>
+    <string name="str_full_name">Full Name</string>
+    <string name="str_email_address">Email Address</string>
+    <string name="str_phone_number">Phone Number</string>
+    <string name="str_address">Address</string>
+    <string name="str_new_password_optional">New Password (Optional)</string>
+    <string name="str_save_changes">Save Changes</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="str_welcome_grid_operator">Welcome, Grid Operator</string>
+    <string name="str_grid_operator_dashboard">Grid Operator Dashboard</string>
+    <string name="str_grid_operator_features_will_ap">Grid Operator features will appear here.</string>
+    <string name="str_logout">Logout</string>
+    <string name="str_login">Login</string>
+    <string name="str_nic_or_email">NIC or Email</string>
+    <string name="str_password">Password</string>
+    <string name="str_don_t_have_an_account_register">Don\'t have an account? Register</string>
+    <string name="str_hello_world">Hello World!</string>
+    <string name="str_my_profile">My Profile</string>
+    <string name="str_personal_information">PERSONAL INFORMATION</string>
+    <string name="str_name_loading">Name: Loading...</string>
+    <string name="str_nic_loading">NIC: Loading...</string>
+    <string name="str_email_loading">Email: Loading...</string>
+    <string name="str_phone_loading">Phone: Loading...</string>
+    <string name="str_address_loading">Address: Loading...</string>
+    <string name="str_account_status">ACCOUNT STATUS</string>
+    <string name="str_activation_loading">Activation: Loading...</string>
+    <string name="str_status_loading">Status: Loading...</string>
+    <string name="str_created_loading">Created: Loading...</string>
+    <string name="str_deactivate_account">Deactivate Account</string>
+    <string name="str_register">Register</string>
+    <string name="str_nic_number">NIC Number</string>
+    <string name="str_confirm_password">Confirm Password</string>
+    <string name="str_already_have_an_account_login">Already have an account? Login</string>
+    <string name="str_manage_reservation">Manage Reservation</string>
+    <string name="str_update_slot_details_or_cancel_">Update slot details or cancel booking</string>
+    <string name="str_notice_updates_and_cancellatio">Notice: Updates and cancellations require at least 12 hours\' notice prior to the scheduled start time.</string>
+    <string name="str_select_new_available_time_slot">Select New Available Time Slot</string>
+    <string name="str_current_slot_loading">Current Slot: Loading...</string>
+    <string name="str_cancellation_reason_required_t">Cancellation Reason (Required to Cancel)</string>
+    <string name="str_e_g_schedule_changed">e.g. Schedule changed</string>
+    <string name="str_cancel_booking">Cancel Booking</string>
+    <string name="str_res_1234abcd">RES-1234ABCD</string>
+    <string name="str_node_badulla_central_type_drop">Node: Badulla Central | Type: DropOff</string>
+    <string name="str_date_2026_09_24_14_00_15_00">Date: 2026-09-24 | 14:00 - 15:00</string>
+    <string name="str_requested_capacity_4_0_kwh">Requested Capacity: 4.0 KWh</string>
+    <string name="str_dashboard">Dashboard</string>
+    <string name="str_new_booking">New Booking</string>
+    <string name="str_history">History</string>
+
+    <!-- Navigation Strings -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_nodes">Nodes</string>
+    <string name="nav_new_booking">New Booking</string>
+    <string name="nav_history">History</string>
+
+    <!-- Header Strings -->
+    <string name="header_booking_history_title">Booking History &amp; Search</string>
+    <string name="header_booking_history_sub">Filter past and active reservations</string>
+    <string name="header_new_reservation_title">New Energy Reservation</string>
+    <string name="header_new_reservation_sub">Select station, pick time slot &amp; request capacity</string>
+    <string name="header_manage_reservation_title">Manage Reservation</string>
+    <string name="header_manage_reservation_sub">Update station, pick time slot or cancel booking</string>
+    <string name="header_prosumer_app_title">MicroHelio Prosumer</string>
+
+    <!-- Dashboard Strings -->
+    <string name="dashboard_welcome_default">Welcome!</string>
+    <string name="dashboard_nic_default">NIC: —</string>
+    <string name="dashboard_pending">Pending</string>
+    <string name="dashboard_approved">Approved</string>
+    <string name="dashboard_upcoming">Upcoming</string>
+    <string name="dashboard_btn_create_reservation">+ Create New Reservation</string>
+    <string name="dashboard_btn_view_history">View Booking History</string>
+    <string name="dashboard_recent_active_bookings">Recent / Active Bookings</string>
+    <string name="desc_view_profile">View Profile</string>
+    <string name="desc_go_back">Go Back</string>
+
+    <!-- Create & Manage Reservation Form Strings -->
+    <string name="label_prosumer_nic">Prosumer NIC Identifier</string>
+    <string name="label_select_station">Select Microgrid Station</string>
+    <string name="label_select_slot">Select Booking Time Slot</string>
+    <string name="label_select_new_slot">Select New Time Slot</string>
+    <string name="label_reservation_type">Reservation Type</string>
+    <string name="label_requested_capacity">Requested Capacity (kWh)</string>
+    <string name="label_cancel_reason">Cancellation Reason (Required to Cancel)</string>
+    <string name="hint_tap_select_station">Tap to Select Station</string>
+    <string name="hint_choose_station_location">Choose station location</string>
+    <string name="hint_loading_station">Loading station details...</string>
+    <string name="hint_tap_change_station">Tap to change station</string>
+    <string name="hint_tap_choose_slot">Tap to Choose Time Slot</string>
+    <string name="hint_view_available_reserved_slots">View available &amp; reserved slots</string>
+    <string name="hint_loading_slot">Loading slot details...</string>
+    <string name="hint_tap_pick_new_slot">Tap to pick a new slot</string>
+    <string name="hint_enter_capacity">Enter capacity (e.g. 10.0)</string>
+    <string name="hint_provide_cancel_reason">Provide reason for cancelling</string>
+    <string name="type_dropoff">DropOff</string>
+    <string name="type_charging">Charging</string>
+    <string name="summary_selected_slot">Selected Slot Summary</string>
+    <string name="summary_no_slot_selected">No slot selected yet</string>
+    <string name="summary_current_booking_details">Current Booking Details</string>
+    <string name="summary_loading_slot_info">Current: Loading slot info...</string>
+    <string name="btn_confirm_reservation">Confirm Reservation</string>
+    <string name="btn_save_changes">Save Changes</string>
+    <string name="btn_cancel_booking">Cancel Booking</string>
+    <string name="notice_twelve_hour_rule">Notice: Updates and cancellations require at least 12 hours\' notice prior to the scheduled slot time.</string>
+
+    <!-- Booking History & Filter Strings -->
+    <string name="hint_select_date">Select Date</string>
+    <string name="btn_search_refresh">Search / Refresh History</string>
+
+    <!-- Slot Picker Dialog & Status Legend Strings -->
+    <string name="dialog_select_slot_title">Select Booking Time Slot</string>
+    <string name="dialog_select_slot_sub">Select an available time slot for your station</string>
+    <string name="dialog_date_filter_options">Date Filter Options:</string>
+    <string name="dialog_filter_all_dates">All Dates</string>
+    <string name="dialog_filter_future_dates">From Today Onwards</string>
+    <string name="dialog_filter_pick_date">Select Date</string>
+    <string name="dialog_status_legend">Status Legend:</string>
+    <string name="badge_status_available">● Available</string>
+    <string name="badge_status_reserved">● Reserved</string>
+    <string name="msg_no_slots_matching_filter">No booking slots found matching selected date filter.</string>
+    <string name="desc_close_dialog">Close Dialog</string>
+
+    <!-- List Item Card Strings -->
+    <string name="item_capacity_label">Capacity</string>
+    <string name="btn_book_slot">Book Slot</string>
 </resources>
