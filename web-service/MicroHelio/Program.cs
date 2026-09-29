@@ -108,6 +108,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    // Run database seeder for initial Backoffice user
+    using var scope = app.Services.CreateScope();
+    await MicroHelio.Data.DatabaseSeeder.SeedBackofficeAsync(scope.ServiceProvider);
 }
 
 if (!app.Environment.IsDevelopment())

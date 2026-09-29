@@ -44,6 +44,10 @@ web-app/*.ntvs*
 web-app/*.njsproj
 web-app/*.sln
 web-app/*.sw?
+web-app/react-app/
+web-app/dist/
+web-app/build/
+web-app/.cache/
 
 # Android
 mobile-app/.idea/
@@ -56,3 +60,6 @@ mobile-app/app/google-services.json
 .DS_Store
 *.log 
 .vscode/
+
+# Android Studio
+mobile-app/.idea/
