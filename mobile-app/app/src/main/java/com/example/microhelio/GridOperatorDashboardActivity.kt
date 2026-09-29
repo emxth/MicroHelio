@@ -1,5 +1,8 @@
 package com.example.microhelio
 
+import com.example.microhelio.LoginActivity
+import com.example.microhelio.R
+import com.example.microhelio.TransactionAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -14,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.microhelio.api.ApiConfig
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.OutputStreamWriter
@@ -48,7 +52,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
     private lateinit var adapter: TransactionAdapter
     private val transactionList = ArrayList<JSONObject>()
 
-    private val baseUrl = "http://10.0.2.2:5056/api"
+    private val baseUrl = ApiConfig.getApiBaseUrl()
 
     private var currentActiveTransactionId: String = ""
     private var currentOperatorId: String = ""
@@ -101,10 +105,12 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
             finish()
         }
 
+        // LAUNCH CAMERA QR SCANNER
         btnScanQrCode.setOnClickListener {
-            showPayloadInputDialog("Scan / Input QR Payload")
+            startCameraQrScanner()
         }
 
+        // MANUAL / PASTE QR PAYLOAD DIALOG
         btnPastePayload.setOnClickListener {
             showPayloadInputDialog("Enter QR Payload")
         }
@@ -127,6 +133,50 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
         // Fetch transaction history on screen load
         fetchOperatorTransactions()
+    }
+
+    private fun startCameraQrScanner() {
+        try {
+            val clazz = Class.forName("com.google.zxing.integration.android.IntentIntegrator")
+            val constructor = clazz.getConstructor(android.app.Activity::class.java)
+            val integrator = constructor.newInstance(this)
+
+            val setPrompt = clazz.getMethod("setPrompt", String::class.java)
+            setPrompt.invoke(integrator, "Scan Prosumer Reservation QR Code")
+
+            val setBeepEnabled = clazz.getMethod("setBeepEnabled", Boolean::class.javaPrimitiveType)
+            setBeepEnabled.invoke(integrator, true)
+
+            val setOrientationLocked = clazz.getMethod("setOrientationLocked", Boolean::class.javaPrimitiveType)
+            setOrientationLocked.invoke(integrator, false)
+
+            val initiateScan = clazz.getMethod("initiateScan")
+            initiateScan.invoke(integrator)
+        } catch (e: Exception) {
+            // Fallback to manual payload input dialog if ZXing scanner is unavailable
+            showPayloadInputDialog("Enter QR Payload")
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        try {
+            val clazz = Class.forName("com.google.zxing.integration.android.IntentIntegrator")
+            val parseMethod = clazz.getMethod("parseActivityResult", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Intent::class.java)
+            val result = parseMethod.invoke(null, requestCode, resultCode, data)
+            if (result != null) {
+                val getContents = result.javaClass.getMethod("getContents")
+                val scannedPayload = getContents.invoke(result) as? String
+                if (!scannedPayload.isNullOrEmpty()) {
+                    Toast.makeText(this, "QR Scanned Successfully", Toast.LENGTH_SHORT).show()
+                    processQrPayload(scannedPayload)
+                    return
+                }
+            }
+        } catch (e: Exception) {
+            // Ignore reflection error and proceed with standard callback
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showPayloadInputDialog(title: String) {
@@ -157,13 +207,11 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
     }
 
     private fun processQrPayload(qrPayload: String) {
-        // Verify Payload via POST /api/Transactions/verify
-        // Initiate Transaction via POST /api/Transactions
         thread {
             try {
                 val userToken = sessionManager.getSession()?.token ?: ""
 
-                // Verification Request
+                // 1. Verification Request
                 val verifyUrl = URL("$baseUrl/Transactions/verify")
                 val verifyConn = verifyUrl.openConnection() as HttpURLConnection
                 verifyConn.requestMethod = "POST"
@@ -175,7 +223,6 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                 verifyConn.doOutput = true
                 verifyConn.connectTimeout = 4000
 
-                // Write raw string body or JSON string payload
                 val jsonPayloadBody = if (qrPayload.startsWith("{")) qrPayload else "\"$qrPayload\""
                 OutputStreamWriter(verifyConn.outputStream).use { it.write(jsonPayloadBody) }
 
@@ -194,13 +241,12 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                     return@thread
                 }
 
-                // Parse payload data for initiation
                 val payloadJson = JSONObject(qrPayload)
                 val reservationId = payloadJson.optString("reservationId", "")
                 val prosumerNic = payloadJson.optString("prosumerNic", "")
                 val nodeId = payloadJson.optString("nodeId", "")
 
-                // Initiate Transaction Request via POST /api/Transactions
+                // 2. Initiate Transaction Request
                 val initiateUrl = URL("$baseUrl/Transactions")
                 val initiateConn = initiateUrl.openConnection() as HttpURLConnection
                 initiateConn.requestMethod = "POST"
