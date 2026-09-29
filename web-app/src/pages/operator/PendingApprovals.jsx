@@ -1,5 +1,5 @@
 /*
- * Author: Ashwin
+ * Author: Arshvinth S
  * Purpose: Review pending reservations and approve them as a grid operator.
  */
 import React, { useState, useEffect } from 'react';
@@ -64,7 +64,8 @@ export default function PendingApprovals() {
   const handleApprove = async (id) => {
     setProcessingId(id);
     try {
-      if (!session?.userId) {
+      const operatorId = session?.accountId || session?.userId || session?.accountIdentifier;
+      if (!operatorId) {
         showToast('Your operator session is missing. Please sign in again.', 'error');
         setProcessingId(null);
         return;
@@ -75,8 +76,9 @@ export default function PendingApprovals() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          ...(session?.token ? { 'Authorization': `Bearer ${session.token}` } : {})
         },
-        body: JSON.stringify(session.userId),
+        body: JSON.stringify(operatorId),
       });
 
       if (response.status === 204 || response.ok) {
