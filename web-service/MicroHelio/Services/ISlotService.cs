@@ -12,6 +12,6 @@ namespace MicroHelio.Services
         Task<EnergyBookingSlot> CreateSlotAsync(CreateSlotDto dto);
         Task<EnergyBookingSlot?> UpdateSlotAsync(string id, UpdateSlotDto dto);
         Task<bool> DeleteSlotAsync(string id);
-        Task<IEnumerable<EnergyBookingSlot>> BatchGenerateSlotsAsync(string nodeId, DateTime date, double capacityKWh, int durationHours);
+        Task<IEnumerable<EnergyBookingSlot>> BatchGenerateSlotsAsync(string nodeId, DateTime date, string startTime, string endTime, double capacityKWh, string slotType = "DropOff");
     }
 }
