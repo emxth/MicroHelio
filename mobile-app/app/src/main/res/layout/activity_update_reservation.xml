@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="@color/eco_off_white">
 
-    <!-- Top Header Bar with Back Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +24,7 @@
             android:layout_marginEnd="12dp"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="Go Back" />
+            android:contentDescription="@string/desc_go_back" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,7 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Manage Reservation"
+                android:text="@string/str_manage_reservation"
                 android:textColor="@color/pure_white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -43,9 +42,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update slot details or cancel booking"
+                android:text="@string/str_update_slot_details_or_cancel_"
                 android:textColor="@color/soft_sunlight"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
     </LinearLayout>
@@ -61,7 +60,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Policy Warning Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,13 +71,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Notice: Updates and cancellations require at least 12 hours' notice prior to the scheduled start time."
-                    android:textColor="#856404"
+                    android:text="@string/str_notice_updates_and_cancellatio"
+                    android:textColor="@color/color_856404"
                     android:textSize="13sp"
                     android:padding="14dp"/>
             </androidx.cardview.widget.CardView>
 
-            <!-- Main Form Card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -93,106 +90,230 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <!-- Microgrid Node Dropdown -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select Microgrid Node"
+                        android:text="@string/str_select_microgrid_node"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
+                    <EditText
+                        android:id="@+id/etProsumerNic"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="981234567V"
+                        android:enabled="false"
+                        android:textColor="@color/dark_pine"
+                        android:textSize="14sp"
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_search_input"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- Select Microgrid Station Card Selector -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_select_station"
+                        android:textColor="@color/moss_gray"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/cardSelectNode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="54dp"
+                        android:background="@drawable/bg_card_selector"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSelectedNodeTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/hint_loading_station"
+                                android:textColor="@color/dark_pine"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSelectedNodeSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/hint_tap_change_station"
+                                android:textColor="@color/moss_gray"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▼"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Hidden legacy spinner for backward compatibility -->
                     <Spinner
                         android:id="@+id/spinnerNodes"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@android:drawable/btn_dropdown"
-                        android:layout_marginBottom="14dp"/>
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
-                    <!-- Energy Booking Slot Dropdown -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Select New Available Time Slot"
+                        android:text="@string/str_select_new_available_time_slot"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
+                    <LinearLayout
+                        android:id="@+id/cardSelectSlot"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="54dp"
+                        android:background="@drawable/bg_card_selector"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tvSelectedSlotTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/hint_loading_slot"
+                                android:textColor="@color/dark_pine"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvSelectedSlotSub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/hint_tap_pick_new_slot"
+                                android:textColor="@color/moss_gray"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="▼"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <!-- Hidden legacy spinner for backward compatibility -->
                     <Spinner
                         android:id="@+id/spinnerSlots"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@android:drawable/btn_dropdown"
-                        android:layout_marginBottom="14dp"/>
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
-                    <!-- Auto-populated Date & Time Info Display -->
                     <LinearLayout
+                        android:id="@+id/layoutSlotSummary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="@color/eco_off_white"
-                        android:padding="12dp"
-                        android:layout_marginBottom="14dp">
+                        android:background="#F0F7F4"
+                        android:padding="14dp"
+                        android:layout_marginBottom="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/summary_current_booking_details"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tvSelectedSlotDetails"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Current Slot: Loading..."
+                            android:text="@string/str_current_slot_loading"
                             android:textColor="@color/dark_pine"
                             android:textSize="13sp"
-                            android:textStyle="bold"/>
+                            android:layout_marginTop="4dp" />
                     </LinearLayout>
 
-                    <!-- Update Action Button -->
                     <Button
                         android:id="@+id/btnUpdateReservation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Save Changes"
+                        android:text="@string/str_save_changes"
                         android:backgroundTint="@color/deep_canopy_green"
                         android:textColor="@color/pure_white"
-                        app:cornerRadius="8dp"
-                        android:layout_marginBottom="16dp"
-                        android:padding="12dp"/>
+                        app:cornerRadius="12dp"
+                        android:layout_marginBottom="20dp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="#E0E0E0"
+                        android:background="@color/color_E0E0E0"
                         android:layout_marginBottom="16dp"/>
 
-                    <!-- Cancellation Reason -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cancellation Reason (Required to Cancel)"
+                        android:text="@string/str_cancellation_reason_required_t"
                         android:textColor="@color/moss_gray"
                         android:textSize="12sp"
-                        android:layout_marginBottom="4dp"/>
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp"/>
+
                     <EditText
                         android:id="@+id/etCancelReason"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="e.g. Schedule changed"
+                        android:hint="@string/str_e_g_schedule_changed"
                         android:textColor="@color/dark_pine"
                         android:textSize="14sp"
-                        android:layout_marginBottom="14dp"/>
+                        android:paddingHorizontal="14dp"
+                        android:background="@drawable/bg_search_input"
+                        android:layout_marginBottom="20dp"/>
 
-                    <!-- Cancel Action Button -->
                     <Button
                         android:id="@+id/btnCancelReservation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Cancel Booking"
-                        android:backgroundTint="#C92A2A"
+                        android:text="@string/str_cancel_booking"
+                        android:backgroundTint="@color/color_C92A2A"
                         android:textColor="@color/pure_white"
-                        app:cornerRadius="8dp"
-                        android:padding="12dp"/>
+                        app:cornerRadius="12dp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Shared Bottom Navigation Bar -->
     <include layout="@layout/layout_bottom_nav" />
 </LinearLayout>

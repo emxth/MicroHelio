@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/eco_off_white"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Top Header Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/bnBack"
+                android:padding="6dp"
+                android:src="@android:drawable/ic_menu_revert"
+                app:tint="@color/dark_pine" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/reservationQr"
+                android:textColor="@color/dark_pine"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- Spacer to balance back button -->
+            <View
+                android:layout_width="36dp"
+                android:layout_height="36dp" />
+        </LinearLayout>
+
+        <!-- QR Code Card Container -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="@color/pure_white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Status Badge -->
+                <TextView
+                    android:id="@+id/tvQrStatusBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/vibrant_leaf_green"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/tvQrStatusBadge"
+                    android:textColor="@color/pure_white"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <!-- Loading Indicator -->
+                <ProgressBar
+                    android:id="@+id/pbQrLoading"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_margin="32dp"
+                    android:indeterminateTint="@color/deep_canopy_green"
+                    android:visibility="gone" />
+
+                <!-- QR Code ImageView -->
+                <ImageView
+                    android:id="@+id/ivQrCode"
+                    android:layout_width="260dp"
+                    android:layout_height="260dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/eco_off_white"
+                    android:contentDescription="@string/ivQrCode"
+                    android:padding="12dp"
+                    android:scaleType="fitCenter" />
+
+                <!-- Security Verification Badge -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@color/eco_off_white"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp">
+
+                    <TextView
+                        android:id="@+id/tvHmacBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tvHmacBadge"
+                        android:textColor="@color/deep_canopy_green"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="#E0E0E0" />
+
+                <!-- Reservation Details Grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/listResCode"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvResCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tvResCode"
+                            android:textColor="@color/dark_pine"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/listNic"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvProsumerNicDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tvProsumerNicDetail"
+                            android:textColor="@color/dark_pine"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/listNode"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvNodeDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tvNodeDetail"
+                            android:textColor="@color/dark_pine"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/listScheTime"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvScheduledTimeDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tvScheduledTimeDetail"
+                            android:textColor="@color/dark_pine"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/listCapacity"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="13sp" />
+
+                        <TextView
+                            android:id="@+id/tvCapacityDetail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tvCapacityDetail"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- User Guidance Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="#E8F5E9"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="14dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/hintBulb"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/qrGenScreenHint"
+                    android:textColor="@color/dark_pine"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Action Buttons -->
+        <Button
+            android:id="@+id/btnRegenerateQr"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/deep_canopy_green"
+            android:text="@string/btnRegenerateQr"
+            android:textAllCaps="false"
+            android:textColor="@color/pure_white"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnDone"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/btnDone"
+            android:textAllCaps="false"
+            android:textColor="@color/dark_pine"
+            android:textSize="15sp"
+            app:strokeColor="@color/moss_gray" />
+
+    </LinearLayout>
+</ScrollView>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F4F0"
+    android:background="@color/color_F0F4F0"
     android:fillViewport="true"
     tools:context=".EditProfileActivity">
 
@@ -17,10 +17,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edit Profile"
+            android:text="@string/str_edit_profile"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#1B2621"
+            android:textColor="@color/dark_pine"
             android:gravity="center"
             android:layout_marginBottom="24dp" />
 
@@ -40,8 +40,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NIC (Read Only)"
-                    android:textColor="#757575"
+                    android:text="@string/str_nic_read_only"
+                    android:textColor="@color/color_757575"
                     android:textSize="12sp" />
 
                 <TextView
@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textSize="16sp"
-                    android:textColor="#1B2621"
+                    android:textColor="@color/dark_pine"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp" />
 
@@ -63,7 +63,7 @@
                         android:id="@+id/etFullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Full Name"
+                        android:hint="@string/str_full_name"
                         android:inputType="textPersonName" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,7 +76,7 @@
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Email Address"
+                        android:hint="@string/str_email_address"
                         android:inputType="textEmailAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,7 +89,7 @@
                         android:id="@+id/etPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Phone Number"
+                        android:hint="@string/str_phone_number"
                         android:inputType="phone" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,7 +102,7 @@
                         android:id="@+id/etAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Address"
+                        android:hint="@string/str_address"
                         android:inputType="textPostalAddress" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,7 +116,7 @@
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="New Password (Optional)"
+                        android:hint="@string/str_new_password_optional"
                         android:inputType="textPassword" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,8 +127,8 @@
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Save Changes"
-            android:backgroundTint="#4CAF50"
+            android:text="@string/str_save_changes"
+            android:backgroundTint="@color/color_4CAF50"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:cornerRadius="12dp"
@@ -138,8 +138,8 @@
             android:id="@+id/btnCancel"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Cancel"
-            android:backgroundTint="#9E9E9E"
+            android:text="@string/str_cancel"
+            android:backgroundTint="@color/color_9E9E9E"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:cornerRadius="12dp" />

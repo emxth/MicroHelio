@@ -13,19 +13,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="Dashboard"
-        android:textSize="11sp"
-        android:backgroundTint="@android:color/transparent"
-        android:textColor="@color/deep_canopy_green"
-        style="?android:attr/borderlessButtonStyle"/>
-
-    <Button
-        android:id="@+id/navNodes"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:text="Nodes"
-        android:textSize="11sp"
+        android:text="@string/str_dashboard"
+        android:textSize="12sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
@@ -35,8 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="New Booking"
-        android:textSize="11sp"
+        android:text="@string/str_new_booking"
+        android:textSize="12sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>
@@ -46,8 +35,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="History"
-        android:textSize="11sp"
+        android:text="@string/str_history"
+        android:textSize="12sp"
         android:backgroundTint="@android:color/transparent"
         android:textColor="@color/deep_canopy_green"
         style="?android:attr/borderlessButtonStyle"/>

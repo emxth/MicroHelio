@@ -1,21 +1,28 @@
 /*
  * Author: Arshvinth S
- * Purpose: Native Android activity for creating reservations with dropdown inputs and strict capacity and time policy validation.
+ * Purpose: Native Android activity for creating reservations with interactive node and slot selector modal windows with green (available) and red (reserved) badges.
  */
 package com.example.microhelio
 
+import android.app.AlertDialog
+import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import java.util.Calendar
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Spinner
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.OutputStreamWriter
@@ -25,20 +32,28 @@ import kotlin.concurrent.thread
 
 class CreateReservationActivity : AppCompatActivity() {
 
-    // UI elements setup
-    private lateinit var spinnerNodes: Spinner
-    private lateinit var spinnerSlots: Spinner
-    private lateinit var spinnerReservationType: Spinner
+    // UI elements
+    private lateinit var cardSelectNode: LinearLayout
+    private lateinit var tvSelectedNodeTitle: TextView
+    private lateinit var tvSelectedNodeSub: TextView
+
+    private lateinit var cardSelectSlot: LinearLayout
+    private lateinit var tvSelectedSlotTitle: TextView
+    private lateinit var tvSelectedSlotSub: TextView
+
+    private lateinit var btnTypeDropOff: Button
+    private lateinit var btnTypeCharging: Button
+
     private lateinit var tvSelectedSlotDetails: TextView
     private lateinit var etCapacity: EditText
     private lateinit var btnSubmitReservation: Button
+    private lateinit var etProsumerNic: EditText
 
-    private val baseUrl = "http://localhost:5056/api"
+    private val baseUrl = com.example.microhelio.api.ApiConfig.getApiBaseUrl()
 
-    // Lists to hold server data for dropdowns
+    // Data lists
     private val nodeList = ArrayList<JSONObject>()
     private val slotList = ArrayList<JSONObject>()
-    private val types = arrayOf("DropOff", "Charging")
 
     private var selectedNodeId: String = ""
     private var selectedSlotId: String = ""
@@ -49,60 +64,150 @@ class CreateReservationActivity : AppCompatActivity() {
     private var maxAvailableCapacity: Double = 0.0
     private var selectedNodeAvailBatterySlots: Int = 1
 
+    private var slotSelectionDialog: AlertDialog? = null
+    private var nodeSelectionDialog: AlertDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_reservation)
 
-        // Bind views from layout
-        spinnerNodes = findViewById(R.id.spinnerNodes)
-        spinnerSlots = findViewById(R.id.spinnerSlots)
-        spinnerReservationType = findViewById(R.id.spinnerReservationType)
+        // Bind layout views
+        cardSelectNode = findViewById(R.id.cardSelectNode)
+        tvSelectedNodeTitle = findViewById(R.id.tvSelectedNodeTitle)
+        tvSelectedNodeSub = findViewById(R.id.tvSelectedNodeSub)
+
+        cardSelectSlot = findViewById(R.id.cardSelectSlot)
+        tvSelectedSlotTitle = findViewById(R.id.tvSelectedSlotTitle)
+        tvSelectedSlotSub = findViewById(R.id.tvSelectedSlotSub)
+
+        btnTypeDropOff = findViewById(R.id.btnTypeDropOff)
+        btnTypeCharging = findViewById(R.id.btnTypeCharging)
+
         tvSelectedSlotDetails = findViewById(R.id.tvSelectedSlotDetails)
         etCapacity = findViewById(R.id.etCapacity)
         btnSubmitReservation = findViewById(R.id.btnSubmitReservation)
+        etProsumerNic = findViewById(R.id.etProsumerNic)
 
-        // Handle professional back icon click to return to previous screen
+        // Load logged in prosumer NIC from session
+        val sess = SessionManager(this).getSession()
+        etProsumerNic.setText(sess?.accountIdentifier ?: "")
+
+        // Handle back button click
         findViewById<ImageView>(R.id.btnBack).setOnClickListener {
             finish()
         }
 
-        // Initialize type dropdown and load microgrid nodes
-        setupReservationTypeSpinner()
+        // Setup reservation type segmented buttons (DropOff / Charging)
+        setupReservationTypeToggle()
+
+        // Card click listener for Node selection
+        cardSelectNode.setOnClickListener {
+            if (nodeList.isNotEmpty()) {
+                showNodeSelectionDialog()
+            } else {
+                Toast.makeText(this, "Loading stations... Please try again in a moment.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Card click listener for Slot selection modal window
+        cardSelectSlot.setOnClickListener {
+            if (selectedNodeId.isEmpty()) {
+                Toast.makeText(this, "Please select a Microgrid Station first.", Toast.LENGTH_SHORT).show()
+            } else {
+                showSlotSelectionDialog()
+            }
+        }
+
+        // Fetch nodes from backend API
         fetchMicrogridNodes()
 
-        // Trigger form validation and submission on button press
+        // Check if intent extras passed target node or slot
+        parseIntentExtras()
+
+        // Submit reservation button press
         btnSubmitReservation.setOnClickListener { validateAndSubmit() }
 
-        // Initialize bottom navigation bar actions here
+        // Initialize bottom navigation
         setupBottomNav()
     }
 
+    private fun parseIntentExtras() {
+        val intentNodeId = intent.getStringExtra("SELECTED_NODE_ID")
+        val intentSlotId = intent.getStringExtra("SELECTED_SLOT_ID")
+        val intentSlotDate = intent.getStringExtra("SELECTED_SLOT_DATE")
+        val intentStartTime = intent.getStringExtra("SELECTED_START_TIME")
+        val intentEndTime = intent.getStringExtra("SELECTED_END_TIME")
+        val intentMaxCap = intent.getDoubleExtra("MAX_CAPACITY", 0.0)
+        val intentSlotType = intent.getStringExtra("SLOT_TYPE")
+
+        if (!intentNodeId.isNullOrEmpty()) {
+            selectedNodeId = intentNodeId
+        }
+
+        if (!intentSlotId.isNullOrEmpty()) {
+            selectedSlotId = intentSlotId
+            selectedDateString = intentSlotDate ?: ""
+            selectedStartTime = intentStartTime ?: ""
+            selectedEndTime = intentEndTime ?: ""
+            maxAvailableCapacity = intentMaxCap
+
+            if (!intentSlotType.isNullOrEmpty()) {
+                selectReservationType(intentSlotType)
+            }
+
+            tvSelectedSlotTitle.text = "$selectedStartTime - $selectedEndTime"
+            tvSelectedSlotSub.text = "Date: ${selectedDateString.split("T")[0]} | Max: $maxAvailableCapacity kWh"
+            tvSelectedSlotDetails.text = "Date: ${selectedDateString.split("T")[0]} | Time: $selectedStartTime - $selectedEndTime | Limit: $maxAvailableCapacity kWh"
+            cardSelectSlot.setBackgroundResource(R.drawable.bg_card_selector_active)
+        }
+    }
+
+    private fun setupReservationTypeToggle() {
+        btnTypeDropOff.setOnClickListener {
+            selectReservationType("DropOff")
+        }
+
+        btnTypeCharging.setOnClickListener {
+            selectReservationType("Charging")
+        }
+    }
+
+    private fun selectReservationType(type: String) {
+        selectedReservationType = type
+        if (type.equals("DropOff", ignoreCase = true)) {
+            btnTypeDropOff.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2D6A4F")))
+            btnTypeDropOff.setTextColor(Color.WHITE)
+
+            btnTypeCharging.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#F7FAF7")))
+            btnTypeCharging.setTextColor(Color.parseColor("#1B2621"))
+        } else {
+            btnTypeCharging.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#2D6A4F")))
+            btnTypeCharging.setTextColor(Color.WHITE)
+
+            btnTypeDropOff.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.parseColor("#F7FAF7")))
+            btnTypeDropOff.setTextColor(Color.parseColor("#1B2621"))
+        }
+    }
+
     private fun setupBottomNav() {
-        // Navigate to Dashboard if not already on it
         findViewById<View>(R.id.navDashboard)?.setOnClickListener {
             if (javaClass != DashboardActivity::class.java) {
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()
             }
         }
-
-        // Navigate to Microgrid Node List if not already on it
         findViewById<View>(R.id.navNodes)?.setOnClickListener {
             if (javaClass != NodeListActivity::class.java) {
                 startActivity(Intent(this, NodeListActivity::class.java))
                 finish()
             }
         }
-
-        // Navigate to Create Reservation if not already on it
         findViewById<View>(R.id.navCreate)?.setOnClickListener {
             if (javaClass != CreateReservationActivity::class.java) {
                 startActivity(Intent(this, CreateReservationActivity::class.java))
                 finish()
             }
         }
-
-        // Navigate to Booking History if not already on it
         findViewById<View>(R.id.navHistory)?.setOnClickListener {
             if (javaClass != BookingHistoryActivity::class.java) {
                 startActivity(Intent(this, BookingHistoryActivity::class.java))
@@ -111,125 +216,124 @@ class CreateReservationActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupReservationTypeSpinner() {
-        // Populate drop-off or charging options
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, types)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerReservationType.adapter = adapter
-
-        spinnerReservationType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedReservationType = types[position]
-            }
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-    }
-
     private fun fetchMicrogridNodes() {
-        // Fetch nodes from backend in a background thread
         thread {
             try {
-                val url = URL("$baseUrl/nodes")
-                val connection = url.openConnection() as HttpURLConnection
+                var url = URL("$baseUrl/nodes")
+                var connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
-                connection.connectTimeout = 5000
+                connection.connectTimeout = 3000
+                connection.readTimeout = 3000
 
-                val responseCode = connection.responseCode
-                if (responseCode == 200) {
+                var code = try { connection.responseCode } catch (e: Exception) { -1 }
+                if (code != 200) {
+                    url = URL("http://10.0.2.2:5056/api/nodes")
+                    connection = url.openConnection() as HttpURLConnection
+                    connection.requestMethod = "GET"
+                    connection.connectTimeout = 3000
+                    connection.readTimeout = 3000
+                    code = connection.responseCode
+                }
+
+                if (code == 200) {
                     val response = connection.inputStream.bufferedReader().use { it.readText() }
                     val jsonArray = JSONArray(response)
                     nodeList.clear()
 
-                    val displayNames = ArrayList<String>()
                     for (i in 0 until jsonArray.length()) {
-                        val obj = jsonArray.getJSONObject(i)
-                        nodeList.add(obj)
-
-                        // Parse keys supporting both camelCase and PascalCase
-                        val nodeName = if (obj.has("name")) obj.optString("name") else obj.optString("Name", "Unknown Node")
-                        val nodeAddress = if (obj.has("address")) obj.optString("address") else obj.optString("Address", "")
-                        val nodeCode = if (obj.has("nodeCode")) obj.optString("nodeCode") else obj.optString("NodeCode", "")
-
-                        val displayString = if (nodeAddress.isNotEmpty()) {
-                            "$nodeCode - $nodeName ($nodeAddress)"
-                        } else {
-                            "$nodeCode - $nodeName"
-                        }
-                        displayNames.add(displayString)
+                        nodeList.add(jsonArray.getJSONObject(i))
                     }
 
-                    // Update UI on main thread
                     runOnUiThread {
-                        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, displayNames)
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        spinnerNodes.adapter = adapter
-
-                        spinnerNodes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                                val node = nodeList[position]
-                                selectedNodeId = node.optString("id", node.optString("_id"))
-                                selectedNodeAvailBatterySlots = node.optInt("availableBatterySlots", node.optInt("AvailableBatterySlots", 1))
-                                fetchSlotsForNode(selectedNodeId)
+                        if (selectedNodeId.isNotEmpty()) {
+                            // Find pre-selected node
+                            val preNode = nodeList.find { it.optString("id", it.optString("_id")) == selectedNodeId }
+                            if (preNode != null) {
+                                selectNode(preNode)
+                            } else if (nodeList.isNotEmpty()) {
+                                selectNode(nodeList[0])
                             }
-                            override fun onNothingSelected(parent: AdapterView<*>) {}
                         }
-                    }
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this@CreateReservationActivity, "Failed to load nodes: HTTP $responseCode", Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Removed hardcoded fallback ID; notify user of network/connection failure instead
-                runOnUiThread {
-                    Toast.makeText(this@CreateReservationActivity, "Could not load microgrid nodes. Check backend connection.", Toast.LENGTH_LONG).show()
-                }
             }
         }
     }
 
+    private fun showNodeSelectionDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_select_node, null)
+        val rvDialogNodes = dialogView.findViewById<RecyclerView>(R.id.rvDialogNodes)
+        val btnCloseNodeDialog = dialogView.findViewById<ImageButton>(R.id.btnCloseNodeDialog)
+
+        rvDialogNodes.layoutManager = LinearLayoutManager(this)
+        rvDialogNodes.adapter = NodePickerAdapter(nodeList) { selectedNodeObj ->
+            selectNode(selectedNodeObj)
+            nodeSelectionDialog?.dismiss()
+        }
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+        nodeSelectionDialog = builder.create()
+        nodeSelectionDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnCloseNodeDialog.setOnClickListener {
+            nodeSelectionDialog?.dismiss()
+        }
+
+        nodeSelectionDialog?.show()
+    }
+
+    private fun selectNode(nodeObj: JSONObject) {
+        selectedNodeId = nodeObj.optString("id", nodeObj.optString("_id"))
+        selectedNodeAvailBatterySlots = nodeObj.optInt("availableBatterySlots", nodeObj.optInt("AvailableBatterySlots", 1))
+
+        val code = nodeObj.optString("nodeCode", nodeObj.optString("NodeCode", "Node"))
+        val name = nodeObj.optString("name", nodeObj.optString("Name", "Microgrid Station"))
+        val address = nodeObj.optString("address", nodeObj.optString("Address", ""))
+
+        tvSelectedNodeTitle.text = "$code - $name"
+        tvSelectedNodeSub.text = if (address.isNotEmpty()) "Location: $address ($selectedNodeAvailBatterySlots battery slots available)" else "Station selected"
+        cardSelectNode.setBackgroundResource(R.drawable.bg_card_selector_active)
+
+        // Reset previous slot selection when node changes
+        selectedSlotId = ""
+        tvSelectedSlotTitle.text = "Tap to Choose Time Slot"
+        tvSelectedSlotSub.text = "View available & reserved slots"
+        tvSelectedSlotDetails.text = "No slot selected yet"
+        cardSelectSlot.setBackgroundResource(R.drawable.bg_card_selector)
+
+        // Fetch slots for chosen station
+        fetchSlotsForNode(selectedNodeId)
+    }
+
     private fun fetchSlotsForNode(nodeId: String) {
-        // Get available slots for the chosen node
         thread {
             try {
-                val url = URL("$baseUrl/slots?nodeId=$nodeId")
-                val connection = url.openConnection() as HttpURLConnection
+                var url = URL("$baseUrl/slots?nodeId=$nodeId")
+                var connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
-                connection.connectTimeout = 5000
+                connection.connectTimeout = 3000
+                connection.readTimeout = 3000
 
-                if (connection.responseCode == 200) {
+                var code = try { connection.responseCode } catch (e: Exception) { -1 }
+                if (code != 200) {
+                    url = URL("http://10.0.2.2:5056/api/slots?nodeId=$nodeId")
+                    connection = url.openConnection() as HttpURLConnection
+                    connection.requestMethod = "GET"
+                    connection.connectTimeout = 3000
+                    connection.readTimeout = 3000
+                    code = connection.responseCode
+                }
+
+                if (code == 200) {
                     val response = connection.inputStream.bufferedReader().use { it.readText() }
                     val jsonArray = JSONArray(response)
                     slotList.clear()
 
-                    val slotDisplays = ArrayList<String>()
                     for (i in 0 until jsonArray.length()) {
-                        val obj = jsonArray.getJSONObject(i)
-                        slotList.add(obj)
-                        val date = obj.optString("slotDate").split("T")[0]
-                        slotDisplays.add("$date | ${obj.optString("slotStartTime")} - ${obj.optString("slotEndTime")} (${obj.optDouble("availableCapacityKWh")} kWh left)")
-                    }
-
-                    // Populate slot dropdown
-                    runOnUiThread {
-                        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, slotDisplays)
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                        spinnerSlots.adapter = adapter
-
-                        spinnerSlots.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                                val slot = slotList[position]
-                                selectedSlotId = slot.optString("id", slot.optString("_id"))
-                                selectedDateString = slot.optString("slotDate")
-                                selectedStartTime = slot.optString("slotStartTime")
-                                selectedEndTime = slot.optString("slotEndTime")
-                                maxAvailableCapacity = slot.optDouble("availableCapacityKWh", 0.0)
-
-                                tvSelectedSlotDetails.text = "Slot: $selectedStartTime - $selectedEndTime (Max: $maxAvailableCapacity kWh)"
-                            }
-                            override fun onNothingSelected(parent: AdapterView<*>) {}
-                        }
+                        slotList.add(jsonArray.getJSONObject(i))
                     }
                 }
             } catch (e: Exception) {
@@ -238,20 +342,133 @@ class CreateReservationActivity : AppCompatActivity() {
         }
     }
 
+    // Modal Window to select Time Slot displaying Green (Available) and Red (Reserved) marks with Date Filter options
+    private fun showSlotSelectionDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_select_slot, null)
+        val rvDialogSlots = dialogView.findViewById<RecyclerView>(R.id.rvDialogSlots)
+        val btnCloseDialog = dialogView.findViewById<ImageButton>(R.id.btnCloseDialog)
+        val tvDialogSubtitle = dialogView.findViewById<TextView>(R.id.tvDialogSubtitle)
+        val layoutEmptySlots = dialogView.findViewById<LinearLayout>(R.id.layoutEmptySlots)
+
+        val btnFilterAllDates = dialogView.findViewById<Button>(R.id.btnFilterAllDates)
+        val btnFilterFutureDates = dialogView.findViewById<Button>(R.id.btnFilterFutureDates)
+        val btnFilterPickDate = dialogView.findViewById<Button>(R.id.btnFilterPickDate)
+
+        tvDialogSubtitle.text = "Station: ${tvSelectedNodeTitle.text}"
+
+        val adapter = SlotPickerAdapter(slotList) { chosenSlotObj ->
+            selectSlot(chosenSlotObj)
+            slotSelectionDialog?.dismiss()
+        }
+
+        rvDialogSlots.layoutManager = LinearLayoutManager(this)
+        rvDialogSlots.adapter = adapter
+
+        fun updateVisibility(count: Int) {
+            if (count == 0) {
+                rvDialogSlots.visibility = View.GONE
+                layoutEmptySlots.visibility = View.VISIBLE
+            } else {
+                rvDialogSlots.visibility = View.VISIBLE
+                layoutEmptySlots.visibility = View.GONE
+            }
+        }
+
+        fun setFilterHighlight(selectedBtn: Button) {
+            val activeBg = ColorStateList.valueOf(Color.parseColor("#2D6A4F"))
+            val inactiveBg = ColorStateList.valueOf(Color.parseColor("#F7FAF7"))
+            val darkText = Color.parseColor("#1B2621")
+
+            btnFilterAllDates.setBackgroundTintList(inactiveBg)
+            btnFilterAllDates.setTextColor(darkText)
+
+            btnFilterFutureDates.setBackgroundTintList(inactiveBg)
+            btnFilterFutureDates.setTextColor(darkText)
+
+            btnFilterPickDate.setBackgroundTintList(inactiveBg)
+            btnFilterPickDate.setTextColor(darkText)
+
+            selectedBtn.setBackgroundTintList(activeBg)
+            selectedBtn.setTextColor(Color.WHITE)
+        }
+
+        if (slotList.isEmpty()) {
+            updateVisibility(0)
+        } else {
+            updateVisibility(slotList.size)
+        }
+
+        btnFilterAllDates.setOnClickListener {
+            setFilterHighlight(btnFilterAllDates)
+            val count = adapter.filterAll()
+            updateVisibility(count)
+        }
+
+        btnFilterFutureDates.setOnClickListener {
+            setFilterHighlight(btnFilterFutureDates)
+            val count = adapter.filterFutureDatesFromToday()
+            updateVisibility(count)
+        }
+
+        btnFilterPickDate.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(this, { _, year, month, dayOfMonth ->
+                val selectedDate = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
+                btnFilterPickDate.text = "📅 $selectedDate"
+                setFilterHighlight(btnFilterPickDate)
+                val count = adapter.filterBySpecificDate(selectedDate)
+                updateVisibility(count)
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+        slotSelectionDialog = builder.create()
+        slotSelectionDialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        btnCloseDialog.setOnClickListener {
+            slotSelectionDialog?.dismiss()
+        }
+
+        slotSelectionDialog?.show()
+    }
+
+    private fun selectSlot(slotObj: JSONObject) {
+        selectedSlotId = slotObj.optString("id", slotObj.optString("_id"))
+        selectedDateString = slotObj.optString("slotDate", slotObj.optString("SlotDate"))
+        selectedStartTime = slotObj.optString("slotStartTime", slotObj.optString("SlotStartTime"))
+        selectedEndTime = slotObj.optString("slotEndTime", slotObj.optString("SlotEndTime"))
+        maxAvailableCapacity = slotObj.optDouble("availableCapacityKWh", slotObj.optDouble("AvailableCapacityKWh", 0.0))
+
+        val dateDisplay = if (selectedDateString.contains("T")) selectedDateString.split("T")[0] else selectedDateString
+
+        tvSelectedSlotTitle.text = "$selectedStartTime - $selectedEndTime"
+        tvSelectedSlotSub.text = "Date: $dateDisplay | Capacity: $maxAvailableCapacity kWh available"
+        tvSelectedSlotDetails.text = "Date: $dateDisplay | Time: $selectedStartTime - $selectedEndTime | Available Limit: $maxAvailableCapacity kWh"
+        cardSelectSlot.setBackgroundResource(R.drawable.bg_card_selector_active)
+
+        // Suggest capacity in input box if currently empty
+        if (etCapacity.text.toString().trim().isEmpty() && maxAvailableCapacity > 0.0) {
+            etCapacity.setText(maxAvailableCapacity.toString())
+        }
+    }
+
     private fun validateAndSubmit() {
-        // Validate physical battery slot availability for DropOff or Charging
         if (selectedNodeAvailBatterySlots <= 0) {
-            Toast.makeText(this, "No battery slots are currently available at this node.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "No physical battery slots available at this station.", Toast.LENGTH_LONG).show()
             return
         }
 
-        // Check if node and slot are selected
-        if (selectedSlotId.isEmpty() || selectedNodeId.isEmpty()) {
-            Toast.makeText(this, "Please select a valid node and slot", Toast.LENGTH_SHORT).show()
+        if (selectedNodeId.isEmpty()) {
+            Toast.makeText(this, "Please select a Microgrid Station", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Validate capacity input field
+        if (selectedSlotId.isEmpty()) {
+            Toast.makeText(this, "Please click and select an available Time Slot", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val capacityText = etCapacity.text.toString().trim()
         if (capacityText.isEmpty()) {
             Toast.makeText(this, "Please enter requested capacity", Toast.LENGTH_SHORT).show()
@@ -266,10 +483,9 @@ class CreateReservationActivity : AppCompatActivity() {
             return
         }
 
-        // Ensure requested amount doesn't exceed slot limit
         if (capacity > maxAvailableCapacity) {
             Toast.makeText(this, "Requested capacity exceeds available slot limit ($maxAvailableCapacity kWh)", Toast.LENGTH_LONG).show()
-            etCapacity.error = "Exceeds available limit"
+            etCapacity.error = "Exceeds available limit ($maxAvailableCapacity kWh)"
             return
         }
 
@@ -277,20 +493,21 @@ class CreateReservationActivity : AppCompatActivity() {
     }
 
     private fun submitReservationToApi(capacity: Double) {
-        // Send POST request to create reservation
         thread {
             try {
-                val url = URL("$baseUrl/reservations")
-                val connection = url.openConnection() as HttpURLConnection
+                var url = URL("$baseUrl/reservations")
+                var connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "POST"
                 connection.setRequestProperty("Content-Type", "application/json; utf-8")
-                connection.connectTimeout = 5000
-                connection.readTimeout = 5000
+                connection.connectTimeout = 4000
+                connection.readTimeout = 4000
                 connection.doOutput = true
 
-                // Build JSON payload
+                val session = SessionManager(this).getSession()
+                val nic = session?.accountIdentifier ?: etProsumerNic.text.toString().trim()
+
                 val jsonBody = JSONObject().apply {
-                    put("prosumerNic", "981234567V")
+                    put("prosumerNic", nic)
                     put("nodeId", selectedNodeId)
                     put("slotId", selectedSlotId)
                     put("reservationType", selectedReservationType)
@@ -302,17 +519,15 @@ class CreateReservationActivity : AppCompatActivity() {
 
                 OutputStreamWriter(connection.outputStream).use { it.write(jsonBody.toString()) }
 
-                val code = connection.responseCode
+                var code = try { connection.responseCode } catch (e: Exception) { -1 }
+
                 if (code == HttpURLConnection.HTTP_CREATED || code == HttpURLConnection.HTTP_OK) {
                     runOnUiThread {
                         Toast.makeText(this@CreateReservationActivity, "Reservation Created Successfully!", Toast.LENGTH_SHORT).show()
                         finish()
                     }
                 } else {
-                    // Read raw error response stream from backend
                     val rawError = connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Unknown Error"
-
-                    // Parse clean error message if returned as JSON (e.g., {"error": "..."} or {"message": "..."})
                     val cleanMessage = try {
                         val errJson = JSONObject(rawError)
                         when {
@@ -321,7 +536,7 @@ class CreateReservationActivity : AppCompatActivity() {
                             else -> rawError
                         }
                     } catch (e: Exception) {
-                        rawError // Fallback to raw string if not valid JSON
+                        rawError
                     }
 
                     runOnUiThread {

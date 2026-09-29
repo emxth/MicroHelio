@@ -14,16 +14,27 @@ export default function Login() {
 
   useEffect(() => {
     if (session) navigate('/transactions', { replace: true });
-  }, [session]);
+  }, [navigate, session]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.identifier || !form.password) { setError('Please enter your email and password.'); return; }
+    if (!form.identifier.trim() || !form.password) {
+      setError('Please enter your username, email, or NIC and password.');
+      return;
+    }
     setError(''); setLoading(true);
     try {
-      const data = await api.post('/auth/login', form);
-      if (data?.token) { login(data); navigate('/transactions', { replace: true }); }
-      else throw { message: 'Invalid credentials. Please try again.' };
+      const data = await api.post('/auth/login', {
+        identifier: form.identifier.trim(),
+        password: form.password,
+      });
+
+      if (!data?.token || !data?.role || data.role === 'Prosumer') {
+        throw { message: 'Prosumer accounts use the MicroHelio mobile app.' };
+      }
+
+      login(data);
+      navigate(data.role === 'Backoffice' ? '/transactions' : '/operator-dashboard', { replace: true });
     } catch (err) {
       setError(err.message || 'Login failed. Check your credentials.');
     } finally { setLoading(false); }
@@ -73,7 +84,7 @@ export default function Login() {
               <input type="email" value={form.identifier}
                 onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
                 className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
-                placeholder="operator@microhelio.com" required />
+                placeholder="operator@microhelio.com, username, or NIC" required />
             </div>
             
             <div className="flex flex-col gap-1.5 mb-6">

@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Capacity"
+                    android:text="@string/item_capacity_label"
                     android:textColor="@color/moss_gray"
                     android:textSize="11sp" />
 
@@ -114,7 +114,7 @@
                 android:id="@+id/btnBookThisSlot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Book Slot"
+                android:text="@string/btn_book_slot"
                 android:textColor="@color/pure_white"
                 android:backgroundTint="@color/deep_canopy_green"
                 android:textSize="12sp"
