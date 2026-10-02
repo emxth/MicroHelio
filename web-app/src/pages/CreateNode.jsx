@@ -19,9 +19,10 @@ import {
   Info
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../services/api';
 
 // Central C# Web API REST Endpoint
-const BASE_URL = 'http://localhost:5056/api/MicrogridNodes';
+const BASE_URL = `${API_BASE_URL}/MicrogridNodes`;
 
 const ALL_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 

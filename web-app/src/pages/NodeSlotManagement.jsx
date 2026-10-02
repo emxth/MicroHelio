@@ -17,10 +17,11 @@ import {
   Power,
   Layers,
 } from 'lucide-react';
+import { API_BASE_URL } from '../services/api';
 
 // Central C# Web API REST Endpoints
-const NODES_API_URL = 'http://localhost:5056/api/MicrogridNodes';
-const SLOTS_API_URL = 'http://localhost:5056/api/EnergyBookingSlots';
+const NODES_API_URL = `${API_BASE_URL}/MicrogridNodes`;
+const SLOTS_API_URL = `${API_BASE_URL}/EnergyBookingSlots`;
 
 // Node Slot & Battery Availability Management Component (`src/pages/NodeSlotManagement.jsx`)
 export default function NodeSlotManagement() {

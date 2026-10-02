@@ -1,4 +1,5 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
 import Sidebar from './Sidebar';
 import { useAuth } from '../../context/AuthContext';
 
@@ -31,10 +32,16 @@ function getTitle(pathname) {
 }
 
 export default function AppLayout() {
-  const { session } = useAuth();
+  const { session, logout } = useAuth();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const title = getTitle(pathname);
   const initials = session?.fullName?.charAt(0)?.toUpperCase() || 'U';
+
+  function handleLogout() {
+    logout();
+    navigate('/login');
+  }
 
   return (
     <div className="min-h-screen bg-bg-app">
@@ -44,7 +51,7 @@ export default function AppLayout() {
       <header className="fixed top-0 right-0 z-30 flex items-center justify-between h-16 px-6 border-b left-64 bg-surface border-border"
         style={{ boxShadow: '0 1px 4px rgba(27,38,33,.07)' }}>
         <h1 className="text-base font-semibold text-text-dark">{title}</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3.5">
           <div className="hidden text-right sm:block">
             <div className="text-sm font-medium text-text-dark">{session?.fullName}</div>
             <div className="text-xs text-text-muted">{session?.email}</div>
@@ -52,6 +59,14 @@ export default function AppLayout() {
           <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 text-sm font-bold rounded-full text-primary bg-accent">
             {initials}
           </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-text-muted hover:text-danger hover:bg-danger/10 border border-border hover:border-danger/30 rounded-xl transition-all shadow-sm"
+            title="Sign out of account"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span className="hidden md:inline">Sign out</span>
+          </button>
         </div>
       </header>
 

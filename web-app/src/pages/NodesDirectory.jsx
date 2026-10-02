@@ -19,9 +19,10 @@ import {
   ChevronRight,
   Activity
 } from 'lucide-react';
+import { API_BASE_URL } from '../services/api';
 
 // Base API URL pointing to the central C# Web API on IIS / Localhost
-const BASE_URL = 'http://localhost:5056/api/MicrogridNodes';
+const BASE_URL = `${API_BASE_URL}/MicrogridNodes`;
 
 // Microgrid Hubs Directory Page Component (Smart Solar Microgrid Nodes & Battery Slots)
 export default function NodesDirectory() {

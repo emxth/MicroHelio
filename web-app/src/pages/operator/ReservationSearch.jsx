@@ -3,9 +3,11 @@
  * Purpose: Search, filter, and manage energy reservations from the operator portal.
  */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Home } from 'lucide-react';
+import { API_BASE_URL } from '../../services/api';
 
-const baseUrl = 'http://localhost:5056/api';
+const baseUrl = API_BASE_URL;
 
 // Turn API validation responses into text that can be shown directly in the UI.
 async function getApiErrorMessage(response, fallback) {
@@ -21,6 +23,7 @@ async function getApiErrorMessage(response, fallback) {
 }
 
 export default function ReservationSearch() {
+  const navigate = useNavigate();
   const [nodes, setNodes] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +98,7 @@ export default function ReservationSearch() {
   // Build only the query parameters the operator actually selected.
   const handleSearch = (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    
+
     const params = new URLSearchParams();
     if (filters.nic.trim()) params.append('nic', filters.nic.trim());
     if (filters.date) params.append('date', filters.date);
@@ -179,9 +182,31 @@ export default function ReservationSearch() {
 
   return (
     <div className="min-h-full bg-bg-app text-text-dark font-sans p-4 sm:p-6 lg:p-8 relative">
-      <div className="absolute right-4 top-4 rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary sm:right-6 sm:top-6">
-        Grid Operator
+      {/* Top Navigation Bar */}
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+            title="Go Back"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back</span>
+          </button>
+          <button
+            onClick={() => navigate('/operator-dashboard')}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+            title="Operator Dashboard"
+          >
+            <Home className="w-4 h-4 text-secondary" />
+            <span>Dashboard</span>
+          </button>
+        </div>
+        <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
+          Grid Operator
+        </div>
       </div>
+
       {/* Page Header */}
       <div className="max-w-7xl mx-auto mb-6">
         <h1 className="text-3xl font-bold text-primary flex items-center">
@@ -209,7 +234,7 @@ export default function ReservationSearch() {
                 className="w-full px-4 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-text-dark placeholder-text-muted/50"
               />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-text-muted mb-1">Date</label>
               <input
@@ -359,7 +384,7 @@ export default function ReservationSearch() {
           <div className="relative z-10 w-full max-w-md overflow-hidden rounded-2xl border border-border bg-surface shadow-xl transition-all">
             <div className="px-6 py-5 border-b border-border bg-bg-app flex justify-between items-center">
               <h3 className="text-lg font-semibold text-primary">Cancel Reservation</h3>
-              <button 
+              <button
                 onClick={() => setCancelModal({ isOpen: false, reservationId: null, reason: '', error: '', isProcessing: false })}
                 className="text-text-muted hover:text-danger transition-colors focus:outline-none"
               >
@@ -368,7 +393,7 @@ export default function ReservationSearch() {
                 </svg>
               </button>
             </div>
-            
+
             <form onSubmit={handleCancelSubmit} className="p-6">
               <div className="mb-5">
                 <label className="block text-sm font-medium text-text-dark mb-2">
@@ -389,7 +414,7 @@ export default function ReservationSearch() {
                   </p>
                 )}
               </div>
-              
+
               <div className="flex justify-end space-x-3 mt-2">
                 <button
                   type="button"

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 export default function FloatingOperatorNav() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { session } = useAuth();
 
   // Navigation links for the Grid Operator
   const links = [
@@ -24,19 +26,14 @@ export default function FloatingOperatorNav() {
     },
   ];
 
-  // Grid Operator pages where floating quick menu is active
-  const isOperatorPage =
-    location.pathname.startsWith('/operator') ||
-    location.pathname === '/pending-bookings' ||
-    location.pathname === '/reservations';
-
   // Automatically close the menu when the route changes
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // Only render inside Grid Operator pages
-  if (!isOperatorPage) {
+  // Hide on landing or login page, or when not authenticated
+  const isPublicPage = location.pathname === '/' || location.pathname === '/login';
+  if (isPublicPage || !session) {
     return null;
   }
 

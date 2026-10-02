@@ -1,15 +1,9 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { NAV_CONFIG } from '../../config/nav.js';
 
 export default function Sidebar() {
-  const { session, logout, hasRole } = useAuth();
-  const navigate = useNavigate();
-
-  function handleLogout() {
-    logout();
-    navigate('/login');
-  }
+  const { session, hasRole } = useAuth();
 
   const initials = session?.fullName?.charAt(0)?.toUpperCase() || 'U';
   const roleBadgeCls = session?.role === 'Backoffice'
@@ -93,19 +87,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-
-      {/* Sign out */}
-      <div className="flex-shrink-0 p-3 border-t border-white/10">
-        <button
-          onClick={handleLogout}
-          className="flex items-center w-full gap-3 px-4 py-2.5 rounded-lg
-                     text-sm font-medium text-green-200
-                     hover:bg-red-600 hover:text-white
-                     transition-all duration-150">
-          <LogoutIcon />
-          Sign out
-        </button>
-      </div>
     </aside>
   );
 }
@@ -116,15 +97,6 @@ function SunIcon() {
       <path strokeLinecap="round" strokeLinejoin="round"
         d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707" />
       <circle cx="12" cy="12" r="4" />
-    </svg>
-  );
-}
-
-function LogoutIcon() {
-  return (
-    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
     </svg>
   );
 }

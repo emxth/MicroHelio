@@ -4,8 +4,10 @@
  */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Home } from 'lucide-react';
+import { API_BASE_URL } from '../../services/api';
 
-const baseUrl = 'http://localhost:5056/api';
+const baseUrl = API_BASE_URL;
 
 // Read API errors safely, whether the service returns JSON or plain text.
 async function getApiErrorMessage(response, fallback) {
@@ -284,11 +286,32 @@ export default function ReservationForm() {
 
   return (
     <div className="relative min-h-full bg-bg-app text-text-dark font-sans p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-      <div className="absolute right-4 top-4 rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary sm:right-6 sm:top-6">
-        Grid Operator
-      </div>
       <div className="w-full max-w-2xl">
-        
+        {/* Top Navigation Bar */}
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+              title="Go Back"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+            <button
+              onClick={() => navigate('/operator-dashboard')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+              title="Operator Dashboard"
+            >
+              <Home className="w-4 h-4 text-secondary" />
+              <span>Dashboard</span>
+            </button>
+          </div>
+          <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
+            Grid Operator
+          </div>
+        </div>
+
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-primary flex items-center">

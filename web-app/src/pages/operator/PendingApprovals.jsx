@@ -3,9 +3,12 @@
  * Purpose: Review pending reservations and approve them as a grid operator.
  */
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Home } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { API_BASE_URL } from '../../services/api';
 
-const baseUrl = 'http://localhost:5056/api';
+const baseUrl = API_BASE_URL;
 
 // Convert every backend error shape into one readable sentence for the user.
 async function getApiErrorMessage(response, fallback) {
@@ -21,6 +24,7 @@ async function getApiErrorMessage(response, fallback) {
 }
 
 export default function PendingApprovals() {
+  const navigate = useNavigate();
   const { session } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,9 +127,31 @@ export default function PendingApprovals() {
 
   return (
     <div className="relative min-h-full bg-bg-app text-text-dark font-sans p-4 sm:p-6 lg:p-8">
-      <div className="absolute right-4 top-4 rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary sm:right-6 sm:top-6">
-        Grid Operator
+      {/* Top Navigation Bar */}
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+            title="Go Back"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back</span>
+          </button>
+          <button
+            onClick={() => navigate('/operator-dashboard')}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+            title="Operator Dashboard"
+          >
+            <Home className="w-4 h-4 text-secondary" />
+            <span>Dashboard</span>
+          </button>
+        </div>
+        <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
+          Grid Operator
+        </div>
       </div>
+
       {/* Page Header */}
       <div className="max-w-7xl mx-auto mb-8">
         <h1 className="text-3xl font-bold text-primary flex items-center">

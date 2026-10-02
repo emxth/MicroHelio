@@ -1,4 +1,5 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5056/api';
+export const API_BASE_URL = 'http://192.168.1.116:5056/api';
+const API_BASE = API_BASE_URL;
 const SESSION_KEY = 'microhelio_session';
 
 function getToken() {
