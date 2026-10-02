@@ -1,10 +1,6 @@
 package com.example.microhelio.api
 
 object ApiConfig {
-    // =========================================================================
-    // VIVA DAY SWITCH: uncomment exactly one HOST_IP value.
-    // =========================================================================
-
     // Android Studio Emulator
 //    const val HOST_IP = "10.0.2.2"
 
