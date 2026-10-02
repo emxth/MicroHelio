@@ -1,37 +1,30 @@
 package com.example.microhelio.api
 
-import android.os.Build
-
 object ApiConfig {
+    // =========================================================================
+    // VIVA DAY SWITCH: uncomment exactly one HOST_IP value.
+    // =========================================================================
+
+    // Android Studio Emulator
+//    const val HOST_IP = "10.0.2.2"
+
+    // Physical phone over USB after: adb reverse tcp:5056 tcp:5056
+     const val HOST_IP = "localhost"
+
+    // Physical phone over the same hotspot/Wi-Fi LAN
+    // const val HOST_IP = "192.168.43.128"
+
     // Port on which the .NET Web API is running
     const val PORT = 5056
 
     /**
-     * Primary Base URL for API endpoints.
-     * When using USB debugging on a physical device, 'adb reverse tcp:5056 tcp:5056'
-     * routes 'http://127.0.0.1:5056/' directly over the USB cable to your PC.
-     * For Android Studio Emulator, '10.0.2.2' is used.
+     * Retrofit requires a trailing slash in its base URL.
      */
     fun getBaseUrl(): String {
-        return if (isEmulator()) {
-            "http://10.0.2.2:$PORT/"
-        } else {
-            "http://127.0.0.1:$PORT/"
-        }
+        return "http://$HOST_IP:$PORT/"
     }
 
     fun getApiBaseUrl(): String {
         return getBaseUrl() + "api"
-    }
-
-    private fun isEmulator(): Boolean {
-        return (Build.FINGERPRINT.startsWith("generic")
-                || Build.FINGERPRINT.startsWith("unknown")
-                || Build.MODEL.contains("google_sdk")
-                || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDK built for x86")
-                || Build.MANUFACTURER.contains("Genymotion")
-                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
-                || "google_sdk" == Build.PRODUCT)
     }
 }

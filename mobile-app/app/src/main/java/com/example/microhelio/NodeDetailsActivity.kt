@@ -144,7 +144,7 @@ class NodeDetailsActivity : AppCompatActivity() {
                 var code = try { connection.responseCode } catch (e: Exception) { -1 }
 
                 if (code != 200) {
-                    url = URL("http://10.0.2.2:5056/api/microgridnodes/$id")
+                    url = URL("$baseUrl/microgridnodes/$id")
                     connection = url.openConnection() as HttpURLConnection
                     connection.requestMethod = "GET"
                     connection.setRequestProperty("Accept", "application/json")

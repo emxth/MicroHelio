@@ -227,7 +227,7 @@ class CreateReservationActivity : AppCompatActivity() {
 
                 var code = try { connection.responseCode } catch (e: Exception) { -1 }
                 if (code != 200) {
-                    url = URL("http://10.0.2.2:5056/api/nodes")
+                    url = URL("$baseUrl/nodes")
                     connection = url.openConnection() as HttpURLConnection
                     connection.requestMethod = "GET"
                     connection.connectTimeout = 3000
@@ -319,7 +319,7 @@ class CreateReservationActivity : AppCompatActivity() {
 
                 var code = try { connection.responseCode } catch (e: Exception) { -1 }
                 if (code != 200) {
-                    url = URL("http://10.0.2.2:5056/api/slots?nodeId=$nodeId")
+                    url = URL("$baseUrl/slots?nodeId=$nodeId")
                     connection = url.openConnection() as HttpURLConnection
                     connection.requestMethod = "GET"
                     connection.connectTimeout = 3000
