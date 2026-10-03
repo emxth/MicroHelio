@@ -8,7 +8,7 @@ object ApiConfig {
      const val HOST_IP = "localhost"
 
     // Physical phone over the same hotspot/Wi-Fi LAN
-    // const val HOST_IP = "192.168.43.128"
+//     const val HOST_IP = "192.168.1.116"
 
     // Port on which the .NET Web API is running
     const val PORT = 5056
