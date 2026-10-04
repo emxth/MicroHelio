@@ -36,7 +36,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
     private lateinit var tvWelcome: TextView
     private lateinit var btnLogout: Button
     private lateinit var btnScanQrCode: Button
-    private lateinit var btnPastePayload: Button
+    private var btnPastePayload: Button? = null
 
     private lateinit var cvTransactionResult: View
     private lateinit var tvVerifyStatusHeader: TextView
@@ -88,7 +88,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         tvWelcome = findViewById(R.id.tvGridOpWelcome)
         btnLogout = findViewById(R.id.btnGridOpLogout)
         btnScanQrCode = findViewById(R.id.btnScanQrCode)
-        // btnPastePayload = findViewById(R.id.btnPastePayload)
+        btnPastePayload = findViewById(R.id.btnPastePayload)
 
         cvTransactionResult = findViewById(R.id.cvTransactionResult)
         tvVerifyStatusHeader = findViewById(R.id.tvVerifyStatusHeader)
@@ -161,7 +161,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         }
 
         // MANUAL / PASTE QR PAYLOAD DIALOG
-        btnPastePayload.setOnClickListener {
+        btnPastePayload?.setOnClickListener {
             showPayloadInputDialog("Enter QR Payload")
         }
 

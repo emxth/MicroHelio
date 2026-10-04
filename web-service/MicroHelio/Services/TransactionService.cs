@@ -1,4 +1,4 @@
-﻿using MicroHelio.Config;
+using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 using Microsoft.Extensions.Options;
@@ -20,7 +20,7 @@ namespace MicroHelio.Services
         {
             var database = mongoClient.GetDatabase(settings.Value.DatabaseName);
             _transactions = database.GetCollection<Transaction>(settings.Value.TransactionsCollectionName);
-            _reservations = database.GetCollection<EnergyReservation>("EnergyReservations");
+            _reservations = database.GetCollection<EnergyReservation>(settings.Value.EnergyReservationsCollectionName);
 
             // Dynamically load the secret from Secret Manager (local) or Environment Variables (IIS)
             _hmacSecret = configuration["Jwt:Key"] ?? throw new InvalidOperationException("HMAC secret is not configured.");
@@ -47,14 +47,14 @@ namespace MicroHelio.Services
         }
 
         // Decodes the QR JSON payload, validates the HMAC signature, and confirms the reservation is Approved
-        public async Task<bool> VerifyQrPayloadAsync(string qrPayload)
+        public async Task<(bool IsSuccess, string Message)> VerifyQrPayloadAsync(string qrPayload)
         {
             try
             {
-                // 1. Deserialize the payload
+                // Deserialize the payload
                 var payloadData = JsonSerializer.Deserialize<Dictionary<string, string>>(qrPayload);
                 if (payloadData == null || !payloadData.ContainsKey("hmacSignature") || !payloadData.ContainsKey("reservationId"))
-                    return false;
+                    return (false, "QR Payload is missing required fields (reservationId, hmacSignature).");
 
                 var providedSignature = payloadData["hmacSignature"];
                 var reservationId = payloadData["reservationId"];
@@ -62,31 +62,57 @@ namespace MicroHelio.Services
                 var nodeId = payloadData.GetValueOrDefault("nodeId", "");
                 var scheduledDate = payloadData.GetValueOrDefault("scheduledDate", "");
 
-                // 2. Reconstruct the message to hash
-                var messageToHash = $"{reservationId}{prosumerNic}{nodeId}{scheduledDate}";
+                if (scheduledDate.Contains("T")) scheduledDate = scheduledDate.Split('T')[0];
+                if (scheduledDate.Contains(" ")) scheduledDate = scheduledDate.Split(' ')[0];
 
-                // 3. Re-compute HMAC and compare
+                // Fetch reservation from database
+                var reservation = await _reservations.Find(r => r.Id == reservationId).FirstOrDefaultAsync();
+                if (reservation == null)
+                {
+                    return (false, $"Reservation ID '{reservationId}' not found in database.");
+                }
+
+                // Reconstruct message and verify HMAC signature with candidate dates for timezone variations
+                if (string.IsNullOrEmpty(prosumerNic)) prosumerNic = reservation.ProsumerNic;
+                if (string.IsNullOrEmpty(nodeId)) nodeId = reservation.NodeId;
+
+                var candidateDates = new List<string>();
+                if (!string.IsNullOrEmpty(scheduledDate)) candidateDates.Add(scheduledDate);
+                candidateDates.Add(reservation.ScheduledDate.ToString("yyyy-MM-dd"));
+                candidateDates.Add(reservation.ScheduledDate.ToLocalTime().ToString("yyyy-MM-dd"));
+                candidateDates.Add(reservation.ScheduledDate.ToUniversalTime().ToString("yyyy-MM-dd"));
+
+                bool signatureValid = false;
                 using (var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(_hmacSecret)))
                 {
-                    var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(messageToHash));
-                    var computedSignature = Convert.ToBase64String(computedHash);
-
-                    if (providedSignature != computedSignature)
-                        return false; // Tampered payload
+                    foreach (var dateCandidate in candidateDates.Distinct())
+                    {
+                        var msg = $"{reservation.Id}{reservation.ProsumerNic}{reservation.NodeId}{dateCandidate}";
+                        var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(msg));
+                        var computedSig = Convert.ToBase64String(hash);
+                        if (providedSignature == computedSig)
+                        {
+                            signatureValid = true;
+                            break;
+                        }
+                    }
                 }
 
-                // 4. Server-side validation: Ensure reservation exists and is strictly 'Approved'
-                var reservation = await _reservations.Find(r => r.Id == reservationId).FirstOrDefaultAsync();
-                if (reservation == null || reservation.Status != "Approved")
+                if (!signatureValid)
                 {
-                    return false;
+                    return (false, "HMAC signature mismatch. QR payload may be tampered or signed with wrong secret key.");
                 }
 
-                return true;
+                if (reservation.Status != "Approved" && reservation.Status != "Completed")
+                {
+                    return (false, $"Reservation status is '{reservation.Status}'. Only Approved or Completed reservations can be verified.");
+                }
+
+                return (true, "QR Payload verified successfully.");
             }
-            catch
+            catch (Exception ex)
             {
-                return false; // Catch JSON parsing errors or missing fields
+                return (false, $"Error verifying payload: {ex.Message}");
             }
         }
 
