@@ -88,7 +88,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         tvWelcome = findViewById(R.id.tvGridOpWelcome)
         btnLogout = findViewById(R.id.btnGridOpLogout)
         btnScanQrCode = findViewById(R.id.btnScanQrCode)
-        btnPastePayload = findViewById(R.id.btnPastePayload)
+        // btnPastePayload = findViewById(R.id.btnPastePayload)
 
         cvTransactionResult = findViewById(R.id.cvTransactionResult)
         tvVerifyStatusHeader = findViewById(R.id.tvVerifyStatusHeader)
@@ -398,7 +398,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
                     runOnUiThread {
                         tvVerifyStatusHeader.text = "Transaction Completed"
-                        tvTrxBadge.text = "Completed ⚡"
+                        tvTrxBadge.text = "Completed"
                         tvTrxBadge.setBackgroundColor(Color.parseColor("#2D6A4F"))
                         llTransferCompletionPanel.visibility = View.GONE
                         etEnergyKWh.setText("")

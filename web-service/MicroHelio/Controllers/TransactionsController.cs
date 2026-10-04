@@ -59,13 +59,13 @@ namespace MicroHelio.Controllers
                 qrPayload = element.GetRawText();
             }
 
-            var isVerified = await _transactionService.VerifyQrPayloadAsync(qrPayload);
+            var (isVerified, message) = await _transactionService.VerifyQrPayloadAsync(qrPayload);
             if (!isVerified)
             {
-                return BadRequest("Invalid or tampered QR code payload. Verification failed.");
+                return BadRequest(message);
             }
 
-            return Ok(new { message = "QR Verification successful. Server data matched." });
+            return Ok(new { message = message });
         }
 
         // Operator confirms energy transfer is done; updates status to 'Completed' and stores energyTransferredKWh
