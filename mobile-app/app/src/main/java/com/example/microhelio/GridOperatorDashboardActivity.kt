@@ -28,6 +28,7 @@ import kotlin.concurrent.thread
 class GridOperatorDashboardActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
+    private lateinit var dbHelper: LocalDatabaseHelper
 
     private lateinit var tvWelcome: TextView
     private lateinit var btnLogout: Button
@@ -62,6 +63,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_grid_operator_dashboard)
 
         sessionManager = SessionManager(this)
+        dbHelper = LocalDatabaseHelper(this)
 
         // Bind layout views
         tvWelcome = findViewById(R.id.tvGridOpWelcome)
@@ -306,6 +308,9 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                     val trxCode = trxJson.optString("transactionCode", "TRX-INITIATED")
                     currentActiveTransactionId = trxId
 
+                    // Cache to SQLite
+                    dbHelper.saveOrUpdateTransaction(trxJson)
+
                     runOnUiThread {
                         cvTransactionResult.visibility = View.VISIBLE
                         tvVerifyStatusHeader.text = "Transaction Initiated"
@@ -357,10 +362,6 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
                 val code = connection.responseCode
                 if (code == 200) {
-                    val responseText = try {
-                        connection.inputStream.bufferedReader().use { it.readText() }
-                    } catch (e: Exception) { "" }
-
                     val completedTrxObj = JSONObject().apply {
                         put("id", trxId)
                         put("transactionCode", tvTrxCode.text.toString().replace("Code: ", ""))
@@ -370,6 +371,9 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                         put("energyTransferredKWh", energyKWh)
                         put("transactionStatus", "Completed")
                     }
+
+                    // Save to SQLite local database
+                    dbHelper.saveOrUpdateTransaction(completedTrxObj)
 
                     runOnUiThread {
                         tvVerifyStatusHeader.text = "Transaction Completed"
@@ -421,7 +425,9 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
                     transactionList.clear()
                     for (i in 0 until jsonArray.length()) {
-                        transactionList.add(jsonArray.getJSONObject(i))
+                        val obj = jsonArray.getJSONObject(i)
+                        transactionList.add(obj)
+                        dbHelper.saveOrUpdateTransaction(obj) // Cache into SQLite
                     }
 
                     runOnUiThread {
@@ -429,13 +435,25 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                         adapter.notifyDataSetChanged()
                     }
                 } else {
+                    val cached = dbHelper.getCachedTransactions()
                     runOnUiThread {
                         pbHistoryLoading.visibility = View.GONE
+                        if (cached.isNotEmpty()) {
+                            transactionList.clear()
+                            transactionList.addAll(cached)
+                            adapter.notifyDataSetChanged()
+                        }
                     }
                 }
             } catch (e: Exception) {
+                val cached = dbHelper.getCachedTransactions()
                 runOnUiThread {
                     pbHistoryLoading.visibility = View.GONE
+                    if (cached.isNotEmpty()) {
+                        transactionList.clear()
+                        transactionList.addAll(cached)
+                        adapter.notifyDataSetChanged()
+                    }
                 }
             }
         }
