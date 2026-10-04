@@ -9,6 +9,7 @@ const PAGE_TITLES = {
   '/prosumers': 'Prosumer Management',
   '/nodes': 'Microgrid Nodes',
   '/nodes/new': 'New Node',
+  '/nodes/create': 'New Node',
   '/slots': 'Energy Slots',
   '/slots/new': 'New Slot',
   '/reservations': 'All Reservations',

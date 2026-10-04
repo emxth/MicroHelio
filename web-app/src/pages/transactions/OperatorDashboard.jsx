@@ -234,8 +234,8 @@ export default function OperatorDashboard() {
                       <td className="table-td">
                         {/* eslint-disable-next-line react-hooks/purity */}
                         <span className={`text-xs font-medium ${Date.now() - new Date(t.createdAt) > 3600000
-                            ? 'text-danger'
-                            : 'text-text-muted'
+                          ? 'text-danger'
+                          : 'text-text-muted'
                           }`}>
                           {timeAgo(t.createdAt)}
                         </span>

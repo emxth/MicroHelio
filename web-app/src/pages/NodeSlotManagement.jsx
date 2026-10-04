@@ -337,9 +337,7 @@ export default function NodeSlotManagement() {
         {/* Top Navigation Breadcrumb & Back Button */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs sm:text-sm text-[#748C7E] font-medium">
-            <Link to="/" className="hover:text-[#2D6A4F] transition-colors">Microgrid</Link>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <Link to="/nodes" className="hover:text-[#2D6A4F] transition-colors">Hubs Directory</Link>
+            <Link to="/nodes" className="hover:text-[#2D6A4F] transition-colors">Microgrid Nodes</Link>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-[#1B2621] font-semibold">Slot Management</span>
           </div>
@@ -373,7 +371,7 @@ export default function NodeSlotManagement() {
                 )}
               </div>
               <p className="text-sm text-[#748C7E] mt-0.5">
-                Node Code: <strong className="font-mono text-[#1B2621]">{node?.nodeCode}</strong> — Battery & Energy Slot Provisioning Center
+                Node Code: <strong className="font-mono text-[#1B2621]">{node?.nodeCode}</strong>
               </p>
             </div>
           </div>
@@ -394,7 +392,7 @@ export default function NodeSlotManagement() {
               <p className="text-3xl font-extrabold text-[#1B2621]">
                 {node?.capacityKWh?.toLocaleString() || 0} <span className="text-sm text-[#748C7E] font-normal">kWh</span>
               </p>
-              <p className="text-xs text-[#748C7E]">Solar output storage limit</p>
+
             </div>
             <div className="p-3.5 bg-[#E9C46A]/20 text-[#1B2621] rounded-2xl">
               <Zap className="w-6 h-6" />
@@ -408,7 +406,7 @@ export default function NodeSlotManagement() {
               <p className="text-2xl font-bold text-[#1B2621]">
                 {node?.openTime || '08:00'} – {node?.closeTime || '18:00'}
               </p>
-              <p className="text-xs text-[#748C7E]">Daily grid trading window</p>
+
             </div>
             <div className="p-3.5 bg-[#2D6A4F]/10 text-[#2D6A4F] rounded-2xl">
               <Clock className="w-6 h-6" />
@@ -510,7 +508,7 @@ export default function NodeSlotManagement() {
               }}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white font-semibold text-sm transition-all shadow-sm active:scale-[0.98]"
             >
-              <span>Batch Generate Daily Slots</span>
+              <span>Create Daily Slots</span>
             </button>
           </div>
         </div>
@@ -530,7 +528,7 @@ export default function NodeSlotManagement() {
               </div>
               <h3 className="text-base font-bold text-[#1B2621]">No Energy Slots Scheduled for {selectedDate}</h3>
               <p className="text-sm text-[#748C7E] max-w-md">
-                There are no active drop-off or charging time slots generated for this microgrid hub on the selected date.
+                There are no active drop-off or charging time slots created for this microgrid hub on the selected date.
               </p>
               <button
                 onClick={() => {
@@ -540,7 +538,7 @@ export default function NodeSlotManagement() {
                 className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] text-white font-semibold text-xs hover:bg-[#2D6A4F]/90 transition-all shadow-sm"
               >
                 <Plus className="w-4 h-4" />
-                <span>Batch Generate Slots Now</span>
+                <span>Create Slots Now</span>
               </button>
             </div>
           ) : (
@@ -639,7 +637,7 @@ export default function NodeSlotManagement() {
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-[#748C7E]/20 flex items-center justify-between bg-[#F7FAF7]">
               <div className="flex items-center gap-2.5 text-[#1B2621]">
-                <h3 className="text-lg font-bold">Batch Generate Slots</h3>
+                <h3 className="text-lg font-bold">Create Slots</h3>
               </div>
               <button
                 onClick={() => setShowBatchModal(false)}
@@ -733,7 +731,7 @@ export default function NodeSlotManagement() {
 
               <div className="p-3 bg-[#F7FAF7] rounded-xl border border-[#748C7E]/20 text-xs text-[#748C7E]">
                 <p>
-                  Will generate time slots between <strong className="text-[#1B2621]">{batchForm.startTime || '08:00'}</strong> and <strong className="text-[#1B2621]">{batchForm.endTime || '18:00'}</strong>.
+                  Will create time slots between <strong className="text-[#1B2621]">{batchForm.startTime || '08:00'}</strong> and <strong className="text-[#1B2621]">{batchForm.endTime || '18:00'}</strong>.
                 </p>
               </div>
 
@@ -759,7 +757,7 @@ export default function NodeSlotManagement() {
                     </>
                   ) : (
                     <>
-                      <span>Generate Slots</span>
+                      <span>Create Slots</span>
                     </>
                   )}
                 </button>

@@ -44,19 +44,6 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
 
-        {/* TEMP: Public for development */}
-        <Route path="/nodes" element={<NodesDirectory />} />
-        <Route path="/nodes/create" element={<CreateNode />} />
-        <Route path="/nodes/new" element={<CreateNode />} />
-        <Route path="/nodes/edit/:id" element={<EditNode />} />
-        <Route path="/nodes/:id/edit" element={<EditNode />} />
-        <Route path="/nodes/:id/slots" element={<NodeSlotManagement />} />
-        <Route path="/nodes/slots/:id" element={<NodeSlotManagement />} />
-        <Route path="/operator/pending-approvals" element={<PendingApprovals />} />
-        <Route path="/operator/reservation-search" element={<ReservationSearch />} />
-        <Route path="/operator/reservations/new" element={<ReservationForm />} />
-        <Route path="/operator/reservations/:id/edit" element={<UpdateReservationForm />} />
-
         {/* Authenticated — all inside AppLayout */}
         <Route element={<ProtectedRoute roles={['Backoffice', 'GridOperator']} />}>
           <Route element={<AppLayout />}>
@@ -72,6 +59,16 @@ export default function App() {
             {/* Both roles: Backoffice & GridOperator */}
             <Route path="/prosumers" element={<ProsumerList />} />
             <Route path="/prosumers/:nic" element={<ProsumerDetail />} />
+
+            {/* Microgrid Nodes */}
+            <Route path="/nodes" element={<NodesDirectory />} />
+            <Route path="/nodes/create" element={<CreateNode />} />
+            <Route path="/nodes/new" element={<CreateNode />} />
+            <Route path="/nodes/edit/:id" element={<EditNode />} />
+            <Route path="/nodes/:id/edit" element={<EditNode />} />
+            <Route path="/nodes/:id/slots" element={<NodeSlotManagement />} />
+            <Route path="/nodes/slots/:id" element={<NodeSlotManagement />} />
+            <Route path="/slots" element={<Navigate to="/nodes" replace />} />
 
             {/* Transactions & Operator Dashboard */}
             <Route path="/transactions" element={<TransactionList />} />
