@@ -10,6 +10,10 @@ web-service/**/*.user
 # Local secrets / environment values
 .env
 .env.*
+.env.local
+**/.env
+**/.env.*
+!**/.env.example
 *.local.json
 
 # Web App

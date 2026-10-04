@@ -8,21 +8,31 @@ using MongoDB.Driver;
 using System;
 using System.Text;
 
+// Load environment variables from .env file (if present)
+DotNetEnv.Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Bind database settings from configuration
-builder.Services.Configure<MicroHelioDatabaseSettings>(
-    builder.Configuration.GetSection("MicroHelioDatabase"));
+var connectionString = builder.Configuration["MicroHelioDatabase:ConnectionString"]
+    ?? Environment.GetEnvironmentVariable("MICROHELIO_MONGODB_CONNECTIONSTRING")
+    ?? Environment.GetEnvironmentVariable("MONGODB_CONNECTION_STRING");
 
-var connectionString = Environment.GetEnvironmentVariable("MICROHELIO_MONGODB_CONNECTIONSTRING")
-    ?? builder.Configuration["MicroHelioDatabase:ConnectionString"];
+// Bind database settings from configuration and inject connection string
+builder.Services.Configure<MicroHelioDatabaseSettings>(options =>
+{
+    builder.Configuration.GetSection("MicroHelioDatabase").Bind(options);
+    if (!string.IsNullOrWhiteSpace(connectionString))
+    {
+        options.ConnectionString = connectionString;
+    }
+});
 
 // Register MongoClient as a Singleton
 builder.Services.AddSingleton<IMongoClient>(_ =>
 {
     if (string.IsNullOrWhiteSpace(connectionString))
     {
-        throw new InvalidOperationException("MicroHelioDatabase:ConnectionString is not configured. Set the MICROHELIO_MONGODB_CONNECTIONSTRING environment variable.");
+        throw new InvalidOperationException("MicroHelioDatabase:ConnectionString is not configured. Set MicroHelioDatabase__ConnectionString or MICROHELIO_MONGODB_CONNECTIONSTRING in .env or environment variables.");
     }
 
     return new MongoClient(connectionString);
@@ -88,7 +98,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var secretKey = jwtSettings["Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in the environment.");
+        var secretKey = jwtSettings["Key"] 
+            ?? Environment.GetEnvironmentVariable("JWT_SECRET") 
+            ?? throw new InvalidOperationException("Jwt:Key is not configured. Set Jwt__Key or JWT_SECRET in .env or environment variables.");
         
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -96,8 +108,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
+            ValidIssuer = jwtSettings["Issuer"] ?? "MicroHelioIssuer",
+            ValidAudience = jwtSettings["Audience"] ?? "MicroHelioAudience",
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
         };
     });
