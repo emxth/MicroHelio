@@ -1,7 +1,21 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
+
+// Read local.properties (Android's standard local env file)
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(FileInputStream(localPropertiesFile))
+    }
+}
+
+val apiHostIp: String = localProperties.getProperty("api.host", "localhost")
+val apiPort: Int = localProperties.getProperty("api.port", "5056").toIntOrNull() ?: 5056
 
 android {
     namespace = "com.example.microhelio"
@@ -15,6 +29,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_HOST_IP", "\"$apiHostIp\"")
+        buildConfigField("int", "API_PORT", "$apiPort")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {

@@ -1,0 +1,9 @@
+# Local SDK Location (automatically set by Android Studio)
+# sdk.dir=C\:\\Users\\<YourUsername>\\AppData\\Local\\Android\\Sdk
+
+# Backend Server Configuration
+# For Android Studio Emulator: 10.0.2.2
+# For Physical Phone over Wi-Fi / Hotspot LAN: 192.168.1.X
+# For Physical Phone via USB (with adb reverse tcp:5056 tcp:5056): localhost
+api.host=localhost
+api.port=5056

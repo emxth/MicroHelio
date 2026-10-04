@@ -1,17 +1,17 @@
 package com.example.microhelio.api
 
+import com.example.microhelio.BuildConfig
+
 object ApiConfig {
-    // Android Studio Emulator
-//    const val HOST_IP = "10.0.2.2"
+    /**
+     * IP host configured via local.properties (api.host=192.168.1.116 or 10.0.2.2 or localhost)
+     */
+    val HOST_IP: String = BuildConfig.API_HOST_IP
 
-    // Physical phone over USB after: adb reverse tcp:5056 tcp:5056
-     const val HOST_IP = "localhost"
-
-    // Physical phone over the same hotspot/Wi-Fi LAN
-//     const val HOST_IP = "192.168.1.116"
-
-    // Port on which the .NET Web API is running
-    const val PORT = 5056
+    /**
+     * Port on which the .NET Web API is running
+     */
+    val PORT: Int = BuildConfig.API_PORT
 
     /**
      * Retrofit requires a trailing slash in its base URL.
@@ -24,3 +24,4 @@ object ApiConfig {
         return getBaseUrl() + "api"
     }
 }
+
