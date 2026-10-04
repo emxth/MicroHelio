@@ -1,8 +1,5 @@
 package com.example.microhelio
 
-import com.example.microhelio.LoginActivity
-import com.example.microhelio.R
-import com.example.microhelio.TransactionAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -18,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.microhelio.api.ApiConfig
+import androidx.activity.result.contract.ActivityResultContracts
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.OutputStreamWriter
@@ -57,6 +57,22 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
     private var currentActiveTransactionId: String = ""
     private var currentOperatorId: String = ""
+
+    // Modern Activity Result API launcher for ZXing barcode scanning
+    private val qrScannerLauncher =
+        registerForActivityResult(ScanContract()) { result ->
+            val contents = result.contents
+
+            if (contents != null) {
+                Toast.makeText(
+                    this,
+                    "QR Scanned Successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                processQrPayload(contents)
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,46 +186,17 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
     private fun startCameraQrScanner() {
         try {
-            val clazz = Class.forName("com.google.zxing.integration.android.IntentIntegrator")
-            val constructor = clazz.getConstructor(android.app.Activity::class.java)
-            val integrator = constructor.newInstance(this)
-
-            val setPrompt = clazz.getMethod("setPrompt", String::class.java)
-            setPrompt.invoke(integrator, "Scan Prosumer Reservation QR Code")
-
-            val setBeepEnabled = clazz.getMethod("setBeepEnabled", Boolean::class.javaPrimitiveType)
-            setBeepEnabled.invoke(integrator, true)
-
-            val setOrientationLocked = clazz.getMethod("setOrientationLocked", Boolean::class.javaPrimitiveType)
-            setOrientationLocked.invoke(integrator, false)
-
-            val initiateScan = clazz.getMethod("initiateScan")
-            initiateScan.invoke(integrator)
+            val options = ScanOptions()
+            options.setPrompt("Scan Prosumer Reservation QR Code")
+            options.setBeepEnabled(true)
+            options.setOrientationLocked(true)
+            options.captureActivity = PortraitCaptureActivity::class.java
+            qrScannerLauncher.launch(options)
         } catch (e: Exception) {
+            e.printStackTrace()
             // Fallback to manual payload input dialog if ZXing scanner is unavailable
             showPayloadInputDialog("Enter QR Payload")
         }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        try {
-            val clazz = Class.forName("com.google.zxing.integration.android.IntentIntegrator")
-            val parseMethod = clazz.getMethod("parseActivityResult", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Intent::class.java)
-            val result = parseMethod.invoke(null, requestCode, resultCode, data)
-            if (result != null) {
-                val getContents = result.javaClass.getMethod("getContents")
-                val scannedPayload = getContents.invoke(result) as? String
-                if (!scannedPayload.isNullOrEmpty()) {
-                    Toast.makeText(this, "QR Scanned Successfully", Toast.LENGTH_SHORT).show()
-                    processQrPayload(scannedPayload)
-                    return
-                }
-            }
-        } catch (e: Exception) {
-            // Ignore reflection error and proceed with standard callback
-        }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showPayloadInputDialog(title: String) {
@@ -344,13 +331,24 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         }
     }
 
+    private fun setHttpMethodPatch(connection: HttpURLConnection) {
+        try {
+            val methodField = HttpURLConnection::class.java.getDeclaredField("method")
+            methodField.isAccessible = true
+            methodField.set(connection, "PATCH")
+        } catch (e: Exception) {
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("X-HTTP-Method-Override", "PATCH")
+        }
+    }
+
     private fun completeEnergyTransaction(trxId: String, energyKWh: Double) {
         thread {
             try {
                 val userToken = sessionManager.getSession()?.token ?: ""
                 val completeUrl = URL("$baseUrl/Transactions/$trxId/complete")
                 val connection = completeUrl.openConnection() as HttpURLConnection
-                connection.requestMethod = "PATCH"
+                setHttpMethodPatch(connection)
                 connection.setRequestProperty("Content-Type", "application/json")
                 connection.setRequestProperty("Accept", "application/json")
                 if (userToken.isNotEmpty()) {
