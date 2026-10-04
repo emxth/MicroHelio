@@ -160,7 +160,7 @@ class QrCodeGeneratorActivity : AppCompatActivity() {
         // Message = $"{reservationId}{prosumerNic}{nodeId}{scheduledDate}"
         val formattedDate = if (scheduledDate.contains("T")) scheduledDate.split("T")[0] else scheduledDate
         val messageToHash = "$reservationId$prosumerNic$nodeId$formattedDate"
-        val secretKey = "MicroHelio_Secret_HMAC_Key_2026!"
+        val secretKey = "SuperSecretKeyThatIsAtLeast32BytesLongForHMACSHA256"
 
         val signature = computeHmacSha256(messageToHash, secretKey)
 

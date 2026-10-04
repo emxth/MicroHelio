@@ -1,7 +1,5 @@
-﻿/* 
- * Author: Randiv
- * Purpose: Handles HTTP requests for operator QR scanning, verification, and transaction completion.
- * Architecture: Complies with the FAT Service pattern by delegating business logic to TransactionService.
+/* 
+ * Handles HTTP requests for operator QR scanning, verification, and transaction completion.
  */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
@@ -38,8 +36,29 @@ namespace MicroHelio.Controllers
         // Decodes the QR payload, validates the HMAC signature, and confirms the linked reservation is 'Approved'
         [HttpPost("verify")]
         // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
-        public async Task<IActionResult> VerifyQrCode([FromBody] string qrPayload)
+        public async Task<IActionResult> VerifyQrCode([FromBody] System.Text.Json.JsonElement element)
         {
+            string qrPayload;
+            if (element.ValueKind == System.Text.Json.JsonValueKind.String)
+            {
+                qrPayload = element.GetString() ?? string.Empty;
+            }
+            else if (element.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                if (element.TryGetProperty("qrPayload", out var payloadProp) && payloadProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    qrPayload = payloadProp.GetString() ?? string.Empty;
+                }
+                else
+                {
+                    qrPayload = element.GetRawText();
+                }
+            }
+            else
+            {
+                qrPayload = element.GetRawText();
+            }
+
             var isVerified = await _transactionService.VerifyQrPayloadAsync(qrPayload);
             if (!isVerified)
             {

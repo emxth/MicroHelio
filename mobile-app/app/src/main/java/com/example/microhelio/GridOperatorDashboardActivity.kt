@@ -12,6 +12,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.microhelio.api.ApiConfig
@@ -184,12 +187,32 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         fetchOperatorTransactions()
     }
 
+    private val cameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                launchCameraScanner()
+            } else {
+                Toast.makeText(this, "Camera permission is required to scan QR code", Toast.LENGTH_SHORT).show()
+                showPayloadInputDialog("Enter QR Payload")
+            }
+        }
+
     private fun startCameraQrScanner() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED) {
+            launchCameraScanner()
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun launchCameraScanner() {
         try {
             val options = ScanOptions()
             options.setPrompt("Scan Prosumer Reservation QR Code")
             options.setBeepEnabled(true)
             options.setOrientationLocked(true)
+            options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
             options.captureActivity = PortraitCaptureActivity::class.java
             qrScannerLauncher.launch(options)
         } catch (e: Exception) {
