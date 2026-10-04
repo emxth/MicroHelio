@@ -353,7 +353,7 @@ export default function NodesDirectory() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-[#F7FAF7] border-b border-[#748C7E]/20 text-[#1B2621] text-xs uppercase font-bold tracking-wider">
-                    <th className="py-4 px-5">Node Code / ID</th>
+                    <th className="py-4 px-5">  Node   ID</th>
                     <th className="py-4 px-5">Station Name</th>
                     <th className="py-4 px-5">Location Coordinates</th>
                     <th className="py-4 px-5 text-right">Capacity (kWh)</th>
@@ -372,7 +372,7 @@ export default function NodesDirectory() {
                       {/* Node ID & Code */}
                       <td className="py-4 px-5">
                         <div className="flex flex-col">
-                          <span className="font-mono font-bold text-[#2D6A4F]">
+                          <span className="font-mono font-bold text-[#2D6A4F] whitespace-nowrap">
                             {node.nodeCode || `NODE-${node.id}`}
                           </span>
                         </div>
