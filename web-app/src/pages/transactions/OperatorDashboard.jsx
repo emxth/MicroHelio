@@ -54,7 +54,8 @@ export default function OperatorDashboard() {
 
   // Open complete modal for a transaction
   function openModal(txn) {
-    setModal({ id: txn._id, code: txn.transactionCode || txn._id?.slice(-10) });
+    const txnId = txn.id || txn._id;
+    setModal({ id: txnId, code: txn.transactionCode || txnId?.slice(-10) });
     setEnergy('');
     setNotes('');
     setEnergyError('');
@@ -185,79 +186,84 @@ export default function OperatorDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactions.map(t => (
-                    <tr key={t._id} className="table-row">
+                  {transactions.map(t => {
+                    const id = t.id || t._id;
+                    return (
+                      <tr key={id} className="table-row">
 
-                      {/* Status */}
-                      <td className="table-td">
-                        <StatusBadge status={t.transactionStatus} />
-                      </td>
+                        {/* Status */}
+                        <td className="table-td">
+                          <StatusBadge status={t.transactionStatus} />
+                        </td>
 
-                      {/* Transaction code */}
-                      <td className="table-td">
-                        <span className="font-mono text-xs text-text-muted">
-                          {t.transactionCode || t._id?.slice(-10)}
-                        </span>
-                      </td>
+                        {/* Transaction code */}
+                        <td className="table-td">
+                          <button
+                            onClick={() => navigate(`/transactions/${id}`)}
+                            className="font-mono text-xs text-primary hover:underline font-medium">
+                            {t.transactionCode || id?.slice(-10)}
+                          </button>
+                        </td>
 
-                      {/* Prosumer */}
-                      <td className="text-sm font-medium table-td text-text-dark">
-                        {t.prosumerNic || '-'}
-                      </td>
+                        {/* Prosumer */}
+                        <td className="text-sm font-medium table-td text-text-dark">
+                          {t.prosumerNic || '-'}
+                        </td>
 
-                      {/* Node */}
-                      <td className="text-sm table-td text-text-muted">
-                        {t.nodeId || '-'}
-                      </td>
+                        {/* Node */}
+                        <td className="text-sm table-td text-text-muted">
+                          {t.nodeId || '-'}
+                        </td>
 
-                      {/* Reservation ID */}
-                      <td className="table-td">
-                        <button
-                          onClick={() => navigate(`/reservations/${t.reservationId}`)}
-                          className="font-mono text-xs text-primary hover:underline">
-                          {t.reservationId?.slice(-8) || '—'}
-                        </button>
-                      </td>
+                        {/* Reservation ID */}
+                        <td className="table-td">
+                          <button
+                            onClick={() => navigate(`/reservations`)}
+                            className="font-mono text-xs text-primary hover:underline">
+                            {t.reservationId?.slice(-8) || '—'}
+                          </button>
+                        </td>
 
-                      {/* QR Verified */}
-                      <td className="table-td">
-                        {t.serverVerified === true
-                          ? <span className="flex items-center gap-1 text-xs font-medium text-green-700">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
-                            Verified
+                        {/* QR Verified */}
+                        <td className="table-td">
+                          {t.serverVerified === true
+                            ? <span className="flex items-center gap-1 text-xs font-medium text-green-700">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" /></svg>
+                              Verified
+                            </span>
+                            : <span className="text-xs text-text-muted">Awaiting scan</span>
+                          }
+                        </td>
+
+                        {/* Time waiting */}
+                        <td className="table-td">
+                          {/* eslint-disable-next-line react-hooks/purity */}
+                          <span className={`text-xs font-medium ${Date.now() - new Date(t.createdAt) > 3600000
+                              ? 'text-danger'
+                              : 'text-text-muted'
+                            }`}>
+                            {timeAgo(t.createdAt)}
                           </span>
-                          : <span className="text-xs text-text-muted">Awaiting scan</span>
-                        }
-                      </td>
+                        </td>
 
-                      {/* Time waiting */}
-                      <td className="table-td">
-                        {/* eslint-disable-next-line react-hooks/purity */}
-                        <span className={`text-xs font-medium ${Date.now() - new Date(t.createdAt) > 3600000
-                            ? 'text-danger'
-                            : 'text-text-muted'
-                          }`}>
-                          {timeAgo(t.createdAt)}
-                        </span>
-                      </td>
-
-                      {/* Action buttons */}
-                      <td className="table-td">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => openModal(t)}
-                            className="px-3 py-1.5 bg-secondary hover:bg-green-600 text-white rounded-lg text-xs font-medium transition-colors">
-                            Complete
-                          </button>
-                          <button
-                            onClick={() => navigate(`/transactions/${t._id}`)}
-                            className="px-3 py-1.5 border border-border rounded-lg text-xs text-text-dark hover:bg-bg-app transition-colors">
-                            View
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        {/* Action buttons */}
+                        <td className="table-td">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => openModal(t)}
+                              className="px-3 py-1.5 bg-secondary hover:bg-green-600 text-white rounded-lg text-xs font-medium transition-colors">
+                              Complete
+                            </button>
+                            <button
+                              onClick={() => navigate(`/transactions/${id}`)}
+                              className="px-3 py-1.5 border border-border rounded-lg text-xs text-text-dark hover:bg-bg-app transition-colors">
+                              View
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

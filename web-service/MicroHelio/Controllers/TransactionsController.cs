@@ -1,11 +1,9 @@
-﻿/* 
- * Author: Randiv
- * Purpose: Handles HTTP requests for operator QR scanning, verification, and transaction completion.
- * Architecture: Complies with the FAT Service pattern by delegating business logic to TransactionService.
+/* 
+ * Handles HTTP requests for operator QR scanning, verification, and transaction completion.
  */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
-// using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,7 +11,7 @@ namespace MicroHelio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly TransactionService _transactionService;
@@ -38,23 +36,61 @@ namespace MicroHelio.Controllers
         // Decodes the QR payload, validates the HMAC signature, and confirms the linked reservation is 'Approved'
         [HttpPost("verify")]
         // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
-        public async Task<IActionResult> VerifyQrCode([FromBody] string qrPayload)
+        public async Task<IActionResult> VerifyQrCode([FromBody] System.Text.Json.JsonElement element)
         {
-            var isVerified = await _transactionService.VerifyQrPayloadAsync(qrPayload);
-            if (!isVerified)
+            string qrPayload;
+            if (element.ValueKind == System.Text.Json.JsonValueKind.String)
             {
-                return BadRequest("Invalid or tampered QR code payload. Verification failed.");
+                qrPayload = element.GetString() ?? string.Empty;
+            }
+            else if (element.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                if (element.TryGetProperty("qrPayload", out var payloadProp) && payloadProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                {
+                    qrPayload = payloadProp.GetString() ?? string.Empty;
+                }
+                else
+                {
+                    qrPayload = element.GetRawText();
+                }
+            }
+            else
+            {
+                qrPayload = element.GetRawText();
             }
 
-            return Ok(new { message = "QR Verification successful. Server data matched." });
+            var (isVerified, message) = await _transactionService.VerifyQrPayloadAsync(qrPayload);
+            if (!isVerified)
+            {
+                return BadRequest(message);
+            }
+
+            return Ok(new { message = message });
         }
 
         // Operator confirms energy transfer is done; updates status to 'Completed' and stores energyTransferredKWh
         [HttpPatch("{id}/complete")]
         // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
-        public async Task<IActionResult> CompleteTransaction(string id, [FromBody] double energyTransferredKWh)
+        public async Task<IActionResult> CompleteTransaction(string id, [FromBody] System.Text.Json.JsonElement element)
         {
-            var result = await _transactionService.CompleteTransactionAsync(id, energyTransferredKWh);
+            double energyKWh = 0.0;
+            if (element.ValueKind == System.Text.Json.JsonValueKind.Number)
+            {
+                energyKWh = element.GetDouble();
+            }
+            else if (element.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                if (element.TryGetProperty("energyTransferredKWh", out var prop) && prop.ValueKind == System.Text.Json.JsonValueKind.Number)
+                {
+                    energyKWh = prop.GetDouble();
+                }
+                else if (element.TryGetProperty("energyKWh", out var prop2) && prop2.ValueKind == System.Text.Json.JsonValueKind.Number)
+                {
+                    energyKWh = prop2.GetDouble();
+                }
+            }
+
+            var result = await _transactionService.CompleteTransactionAsync(id, energyKWh);
             if (!result)
             {
                 return NotFound("Transaction not found or could not be completed.");
@@ -63,12 +99,12 @@ namespace MicroHelio.Controllers
             return Ok(new { message = "Energy transfer finalised. Transaction completed." });
         }
 
-        // Retrieves full transaction history for a Prosumer (via NIC) or a Grid Operator (via operatorId)
+        // Retrieves full transaction history for a Prosumer (via NIC), a Grid Operator (via operatorId), or filtered by Status
         [HttpGet]
         // [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
-        public async Task<IActionResult> GetTransactions([FromQuery] string? prosumerNic, [FromQuery] string? operatorId)
+        public async Task<IActionResult> GetTransactions([FromQuery] string? prosumerNic, [FromQuery] string? operatorId, [FromQuery] string? status)
         {
-            var transactions = await _transactionService.GetFilteredTransactionsAsync(prosumerNic, operatorId);
+            var transactions = await _transactionService.GetFilteredTransactionsAsync(prosumerNic, operatorId, status);
             return Ok(transactions);
         }
 

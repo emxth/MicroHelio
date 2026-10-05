@@ -8,8 +8,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.json.JSONObject
 
-class TransactionAdapter(private val transactions: List<JSONObject>) :
-    RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
+class TransactionAdapter(
+    private val transactions: List<JSONObject>,
+    private val onItemClick: ((JSONObject) -> Unit)? = null
+) : RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvTrxCode: TextView = view.findViewById(R.id.tvItemTrxCode)
@@ -40,6 +42,10 @@ class TransactionAdapter(private val transactions: List<JSONObject>) :
             "Completed" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#52B788"))
             "Initiated" -> holder.tvStatus.setBackgroundColor(Color.parseColor("#E9C46A"))
             else -> holder.tvStatus.setBackgroundColor(Color.parseColor("#748C7E"))
+        }
+
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(item)
         }
     }
 

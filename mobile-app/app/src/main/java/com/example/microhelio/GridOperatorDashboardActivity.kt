@@ -1,8 +1,5 @@
 package com.example.microhelio
 
-import com.example.microhelio.LoginActivity
-import com.example.microhelio.R
-import com.example.microhelio.TransactionAdapter
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
@@ -15,9 +12,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.microhelio.api.ApiConfig
+import androidx.activity.result.contract.ActivityResultContracts
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.OutputStreamWriter
@@ -28,11 +31,12 @@ import kotlin.concurrent.thread
 class GridOperatorDashboardActivity : AppCompatActivity() {
 
     private lateinit var sessionManager: SessionManager
+    private lateinit var dbHelper: LocalDatabaseHelper
 
     private lateinit var tvWelcome: TextView
     private lateinit var btnLogout: Button
     private lateinit var btnScanQrCode: Button
-    private lateinit var btnPastePayload: Button
+    private var btnPastePayload: Button? = null
 
     private lateinit var cvTransactionResult: View
     private lateinit var tvVerifyStatusHeader: TextView
@@ -57,11 +61,28 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
     private var currentActiveTransactionId: String = ""
     private var currentOperatorId: String = ""
 
+    // Modern Activity Result API launcher for ZXing barcode scanning
+    private val qrScannerLauncher =
+        registerForActivityResult(ScanContract()) { result ->
+            val contents = result.contents
+
+            if (contents != null) {
+                Toast.makeText(
+                    this,
+                    "QR Scanned Successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                processQrPayload(contents)
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grid_operator_dashboard)
 
         sessionManager = SessionManager(this)
+        dbHelper = LocalDatabaseHelper(this)
 
         // Bind layout views
         tvWelcome = findViewById(R.id.tvGridOpWelcome)
@@ -86,7 +107,36 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         rvTransactions = findViewById(R.id.rvTransactions)
 
         rvTransactions.layoutManager = LinearLayoutManager(this)
-        adapter = TransactionAdapter(transactionList)
+        adapter = TransactionAdapter(transactionList) { selectedItem ->
+            val status = selectedItem.optString("transactionStatus", "Initiated")
+            val id = selectedItem.optString("id", selectedItem.optString("_id"))
+            val code = selectedItem.optString("transactionCode", "TRX-N/A")
+            val nic = selectedItem.optString("prosumerNic", "N/A")
+            val reservationId = selectedItem.optString("reservationId", "N/A")
+            val nodeId = selectedItem.optString("nodeId", "N/A")
+
+            currentActiveTransactionId = id
+
+            cvTransactionResult.visibility = View.VISIBLE
+            tvVerifyStatusHeader.text = if (status == "Completed") "Transaction Completed" else "Transaction Selected"
+            tvTrxBadge.text = status
+            tvTrxBadge.setBackgroundColor(
+                if (status == "Completed") Color.parseColor("#2D6A4F") else Color.parseColor("#E9C46A")
+            )
+            tvTrxCode.text = "Code: $code"
+            tvTrxProsumerNic.text = "Prosumer NIC: $nic"
+            tvTrxReservationId.text = "Reservation ID: $reservationId"
+            tvTrxNodeId.text = "Node ID: $nodeId"
+
+            if (status == "Initiated") {
+                llTransferCompletionPanel.visibility = View.VISIBLE
+                Toast.makeText(this, "Selected transaction $code for completion", Toast.LENGTH_SHORT).show()
+            } else {
+                llTransferCompletionPanel.visibility = View.GONE
+                // Show Digital Receipt for completed transactions
+                TransactionReceiptDialog.show(this, selectedItem)
+            }
+        }
         rvTransactions.adapter = adapter
 
         // Get Session Operator Data
@@ -111,7 +161,7 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         }
 
         // MANUAL / PASTE QR PAYLOAD DIALOG
-        btnPastePayload.setOnClickListener {
+        btnPastePayload?.setOnClickListener {
             showPayloadInputDialog("Enter QR Payload")
         }
 
@@ -124,6 +174,8 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
             }
             if (currentActiveTransactionId.isNotEmpty()) {
                 completeEnergyTransaction(currentActiveTransactionId, energyVal)
+            } else {
+                Toast.makeText(this, "No active transaction selected to complete", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -135,48 +187,39 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         fetchOperatorTransactions()
     }
 
+    private val cameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                launchCameraScanner()
+            } else {
+                Toast.makeText(this, "Camera permission is required to scan QR code", Toast.LENGTH_SHORT).show()
+                showPayloadInputDialog("Enter QR Payload")
+            }
+        }
+
     private fun startCameraQrScanner() {
-        try {
-            val clazz = Class.forName("com.google.zxing.integration.android.IntentIntegrator")
-            val constructor = clazz.getConstructor(android.app.Activity::class.java)
-            val integrator = constructor.newInstance(this)
-
-            val setPrompt = clazz.getMethod("setPrompt", String::class.java)
-            setPrompt.invoke(integrator, "Scan Prosumer Reservation QR Code")
-
-            val setBeepEnabled = clazz.getMethod("setBeepEnabled", Boolean::class.javaPrimitiveType)
-            setBeepEnabled.invoke(integrator, true)
-
-            val setOrientationLocked = clazz.getMethod("setOrientationLocked", Boolean::class.javaPrimitiveType)
-            setOrientationLocked.invoke(integrator, false)
-
-            val initiateScan = clazz.getMethod("initiateScan")
-            initiateScan.invoke(integrator)
-        } catch (e: Exception) {
-            // Fallback to manual payload input dialog if ZXing scanner is unavailable
-            showPayloadInputDialog("Enter QR Payload")
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED) {
+            launchCameraScanner()
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    private fun launchCameraScanner() {
         try {
-            val clazz = Class.forName("com.google.zxing.integration.android.IntentIntegrator")
-            val parseMethod = clazz.getMethod("parseActivityResult", Int::class.javaPrimitiveType, Int::class.javaPrimitiveType, Intent::class.java)
-            val result = parseMethod.invoke(null, requestCode, resultCode, data)
-            if (result != null) {
-                val getContents = result.javaClass.getMethod("getContents")
-                val scannedPayload = getContents.invoke(result) as? String
-                if (!scannedPayload.isNullOrEmpty()) {
-                    Toast.makeText(this, "QR Scanned Successfully", Toast.LENGTH_SHORT).show()
-                    processQrPayload(scannedPayload)
-                    return
-                }
-            }
+            val options = ScanOptions()
+            options.setPrompt("Scan Prosumer Reservation QR Code")
+            options.setBeepEnabled(true)
+            options.setOrientationLocked(true)
+            options.setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+            options.captureActivity = PortraitCaptureActivity::class.java
+            qrScannerLauncher.launch(options)
         } catch (e: Exception) {
-            // Ignore reflection error and proceed with standard callback
+            e.printStackTrace()
+            // Fallback to manual payload input dialog if ZXing scanner is unavailable
+            showPayloadInputDialog("Enter QR Payload")
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showPayloadInputDialog(title: String) {
@@ -275,6 +318,9 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                     val trxCode = trxJson.optString("transactionCode", "TRX-INITIATED")
                     currentActiveTransactionId = trxId
 
+                    // Cache to SQLite
+                    dbHelper.saveOrUpdateTransaction(trxJson)
+
                     runOnUiThread {
                         cvTransactionResult.visibility = View.VISIBLE
                         tvVerifyStatusHeader.text = "Transaction Initiated"
@@ -308,13 +354,24 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
         }
     }
 
+    private fun setHttpMethodPatch(connection: HttpURLConnection) {
+        try {
+            val methodField = HttpURLConnection::class.java.getDeclaredField("method")
+            methodField.isAccessible = true
+            methodField.set(connection, "PATCH")
+        } catch (e: Exception) {
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("X-HTTP-Method-Override", "PATCH")
+        }
+    }
+
     private fun completeEnergyTransaction(trxId: String, energyKWh: Double) {
         thread {
             try {
                 val userToken = sessionManager.getSession()?.token ?: ""
                 val completeUrl = URL("$baseUrl/Transactions/$trxId/complete")
                 val connection = completeUrl.openConnection() as HttpURLConnection
-                connection.requestMethod = "PATCH"
+                setHttpMethodPatch(connection)
                 connection.setRequestProperty("Content-Type", "application/json")
                 connection.setRequestProperty("Accept", "application/json")
                 if (userToken.isNotEmpty()) {
@@ -326,17 +383,39 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
                 val code = connection.responseCode
                 if (code == 200) {
+                    val completedTrxObj = JSONObject().apply {
+                        put("id", trxId)
+                        put("transactionCode", tvTrxCode.text.toString().replace("Code: ", ""))
+                        put("prosumerNic", tvTrxProsumerNic.text.toString().replace("Prosumer NIC: ", ""))
+                        put("nodeId", tvTrxNodeId.text.toString().replace("Node ID: ", ""))
+                        put("reservationId", tvTrxReservationId.text.toString().replace("Reservation ID: ", ""))
+                        put("energyTransferredKWh", energyKWh)
+                        put("transactionStatus", "Completed")
+                    }
+
+                    // Save to SQLite local database
+                    dbHelper.saveOrUpdateTransaction(completedTrxObj)
+
                     runOnUiThread {
                         tvVerifyStatusHeader.text = "Transaction Completed"
-                        tvTrxBadge.text = "Completed ⚡"
+                        tvTrxBadge.text = "Completed"
                         tvTrxBadge.setBackgroundColor(Color.parseColor("#2D6A4F"))
                         llTransferCompletionPanel.visibility = View.GONE
+                        etEnergyKWh.setText("")
                         Toast.makeText(this, "Energy transfer completed successfully!", Toast.LENGTH_LONG).show()
+
+                        // Automatically display digital receipt modal
+                        TransactionReceiptDialog.show(this@GridOperatorDashboardActivity, completedTrxObj)
                         fetchOperatorTransactions()
                     }
                 } else {
+                    val errMessage = try {
+                        connection.errorStream?.bufferedReader()?.use { it.readText() } ?: "Error $code"
+                    } catch (e: Exception) {
+                        "Server error code: $code"
+                    }
                     runOnUiThread {
-                        Toast.makeText(this, "Failed to complete transaction. Server code: $code", Toast.LENGTH_SHORT).show()
+                        showErrorDialog("Completion Failed", errMessage)
                     }
                 }
             } catch (e: Exception) {
@@ -367,7 +446,9 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
 
                     transactionList.clear()
                     for (i in 0 until jsonArray.length()) {
-                        transactionList.add(jsonArray.getJSONObject(i))
+                        val obj = jsonArray.getJSONObject(i)
+                        transactionList.add(obj)
+                        dbHelper.saveOrUpdateTransaction(obj) // Cache into SQLite
                     }
 
                     runOnUiThread {
@@ -375,13 +456,25 @@ class GridOperatorDashboardActivity : AppCompatActivity() {
                         adapter.notifyDataSetChanged()
                     }
                 } else {
+                    val cached = dbHelper.getCachedTransactions()
                     runOnUiThread {
                         pbHistoryLoading.visibility = View.GONE
+                        if (cached.isNotEmpty()) {
+                            transactionList.clear()
+                            transactionList.addAll(cached)
+                            adapter.notifyDataSetChanged()
+                        }
                     }
                 }
             } catch (e: Exception) {
+                val cached = dbHelper.getCachedTransactions()
                 runOnUiThread {
                     pbHistoryLoading.visibility = View.GONE
+                    if (cached.isNotEmpty()) {
+                        transactionList.clear()
+                        transactionList.addAll(cached)
+                        adapter.notifyDataSetChanged()
+                    }
                 }
             }
         }

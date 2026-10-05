@@ -73,7 +73,7 @@ export default function TransactionDetail() {
                 <span className="text-sm text-text-muted">Completed {formatDateTime(txn.completedAt)}</span>
               )}
             </div>
-            <h2 className="text-xl font-bold text-text-dark">{txn.transactionCode || txn._id}</h2>
+            <h2 className="text-xl font-bold text-text-dark">{txn.transactionCode || txn.id || txn._id}</h2>
             <p className="mt-1 text-sm text-text-muted">Created {formatDateTime(txn.createdAt)}</p>
           </div>
           {canComplete && (
@@ -180,16 +180,20 @@ export default function TransactionDetail() {
           <div className="card">
             <div className="card-header"><h3 className="text-sm font-semibold text-text-dark">Related</h3></div>
             <div className="space-y-2 card-body">
-              <button onClick={() => navigate(`/reservations/${txn.reservationId}`)}
-                className="flex items-center justify-between w-full p-3 text-sm border rounded-lg border-border hover:bg-bg-app text-text-dark">
-                <span>View Reservation</span>
-                <ChevronIcon />
-              </button>
-              <button onClick={() => navigate(`/nodes/${txn.nodeId}`)}
-                className="flex items-center justify-between w-full p-3 text-sm border rounded-lg border-border hover:bg-bg-app text-text-dark">
-                <span>View Node</span>
-                <ChevronIcon />
-              </button>
+              {txn.reservationId && (
+                <button onClick={() => navigate(`/operator/reservations/${txn.reservationId}/edit`)}
+                  className="flex items-center justify-between w-full p-3 text-sm border rounded-lg border-border hover:bg-bg-app text-text-dark">
+                  <span>Edit Reservation</span>
+                  <ChevronIcon />
+                </button>
+              )}
+              {txn.prosumerNic && (
+                <button onClick={() => navigate(`/prosumers/${txn.prosumerNic}`)}
+                  className="flex items-center justify-between w-full p-3 text-sm border rounded-lg border-border hover:bg-bg-app text-text-dark">
+                  <span>View Prosumer Profile</span>
+                  <ChevronIcon />
+                </button>
+              )}
             </div>
           </div>
         </div>

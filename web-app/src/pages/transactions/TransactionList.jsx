@@ -210,28 +210,35 @@ export default function TransactionList() {
                 <tbody>
                   {filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).length === 0
                     ? <tr><td colSpan="8"><EmptyState title="No transactions found" desc="Try adjusting your filters." /></td></tr>
-                    : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(t => (
-                      <tr key={t._id} className="table-row">
-                        <td className="font-mono text-xs table-td text-text-muted">
-                          {t.transactionCode || t._id?.slice(-10)}
-                        </td>
-                        <td className="text-sm font-medium table-td text-text-dark">{t.prosumerNic || '—'}</td>
-                        <td className="text-sm table-td text-text-muted">{t.nodeId || '—'}</td>
-                        <td className="text-sm font-semibold table-td text-primary">
-                          {t.energyTransferredKWh != null ? `${t.energyTransferredKWh} kWh` : '—'}
-                        </td>
-                        <td className="text-sm table-td text-text-muted">{t.operatorId || '—'}</td>
-                        <td className="text-sm table-td text-text-muted">{formatDate(t.createdAt)}</td>
-                        <td className="table-td"><StatusBadge status={t.transactionStatus} /></td>
-                        <td className="text-right table-td">
-                          <button
-                            onClick={() => navigate(`/transactions/${t._id}`)}
-                            className="px-3 py-1.5 border border-border rounded-lg text-xs hover:bg-bg-app text-text-dark">
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).map(t => {
+                      const id = t.id || t._id;
+                      return (
+                        <tr key={id} className="table-row">
+                          <td className="font-mono text-xs table-td text-text-muted">
+                            <button
+                              onClick={() => navigate(`/transactions/${id}`)}
+                              className="font-mono font-medium text-primary hover:underline">
+                              {t.transactionCode || id?.slice(-10)}
+                            </button>
+                          </td>
+                          <td className="text-sm font-medium table-td text-text-dark">{t.prosumerNic || '—'}</td>
+                          <td className="text-sm table-td text-text-muted">{t.nodeId || '—'}</td>
+                          <td className="text-sm font-semibold table-td text-primary">
+                            {t.energyTransferredKWh != null ? `${t.energyTransferredKWh} kWh` : '—'}
+                          </td>
+                          <td className="text-sm table-td text-text-muted">{t.operatorId || '—'}</td>
+                          <td className="text-sm table-td text-text-muted">{formatDate(t.createdAt)}</td>
+                          <td className="table-td"><StatusBadge status={t.transactionStatus} /></td>
+                          <td className="text-right table-td">
+                            <button
+                              onClick={() => navigate(`/transactions/${id}`)}
+                              className="px-3 py-1.5 border border-border rounded-lg text-xs font-medium hover:bg-primary hover:text-white transition-colors text-text-dark">
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
             </div>

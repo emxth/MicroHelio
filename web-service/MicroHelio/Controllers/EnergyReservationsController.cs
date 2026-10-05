@@ -55,6 +55,10 @@ namespace MicroHelio.Controllers
                 // Handle capacity or validation failures
                 return BadRequest(new { error = ex.Message });
             }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         // PUT /api/reservations/{id} - Updates an existing reservation

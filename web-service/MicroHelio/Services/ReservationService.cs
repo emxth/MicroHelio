@@ -59,27 +59,35 @@ namespace MicroHelio.Services
                 UpdatedAt = DateTime.UtcNow
             };
 
-            // Use MongoDB transaction to keep capacity deduction and reservation insertion in sync
-            using var session = await _mongoClient.StartSessionAsync();
-            session.StartTransaction();
             try
             {
-                var slot = await GetMatchingSlotAsync(session, dto.SlotId, dto.NodeId,
-                    dto.ScheduledDate, dto.ScheduledStartTime, dto.ScheduledEndTime);
-                await DeductCapacityAsync(session, slot, dto.RequestedCapacityKWh);
-                await _reservations.InsertOneAsync(session, newReservation);
-                await session.CommitTransactionAsync();
-
-                // Attach readable node details before returning response
-                await EnrichReservationWithNodeAsync(newReservation);
-                return newReservation;
+                using var session = await _mongoClient.StartSessionAsync();
+                session.StartTransaction();
+                try
+                {
+                    var slot = await GetMatchingSlotAsync(session, dto.SlotId, dto.NodeId,
+                        dto.ScheduledDate, dto.ScheduledStartTime, dto.ScheduledEndTime);
+                    await DeductCapacityAsync(session, slot, dto.RequestedCapacityKWh);
+                    await _reservations.InsertOneAsync(session, newReservation);
+                    await session.CommitTransactionAsync();
+                }
+                catch
+                {
+                    await session.AbortTransactionAsync();
+                    throw;
+                }
             }
-            catch
+            catch (Exception ex) when (ex is NotSupportedException || ex.Message.Contains("Standalone") || ex.Message.Contains("transaction"))
             {
-                // Roll back database changes if transaction fails
-                await session.AbortTransactionAsync();
-                throw;
+                var slot = await GetMatchingSlotAsync(null, dto.SlotId, dto.NodeId,
+                    dto.ScheduledDate, dto.ScheduledStartTime, dto.ScheduledEndTime);
+                await DeductCapacityAsync(null, slot, dto.RequestedCapacityKWh);
+                await _reservations.InsertOneAsync(newReservation);
             }
+
+            // Attach readable node details before returning response
+            await EnrichReservationWithNodeAsync(newReservation);
+            return newReservation;
         }
 
         // Updates an existing reservation and adjusts slot capacities, enforcing the strict 12-hour notice rule.
@@ -105,37 +113,60 @@ namespace MicroHelio.Services
                 .Set(r => r.ScheduledEndTime, dto.ScheduledEndTime)
                 .Set(r => r.UpdatedAt, DateTime.UtcNow);
 
-            // Execute slot transfer and capacity re-sync in a transaction
-            using var session = await _mongoClient.StartSessionAsync();
-            session.StartTransaction();
             try
             {
-                var newSlot = await GetMatchingSlotAsync(session, dto.SlotId, reservation.NodeId,
+                using var session = await _mongoClient.StartSessionAsync();
+                session.StartTransaction();
+                try
+                {
+                    var newSlot = await GetMatchingSlotAsync(session, dto.SlotId, reservation.NodeId,
+                        dto.ScheduledDate, dto.ScheduledStartTime, dto.ScheduledEndTime);
+
+                    if (reservation.SlotId != dto.SlotId)
+                    {
+                        await DeductCapacityAsync(session, newSlot, reservation.RequestedCapacityKWh);
+
+                        var restore = Builders<EnergyBookingSlot>.Update
+                            .Inc(s => s.AvailableCapacityKWh, reservation.RequestedCapacityKWh)
+                            .Inc(s => s.ReservedCapacityKWh, -reservation.RequestedCapacityKWh)
+                            .Set(s => s.IsAvailable, true);
+                        var restored = await _slots.UpdateOneAsync(session,
+                            s => s.Id == reservation.SlotId && s.ReservedCapacityKWh >= reservation.RequestedCapacityKWh,
+                            restore);
+                        if (restored.ModifiedCount == 0)
+                            throw new InvalidOperationException("The old slot capacity could not be restored.");
+                    }
+
+                    await _reservations.UpdateOneAsync(session, r => r.Id == id, update);
+                    await session.CommitTransactionAsync();
+                }
+                catch
+                {
+                    await session.AbortTransactionAsync();
+                    throw;
+                }
+            }
+            catch (Exception ex) when (ex is NotSupportedException || ex.Message.Contains("Standalone") || ex.Message.Contains("transaction"))
+            {
+                var newSlot = await GetMatchingSlotAsync(null, dto.SlotId, reservation.NodeId,
                     dto.ScheduledDate, dto.ScheduledStartTime, dto.ScheduledEndTime);
 
-                // If changing slots, deduct from new slot and restore capacity to old slot
                 if (reservation.SlotId != dto.SlotId)
                 {
-                    await DeductCapacityAsync(session, newSlot, reservation.RequestedCapacityKWh);
+                    await DeductCapacityAsync(null, newSlot, reservation.RequestedCapacityKWh);
 
                     var restore = Builders<EnergyBookingSlot>.Update
                         .Inc(s => s.AvailableCapacityKWh, reservation.RequestedCapacityKWh)
                         .Inc(s => s.ReservedCapacityKWh, -reservation.RequestedCapacityKWh)
                         .Set(s => s.IsAvailable, true);
-                    var restored = await _slots.UpdateOneAsync(session,
+                    var restored = await _slots.UpdateOneAsync(
                         s => s.Id == reservation.SlotId && s.ReservedCapacityKWh >= reservation.RequestedCapacityKWh,
                         restore);
                     if (restored.ModifiedCount == 0)
                         throw new InvalidOperationException("The old slot capacity could not be restored.");
                 }
 
-                await _reservations.UpdateOneAsync(session, r => r.Id == id, update);
-                await session.CommitTransactionAsync();
-            }
-            catch
-            {
-                await session.AbortTransactionAsync();
-                throw;
+                await _reservations.UpdateOneAsync(r => r.Id == id, update);
             }
         }
 
@@ -149,7 +180,6 @@ namespace MicroHelio.Services
             if (string.IsNullOrWhiteSpace(reason))
                 throw new InvalidOperationException("A cancellation reason is required.");
 
-            // Verify cancellation meets the 12-hour notice policy
             EnforceTwelveHourRule(reservation.ScheduledDate, reservation.ScheduledStartTime);
 
             var update = Builders<EnergyReservation>.Update
@@ -158,32 +188,51 @@ namespace MicroHelio.Services
                 .Set(r => r.CancelledAt, DateTime.UtcNow)
                 .Set(r => r.UpdatedAt, DateTime.UtcNow);
 
-            using var session = await _mongoClient.StartSessionAsync();
-            session.StartTransaction();
             try
             {
-                var cancelled = await _reservations.UpdateOneAsync(session,
+                using var session = await _mongoClient.StartSessionAsync();
+                session.StartTransaction();
+                try
+                {
+                    var cancelled = await _reservations.UpdateOneAsync(session,
+                        r => r.Id == id && (r.Status == "Pending" || r.Status == "Approved"), update);
+                    if (cancelled.ModifiedCount == 0)
+                        throw new InvalidOperationException("The reservation is no longer active.");
+
+                    var restore = Builders<EnergyBookingSlot>.Update
+                        .Inc(s => s.AvailableCapacityKWh, reservation.RequestedCapacityKWh)
+                        .Inc(s => s.ReservedCapacityKWh, -reservation.RequestedCapacityKWh)
+                        .Set(s => s.IsAvailable, true);
+                    var restored = await _slots.UpdateOneAsync(session,
+                        s => s.Id == reservation.SlotId && s.ReservedCapacityKWh >= reservation.RequestedCapacityKWh,
+                        restore);
+                    if (restored.ModifiedCount == 0)
+                        throw new KeyNotFoundException("The reservation slot no longer exists.");
+
+                    await session.CommitTransactionAsync();
+                }
+                catch
+                {
+                    await session.AbortTransactionAsync();
+                    throw;
+                }
+            }
+            catch (Exception ex) when (ex is NotSupportedException || ex.Message.Contains("Standalone") || ex.Message.Contains("transaction"))
+            {
+                var cancelled = await _reservations.UpdateOneAsync(
                     r => r.Id == id && (r.Status == "Pending" || r.Status == "Approved"), update);
                 if (cancelled.ModifiedCount == 0)
                     throw new InvalidOperationException("The reservation is no longer active.");
 
-                // Restore slot capacity
                 var restore = Builders<EnergyBookingSlot>.Update
                     .Inc(s => s.AvailableCapacityKWh, reservation.RequestedCapacityKWh)
                     .Inc(s => s.ReservedCapacityKWh, -reservation.RequestedCapacityKWh)
                     .Set(s => s.IsAvailable, true);
-                var restored = await _slots.UpdateOneAsync(session,
+                var restored = await _slots.UpdateOneAsync(
                     s => s.Id == reservation.SlotId && s.ReservedCapacityKWh >= reservation.RequestedCapacityKWh,
                     restore);
                 if (restored.ModifiedCount == 0)
                     throw new KeyNotFoundException("The reservation slot no longer exists.");
-
-                await session.CommitTransactionAsync();
-            }
-            catch
-            {
-                await session.AbortTransactionAsync();
-                throw;
             }
         }
 
@@ -283,10 +332,11 @@ namespace MicroHelio.Services
 
         // Queries and verifies that the requested time slot matches database records within the session.
         private async Task<EnergyBookingSlot> GetMatchingSlotAsync(
-            IClientSessionHandle session, string slotId, string nodeId,
+            IClientSessionHandle? session, string slotId, string nodeId,
             DateTime scheduledDate, string startTimeText, string endTimeText)
         {
-            var slot = await _slots.Find(session, s => s.Id == slotId).FirstOrDefaultAsync();
+            var find = session != null ? _slots.Find(session, s => s.Id == slotId) : _slots.Find(s => s.Id == slotId);
+            var slot = await find.FirstOrDefaultAsync();
             if (slot == null)
                 throw new KeyNotFoundException("The requested time slot does not exist.");
 
@@ -299,15 +349,15 @@ namespace MicroHelio.Services
 
         // Safely deducts capacity from the target slot while preventing race conditions.
         private async Task DeductCapacityAsync(
-            IClientSessionHandle session, EnergyBookingSlot slot, double requestedCapacity)
+            IClientSessionHandle? session, EnergyBookingSlot slot, double requestedCapacity)
         {
             var update = Builders<EnergyBookingSlot>.Update
                 .Inc(s => s.AvailableCapacityKWh, -requestedCapacity)
                 .Inc(s => s.ReservedCapacityKWh, requestedCapacity)
                 .Set(s => s.IsAvailable, false);
-            var result = await _slots.UpdateOneAsync(session,
-                s => s.Id == slot.Id && s.AvailableCapacityKWh >= requestedCapacity,
-                update);
+            var result = session != null
+                ? await _slots.UpdateOneAsync(session, s => s.Id == slot.Id && s.AvailableCapacityKWh >= requestedCapacity, update)
+                : await _slots.UpdateOneAsync(s => s.Id == slot.Id && s.AvailableCapacityKWh >= requestedCapacity, update);
             if (result.ModifiedCount == 0)
                 throw new InvalidOperationException("The slot does not have enough available capacity.");
         }
