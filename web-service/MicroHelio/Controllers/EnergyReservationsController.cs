@@ -1,5 +1,4 @@
 /* 
- * Author: Ashwin
  * Purpose: API Controller routing RESTful requests to the Reservation Service
  */
 using MicroHelio.Config;
@@ -41,7 +40,6 @@ namespace MicroHelio.Controllers
         // POST /api/reservations - Creates a new reservation
         // Allowed for Prosumers via mobile app.
         [HttpPost]
-        // [Authorize(Roles = "Prosumer")]
         public async Task<IActionResult> CreateReservation([FromBody] CreateReservationDto dto)
         {
             try
@@ -63,7 +61,6 @@ namespace MicroHelio.Controllers
 
         // PUT /api/reservations/{id} - Updates an existing reservation
         [HttpPut("{id}")]
-        // [Authorize(Roles = "Prosumer")]
         public async Task<IActionResult> UpdateReservation(string id, [FromBody] UpdateReservationDto dto)
         {
             try
@@ -84,7 +81,6 @@ namespace MicroHelio.Controllers
 
         // PATCH /api/reservations/{id}/cancel - Cancels a reservation
         [HttpPatch("{id}/cancel")]
-        // [Authorize(Roles = "Prosumer,GridOperator,Backoffice")]
         public async Task<IActionResult> CancelReservation(string id, [FromBody] string reason)
         {
             try
@@ -168,7 +164,6 @@ namespace MicroHelio.Controllers
 
         // GET /api/reservations?prosumerNic={nic} - Retrieves a prosumer's bookings
         [HttpGet]
-        // [Authorize(Roles = "Prosumer,GridOperator,Backoffice")]
         public async Task<IActionResult> GetProsumerReservations([FromQuery] string prosumerNic)
         {
             if (string.IsNullOrEmpty(prosumerNic)) return BadRequest("prosumerNic is required.");
@@ -179,7 +174,6 @@ namespace MicroHelio.Controllers
 
         // GET /api/reservations/{id} - Retrieves one reservation
         [HttpGet("{id}")]
-        // [Authorize(Roles = "Prosumer,GridOperator,Backoffice")]
         public async Task<IActionResult> GetReservationById(string id)
         {
             var reservation = await _reservationService.GetByIdAsync(id);
@@ -190,7 +184,6 @@ namespace MicroHelio.Controllers
 
         // GET /api/reservations/dashboard?prosumerNic={nic} - Retrieves counts for mobile dashboard
         [HttpGet("dashboard")]
-        // [Authorize(Roles = "Prosumer")]
         public async Task<IActionResult> GetDashboardCounts([FromQuery] string prosumerNic)
         {
             if (string.IsNullOrEmpty(prosumerNic)) return BadRequest("prosumerNic is required.");
@@ -201,7 +194,6 @@ namespace MicroHelio.Controllers
 
         // PATCH /api/reservations/{id}/approve - Approves a booking
         [HttpPatch("{id}/approve")]
-        // [Authorize(Roles = "GridOperator")]
         public async Task<IActionResult> ApproveReservation(string id, [FromBody] string operatorId)
         {
             try
@@ -221,7 +213,6 @@ namespace MicroHelio.Controllers
 
         // GET /api/reservations/status/{status} - Gets Approved or Pending lists
         [HttpGet("status/{status}")]
-        // [Authorize(Roles = "GridOperator,Backoffice")]
         public async Task<IActionResult> GetReservationsByStatus(string status)
         {
             var reservations = await _reservationService.GetReservationsByStatusAsync(status);
@@ -230,7 +221,6 @@ namespace MicroHelio.Controllers
 
         // GET /api/reservations/search - Multi-parameter search
         [HttpGet("search")]
-        // [Authorize(Roles = "GridOperator,Backoffice")]
         public async Task<IActionResult> SearchReservations(
             [FromQuery] string? nodeId, 
             [FromQuery] string? date, 
