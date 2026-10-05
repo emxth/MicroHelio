@@ -1,6 +1,6 @@
-﻿/* 
- * Author: Randiv
- * Purpose: Defines the data transfer object for initiating a new transaction with strict input validation.
+/* 
+ * Author: Emith Arachchi
+ * Purpose: Defines the data transfer object for initiating a new transaction with strict input validation rules.
  */
 using System.ComponentModel.DataAnnotations;
 

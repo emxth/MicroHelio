@@ -1,17 +1,21 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { StatusBadge } from '../../utils/helpers';
 import { PageHeader, StatCard, LoadingState, EmptyState } from '../../components/ui/index';
 
 export default function OperatorDashboard() {
   const navigate = useNavigate();
+  const { session } = useAuth();
   const { showToast } = useToast();
 
   const [transactions, setTransactions] = useState([]);
+  const [pendingReservations, setPendingReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [approvingId, setApprovingId] = useState(null);
 
   // Complete modal state
   const [modal, setModal] = useState(null); // { id, code }
@@ -23,10 +27,11 @@ export default function OperatorDashboard() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      // Fetch Initiated and Verified transactions
-      const [initiated, verified] = await Promise.all([
+      // Fetch Initiated & Verified transactions AND Pending Reservations
+      const [initiated, verified, pendingRes] = await Promise.all([
         api.get('/transactions?status=Initiated'),
         api.get('/transactions?status=Verified'),
+        api.get('/reservations/status/Pending'),
       ]);
       const combined = [...(initiated || []), ...(verified || [])];
       // Sort: Verified first (closer to completion), then Initiated
@@ -36,6 +41,7 @@ export default function OperatorDashboard() {
         return new Date(a.createdAt) - new Date(b.createdAt); // oldest first
       });
       setTransactions(combined);
+      setPendingReservations(pendingRes || []);
     } finally {
       setLoading(false);
     }
@@ -51,6 +57,21 @@ export default function OperatorDashboard() {
     const interval = setInterval(load, 30000);
     return () => clearInterval(interval);
   }, [autoRefresh, load]);
+
+  // Handle quick approval of pending reservations
+  async function handleApproveReservation(id) {
+    setApprovingId(id);
+    try {
+      const operatorId = session?.accountId || session?.accountIdentifier || 'GridOperator';
+      await api.patch(`/reservations/${id}/approve`, operatorId);
+      showToast('Reservation approved successfully!', 'success');
+      load();
+    } catch (err) {
+      showToast(err.message || 'Failed to approve reservation.', 'error');
+    } finally {
+      setApprovingId(null);
+    }
+  }
 
   // Open complete modal for a transaction
   function openModal(txn) {
@@ -109,7 +130,7 @@ export default function OperatorDashboard() {
     <div>
       <PageHeader
         title="Operator Verification Dashboard"
-        subtitle="Pending transactions awaiting QR scan and energy transfer confirmation"
+        subtitle="Pending energy reservations awaiting approval & active transfer transactions"
         action={
           <div className="flex items-center gap-3">
             {/* Auto-refresh toggle */}
@@ -129,8 +150,14 @@ export default function OperatorDashboard() {
         }
       />
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-3">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          label="Pending Approvals"
+          value={pendingReservations.length}
+          sub="Reservations awaiting approval"
+          valueClass={pendingReservations.length > 0 ? 'text-amber-600 font-bold' : 'text-text-muted'}
+        />
         <StatCard
           label="Awaiting Completion"
           value={transactions.length}
@@ -150,6 +177,68 @@ export default function OperatorDashboard() {
           valueClass="text-secondary"
         />
       </div>
+
+      {/* Pending Reservations Awaiting Approval Card Block */}
+      {pendingReservations.length > 0 && (
+        <div className="mb-6 border card border-amber-300 bg-amber-50/40">
+          <div className="flex items-center justify-between px-5 py-4 border-b border-amber-200 bg-amber-100/50">
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center w-8 h-8 text-sm font-bold text-white rounded-lg bg-amber-500">
+                !
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-amber-900">
+                  {pendingReservations.length} Pending Reservation{pendingReservations.length > 1 ? 's' : ''} Awaiting Approval
+                </h3>
+                <p className="text-xs text-amber-700">Review and approve prosumer booking requests to generate QR codes</p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/pending-bookings')}
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition-colors">
+              View All Approvals ({pendingReservations.length})
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="text-xs font-semibold tracking-wider text-left uppercase border-b border-amber-200 bg-amber-50 text-amber-800">
+                  <th className="py-2.5 px-4">Code</th>
+                  <th className="py-2.5 px-4">Prosumer NIC</th>
+                  <th className="py-2.5 px-4">Node</th>
+                  <th className="py-2.5 px-4">Time Slot</th>
+                  <th className="py-2.5 px-4">Capacity</th>
+                  <th className="py-2.5 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs divide-y divide-amber-200/60">
+                {pendingReservations.slice(0, 5).map(res => {
+                  const resId = res.id || res._id;
+                  return (
+                    <tr key={resId} className="transition-colors hover:bg-amber-100/40">
+                      <td className="py-2.5 px-4 font-mono font-bold text-amber-900">{res.reservationCode}</td>
+                      <td className="py-2.5 px-4 font-medium text-text-dark">{res.prosumerNic}</td>
+                      <td className="py-2.5 px-4 text-text-muted">{res.nodeCode || res.nodeName || res.nodeId}</td>
+                      <td className="py-2.5 px-4 text-text-dark">
+                        {res.scheduledStartTime && res.scheduledEndTime ? `${res.scheduledStartTime} - ${res.scheduledEndTime}` : '—'}
+                      </td>
+                      <td className="py-2.5 px-4 font-bold text-amber-800">{res.requestedCapacityKWh} kWh</td>
+                      <td className="py-2.5 px-4 text-right">
+                        <button
+                          onClick={() => handleApproveReservation(resId)}
+                          disabled={approvingId === resId}
+                          className="px-3 py-1 text-xs font-semibold text-white transition-colors rounded-md bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50">
+                          {approvingId === resId ? 'Approving…' : 'Approve'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Priority banner when verified transactions exist */}
       {verified > 0 && (
@@ -200,7 +289,7 @@ export default function OperatorDashboard() {
                         <td className="table-td">
                           <button
                             onClick={() => navigate(`/transactions/${id}`)}
-                            className="font-mono text-xs text-primary hover:underline font-medium">
+                            className="font-mono text-xs font-medium text-primary hover:underline">
                             {t.transactionCode || id?.slice(-10)}
                           </button>
                         </td>
@@ -239,8 +328,8 @@ export default function OperatorDashboard() {
                         <td className="table-td">
                           {/* eslint-disable-next-line react-hooks/purity */}
                           <span className={`text-xs font-medium ${Date.now() - new Date(t.createdAt) > 3600000
-                              ? 'text-danger'
-                              : 'text-text-muted'
+                            ? 'text-danger'
+                            : 'text-text-muted'
                             }`}>
                             {timeAgo(t.createdAt)}
                           </span>

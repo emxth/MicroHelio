@@ -1,5 +1,6 @@
-﻿/*
- * Purpose: Manages transaction records, QR verification, and reservation completion in MongoDB.
+/* 
+ * Author: Emith Arachchi
+ * Purpose: Manages transaction records, HMAC QR verification, and reservation completion in MongoDB.
  */
 using MicroHelio.Config;
 using MicroHelio.DTOs;

@@ -1,6 +1,6 @@
 /* 
- * Author: Randiv
- * Purpose: Represents the TRANSACTION collection in MongoDB.
+ * Author: Emith Arachchi
+ * Purpose: Represents the TRANSACTION collection document model in MongoDB.
  */
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;

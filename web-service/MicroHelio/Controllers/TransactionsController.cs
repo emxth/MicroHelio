@@ -1,5 +1,6 @@
 /* 
- * Handles HTTP requests for operator QR scanning, verification, and transaction completion.
+ * Author: Emith Arachchi
+ * Purpose: Handles HTTP RESTful requests for operator QR scanning, verification, and energy transaction completion.
  */
 using MicroHelio.DTOs;
 using MicroHelio.Services;

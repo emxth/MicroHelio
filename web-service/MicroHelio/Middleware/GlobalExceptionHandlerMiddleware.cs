@@ -1,5 +1,5 @@
 ﻿/* 
- * Author: Randiv
+ * Author: Emith Arachchi
  * Purpose: Intercepts unhandled exceptions globally to return standardized JSON error responses.
  */
 using System.Net;
