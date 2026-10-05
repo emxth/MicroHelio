@@ -38,9 +38,9 @@ export default function FloatingOperatorNav() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
       {/* Expandable Menu Items */}
-      <div className={`flex flex-col mb-4 space-y-3 transition-all duration-300 origin-bottom-right ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'}`}>
+      <div className={`flex flex-col mb-4 space-y-3 transition-all duration-300 origin-bottom-right ${isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'}`}>
         {/* Title for the menu card */}
         <div className="bg-primary-light text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm border border-border">
           Grid Operator Menu
@@ -66,7 +66,7 @@ export default function FloatingOperatorNav() {
       {/* Main Floating Action Button (FAB) */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center focus:outline-none focus:ring-4 transition-all duration-300 transform hover:scale-110 ${isOpen ? 'bg-primary text-surface focus:ring-primary/30 rotate-180' : 'bg-secondary text-surface focus:ring-secondary/30 hover:bg-[#409c73] rotate-0'}`}
+        className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center focus:outline-none focus:ring-4 transition-all duration-300 transform hover:scale-110 pointer-events-auto ${isOpen ? 'bg-primary text-surface focus:ring-primary/30 rotate-180' : 'bg-secondary text-surface focus:ring-secondary/30 hover:bg-[#409c73] rotate-0'}`}
         title="Toggle Grid Operator Menu"
       >
         <svg 

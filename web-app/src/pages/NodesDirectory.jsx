@@ -30,6 +30,7 @@ export default function NodesDirectory() {
   const navigate = useNavigate();
   const { hasRole } = useAuth();
   const isBackoffice = hasRole(['Backoffice']);
+  const canManageNodes = hasRole(['Backoffice', 'GridOperator']);
 
   // State Management
   const [nodes, setNodes] = useState([]);
@@ -163,7 +164,7 @@ export default function NodesDirectory() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7FAF7] text-[#1B2621] p-4 sm:p-6 lg:p-8 font-sans">
+    <div className="min-h-screen bg-[#F7FAF7] text-[#1B2621] p-4 sm:p-6 lg:p-8 pb-24 font-sans">
       {/* Toast Notification Banner */}
       {toastMessage && (
         <div className="fixed top-6 right-6 z-50 flex items-center gap-3 bg-[#2D6A4F] text-white px-5 py-3.5 rounded-xl shadow-lg border border-[#52B788]/30 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -199,17 +200,17 @@ export default function NodesDirectory() {
             <button
               onClick={fetchNodes}
               disabled={isLoading}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#748C7E]/30 bg-white text-[#1B2621] hover:bg-[#F7FAF7] transition-all font-medium text-sm shadow-sm disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#748C7E]/30 bg-white text-[#1B2621] hover:bg-[#F7FAF7] transition-all font-medium text-sm shadow-sm disabled:opacity-50 cursor-pointer"
               title="Refresh Directory Data"
             >
               <RefreshCw className={`w-4 h-4 text-[#748C7E] ${isLoading ? 'animate-spin' : ''}`} />
               <span className="hidden sm:inline">Refresh</span>
             </button>
 
-            {isBackoffice && (
+            {canManageNodes && (
               <button
                 onClick={() => navigate('/nodes/create')}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>Register New Node</span>
@@ -278,7 +279,7 @@ export default function NodesDirectory() {
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#748C7E] hover:text-[#1B2621]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#748C7E] hover:text-[#1B2621] cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -291,7 +292,7 @@ export default function NodesDirectory() {
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${statusFilter === status
+                className={`flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${statusFilter === status
                   ? 'bg-white text-[#2D6A4F] shadow-sm border border-[#748C7E]/20'
                   : 'text-[#748C7E] hover:text-[#1B2621]'
                   }`}
@@ -312,7 +313,7 @@ export default function NodesDirectory() {
             </div>
             <button
               onClick={fetchNodes}
-              className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 font-medium text-xs rounded-lg transition-colors"
+              className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 font-medium text-xs rounded-lg transition-colors cursor-pointer"
             >
               Retry
             </button>
@@ -343,7 +344,7 @@ export default function NodesDirectory() {
                     setSearchTerm('');
                     setStatusFilter('ALL');
                   }}
-                  className="mt-2 text-xs font-semibold text-[#2D6A4F] hover:underline"
+                  className="mt-2 text-xs font-semibold text-[#2D6A4F] hover:underline cursor-pointer"
                 >
                   Clear all filters
                 </button>
@@ -354,7 +355,7 @@ export default function NodesDirectory() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-[#F7FAF7] border-b border-[#748C7E]/20 text-[#1B2621] text-xs uppercase font-bold tracking-wider">
-                    <th className="py-4 px-5">  Node   ID</th>
+                    <th className="py-4 px-5">Node ID</th>
                     <th className="py-4 px-5">Station Name</th>
                     <th className="py-4 px-5">Location Coordinates</th>
                     <th className="py-4 px-5 text-right">Capacity (kWh)</th>
@@ -382,7 +383,7 @@ export default function NodesDirectory() {
                       {/* Station Name */}
                       <td className="py-4 px-5">
                         <div className="font-semibold text-[#1B2621]">{node.name}</div>
-
+                        <div className="text-xs text-[#748C7E] truncate max-w-xs">{node.address}</div>
                       </td>
 
                       {/* Location (Address & Coordinates) */}
@@ -407,7 +408,7 @@ export default function NodesDirectory() {
                       {/* Battery Slots (Available / Total) */}
                       <td className="py-4 px-4 text-center">
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F7FAF7] border border-[#748C7E]/20 rounded-lg text-xs font-semibold">
-                          <Battery className="w-3.5 h-3.5 text-[#52B788]" />
+                       
                           <span>
                             <strong className="text-[#2D6A4F]">{node.availableBatterySlots ?? 0}</strong>
                             <span className="text-[#748C7E]"> / {node.totalBatterySlots ?? 0}</span>
@@ -446,17 +447,18 @@ export default function NodesDirectory() {
                           {/* Edit Node Button */}
                           <button
                             onClick={() => navigate(`/nodes/edit/${node.id}`)}
-                            className="p-1.5 rounded-lg text-[#748C7E] hover:text-[#2D6A4F] hover:bg-[#2D6A4F]/10 transition-colors"
-                            title="Edit Node Details"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#748C7E]/30 bg-white hover:bg-[#2D6A4F] hover:text-white hover:border-[#2D6A4F] text-xs font-semibold text-[#1B2621] shadow-sm transition-all cursor-pointer"
+                            title="Edit Node Specifications"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="w-3.5 h-3.5" />
+                            
                           </button>
 
                           {/* Manage Battery Slots Button */}
                           <button
                             onClick={() => navigate(`/nodes/${node.id}/slots`)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#748C7E]/30 text-xs font-semibold text-[#1B2621] hover:bg-[#2D6A4F] hover:text-white hover:border-[#2D6A4F] transition-all"
-                            title="Manage Battery Slots"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2D6A4F]/10 hover:bg-[#2D6A4F] hover:text-white border border-[#2D6A4F]/20 text-xs font-semibold text-[#2D6A4F] shadow-sm transition-all cursor-pointer"
+                            title="Manage Battery Slots & Schedule"
                           >
                             <Sliders className="w-3.5 h-3.5" />
                             <span>Slots</span>
@@ -467,13 +469,14 @@ export default function NodesDirectory() {
                             <button
                               onClick={() => handleOpenDeactivateModal(node)}
                               disabled={!node.isActive}
-                              className={`p-1.5 rounded-lg transition-colors ${node.isActive
-                                ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50'
-                                : 'text-gray-300 cursor-not-allowed'
+                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border ${node.isActive
+                                ? 'text-amber-700 bg-amber-50 hover:bg-amber-100 border-amber-200 cursor-pointer'
+                                : 'text-gray-300 bg-gray-50 border-gray-200 cursor-not-allowed'
                                 }`}
                               title={node.isActive ? 'Deactivate Node' : 'Node is already inactive'}
                             >
-                              <Power className="w-4 h-4" />
+                              <Power className="w-3.5 h-3.5" />
+                              
                             </button>
                           )}
                         </div>
