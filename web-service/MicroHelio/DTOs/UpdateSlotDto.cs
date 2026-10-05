@@ -1,3 +1,7 @@
+/* 
+ * Author: Sewwandi Edirisooriya
+ * Purpose: Request DTO for updating an energy booking slot capacity or availability status.
+ */
 namespace MicroHelio.DTOs
 {
     // Request DTO for updating an energy booking slot capacity or availability status.

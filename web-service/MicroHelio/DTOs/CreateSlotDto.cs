@@ -1,3 +1,7 @@
+/* 
+ * Author: Sewwandi Edirisooriya
+ * Purpose: Request DTO for creating an energy trading slot associated with a microgrid node.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

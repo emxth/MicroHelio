@@ -1,3 +1,7 @@
+/* 
+ * Author: Sewwandi Edirisooriya
+ * Purpose: Request DTO for registering a new solar microgrid station node.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

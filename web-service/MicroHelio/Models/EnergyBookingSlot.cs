@@ -1,3 +1,6 @@
+/* 
+ * Purpose: Represents an Energy Booking Slot entity in MongoDB associated with a Microgrid Node.
+ */
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

@@ -1,3 +1,6 @@
+/* 
+ * Purpose: API Controller exposing RESTful endpoints for Solar Microgrid Station Node management.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 using MicroHelio.Services;
