@@ -3,7 +3,7 @@
  */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
-// using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -11,7 +11,7 @@ namespace MicroHelio.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    // [Authorize]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly TransactionService _transactionService;
