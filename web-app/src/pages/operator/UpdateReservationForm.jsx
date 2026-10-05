@@ -198,9 +198,6 @@ export default function UpdateReservationForm() {
               <span>Dashboard</span>
             </button>
           </div>
-          <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
-            Grid Operator
-          </div>
         </div>
 
         <div className="mb-6">
@@ -267,8 +264,8 @@ export default function UpdateReservationForm() {
                   {selectedSlot ? `${selectedSlot.slotStartTime} - ${selectedSlot.slotEndTime}` : 'Click to Choose Time Slot'}
                 </h4>
                 <p className="text-xs text-text-muted mt-0.5">
-                  {selectedSlot 
-                    ? `Date: ${new Date(selectedSlot.slotDate).toLocaleDateString()} | Available Capacity: ${selectedSlot.availableCapacityKWh} KWh` 
+                  {selectedSlot
+                    ? `Date: ${new Date(selectedSlot.slotDate).toLocaleDateString()} | Available Capacity: ${selectedSlot.availableCapacityKWh} KWh`
                     : 'View available & reserved slots'}
                 </p>
               </div>
@@ -335,7 +332,7 @@ export default function UpdateReservationForm() {
       {isSlotModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn">
           <div className="bg-surface rounded-2xl max-w-xl w-full p-6 shadow-xl border border-border max-h-[85vh] flex flex-col">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div>
@@ -412,11 +409,10 @@ export default function UpdateReservationForm() {
                           setMessage({ type: 'error', text: 'This time slot is already reserved and unavailable.' });
                         }
                       }}
-                      className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
-                        isAvailableFlag 
-                          ? 'cursor-pointer hover:border-primary bg-surface border-border hover:shadow-sm' 
+                      className={`p-4 rounded-xl border flex items-center justify-between transition-all ${isAvailableFlag
+                          ? 'cursor-pointer hover:border-primary bg-surface border-border hover:shadow-sm'
                           : 'cursor-not-allowed opacity-60 bg-red-50/40 border-red-200'
-                      } ${selectedSlotId === slot.id ? 'border-primary bg-success-light/40 ring-1 ring-primary' : ''}`}
+                        } ${selectedSlotId === slot.id ? 'border-primary bg-success-light/40 ring-1 ring-primary' : ''}`}
                     >
                       <div>
                         <h4 className="font-bold text-text-dark">{slot.slotStartTime} - {slot.slotEndTime}</h4>

@@ -28,7 +28,7 @@ export default function PendingApprovals() {
   const { session } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState(null);  
+  const [toast, setToast] = useState(null);
   const [processingId, setProcessingId] = useState(null);
 
   useEffect(() => {
@@ -146,9 +146,6 @@ export default function PendingApprovals() {
             <Home className="w-4 h-4 text-secondary" />
             <span>Dashboard</span>
           </button>
-        </div>
-        <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
-          Grid Operator
         </div>
       </div>
 

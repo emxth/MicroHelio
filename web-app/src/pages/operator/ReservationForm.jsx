@@ -30,7 +30,7 @@ export default function ReservationForm() {
   const [nodes, setNodes] = useState([]);
   const [slots, setSlots] = useState([]);
   const [originalReservation, setOriginalReservation] = useState(null);
-  const [loading, setLoading] = useState(isEditMode); 
+  const [loading, setLoading] = useState(isEditMode);
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -199,7 +199,7 @@ export default function ReservationForm() {
       };
 
     try {
-      const url = isEditMode 
+      const url = isEditMode
         ? `${baseUrl}/reservations/${id}`
         : `${baseUrl}/reservations`;
       const method = isEditMode ? 'PUT' : 'POST';
@@ -252,7 +252,7 @@ export default function ReservationForm() {
   const renderToast = () => {
     if (!toast) return null;
     const isSuccess = toast.type === 'success';
-    
+
     return (
       <div className={`mb-6 p-4 rounded-xl flex items-start shadow-sm border ${isSuccess ? 'bg-secondary text-surface border-secondary' : 'bg-danger/10 text-danger border-danger/30'}`}>
         {isSuccess ? (
@@ -307,9 +307,6 @@ export default function ReservationForm() {
               <span>Dashboard</span>
             </button>
           </div>
-          <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
-            Grid Operator
-          </div>
         </div>
 
         {/* Header */}
@@ -332,7 +329,7 @@ export default function ReservationForm() {
         {/* Form Card */}
         <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Prosumer NIC */}
               <div className="col-span-1">
@@ -418,8 +415,8 @@ export default function ReservationForm() {
                     {selectedSlot ? `${selectedSlot.slotStartTime} - ${selectedSlot.slotEndTime}` : 'Click to Choose Time Slot'}
                   </h4>
                   <p className="text-xs text-text-muted mt-0.5">
-                    {selectedSlot 
-                      ? `Date: ${new Date(selectedSlot.slotDate).toLocaleDateString()} | Max Capacity: ${selectedSlot.availableCapacityKWh} KWh` 
+                    {selectedSlot
+                      ? `Date: ${new Date(selectedSlot.slotDate).toLocaleDateString()} | Max Capacity: ${selectedSlot.availableCapacityKWh} KWh`
                       : (formData.nodeId ? 'View available & reserved slots' : 'Please select a station first')}
                   </p>
                 </div>
@@ -482,7 +479,7 @@ export default function ReservationForm() {
                 )}
               </button>
             </div>
-            
+
           </form>
         </div>
       </div>
@@ -525,7 +522,7 @@ export default function ReservationForm() {
       {isSlotModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-fadeIn">
           <div className="bg-surface rounded-2xl max-w-xl w-full p-6 shadow-xl border border-border max-h-[85vh] flex flex-col">
-            
+
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div>
@@ -602,11 +599,10 @@ export default function ReservationForm() {
                           showToast('This time slot is already reserved and unavailable.', 'error');
                         }
                       }}
-                      className={`p-4 rounded-xl border flex items-center justify-between transition-all ${
-                        isAvailableFlag 
-                          ? 'cursor-pointer hover:border-primary bg-surface border-border hover:shadow-sm' 
+                      className={`p-4 rounded-xl border flex items-center justify-between transition-all ${isAvailableFlag
+                          ? 'cursor-pointer hover:border-primary bg-surface border-border hover:shadow-sm'
                           : 'cursor-not-allowed opacity-60 bg-red-50/40 border-red-200'
-                      } ${formData.slotId === slot.id ? 'border-primary bg-success-light/40 ring-1 ring-primary' : ''}`}
+                        } ${formData.slotId === slot.id ? 'border-primary bg-success-light/40 ring-1 ring-primary' : ''}`}
                     >
                       <div>
                         <h4 className="font-bold text-text-dark">{slot.slotStartTime} - {slot.slotEndTime}</h4>

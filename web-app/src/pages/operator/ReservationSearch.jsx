@@ -202,9 +202,6 @@ export default function ReservationSearch() {
             <span>Dashboard</span>
           </button>
         </div>
-        <div className="rounded-full border border-secondary/30 bg-success-light px-3 py-1 text-xs font-semibold text-primary">
-          Grid Operator
-        </div>
       </div>
 
       {/* Page Header */}
