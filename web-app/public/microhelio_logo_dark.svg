@@ -1,17 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 60" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 60" width="100%" height="100%">
   <defs>
-    <linearGradient id="canopyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="canopyGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#2D6A4F" />
       <stop offset="100%" stop-color="#1B4332" />
+    </linearGradient>
+    <linearGradient id="leafGradDark" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2D6A4F" />
+      <stop offset="100%" stop-color="#52B788" />
     </linearGradient>
   </defs>
 
   <!-- Icon Container (Deep Canopy Squircle with 12px organic radius) -->
-  <rect x="4" y="6" width="48" height="48" rx="12" fill="url(#canopyGrad)" />
+  <rect x="4" y="6" width="48" height="48" rx="12" fill="#1B4332" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
 
   <!-- Microgrid Outer Hexagon Ring -->
   <polygon points="28,13 42.7,21.5 42.7,38.5 28,47 13.3,38.5 13.3,21.5" 
-           fill="none" stroke="#52B788" stroke-width="2" stroke-opacity="0.7" stroke-linejoin="round" />
+           fill="none" stroke="#52B788" stroke-width="2" stroke-opacity="0.8" stroke-linejoin="round" />
 
   <!-- Solar Rays / Grid Spokes -->
   <line x1="28" y1="13" x2="28" y2="18" stroke="#E9C46A" stroke-width="2" stroke-linecap="round" />
@@ -30,4 +34,15 @@
   <circle cx="42.7" cy="21.5" r="2.5" fill="#52B788" />
   <circle cx="13.3" cy="38.5" r="2.5" fill="#FFFFFF" />
   <circle cx="28" cy="47" r="2.5" fill="#52B788" />
+
+  <!-- Typography -->
+  <text x="64" y="36" font-family="'Inter', 'Segoe UI', Roboto, sans-serif" font-size="25" font-weight="800" letter-spacing="-0.5">
+    <tspan fill="#FFFFFF">Micro</tspan><tspan fill="#52B788">Helio</tspan>
+  </text>
+  <circle cx="204" cy="22" r="3.5" fill="#E9C46A" />
+
+  <!-- Subtitle -->
+  <text x="65" y="49" font-family="'Inter', 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#A7D7C5" letter-spacing="1.6">
+    SMART MICROGRID SYSTEM
+  </text>
 </svg>

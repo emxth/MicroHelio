@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { NAV_CONFIG } from '../../config/nav.js';
+import { Logo } from '../ui/index';
 
 export default function Sidebar() {
   const { session, hasRole } = useAuth();
@@ -15,15 +16,9 @@ export default function Sidebar() {
       className="fixed top-0 left-0 z-40 flex flex-col w-64 h-full"
       style={{ background: '#2D6A4F', boxShadow: '2px 0 12px rgba(27,38,33,.15)' }}>
 
-      {/* Logo */}
-      <div className="flex items-center flex-shrink-0 gap-3 px-5 py-5 border-b border-white/10">
-        <div className="flex items-center justify-center flex-shrink-0 w-9 h-9 rounded-xl bg-accent">
-          <SunIcon />
-        </div>
-        <div>
-          <div className="text-base font-bold leading-tight text-white">MicroHelio</div>
-          <div className="text-xs text-green-200 opacity-70">Solar Grid Platform</div>
-        </div>
+      {/* Brand Logo Header */}
+      <div className="flex items-center flex-shrink-0 px-4 py-4 border-b border-white/10">
+        <Logo theme="dark" className="w-auto h-10" />
       </div>
 
       {/* User info */}
@@ -91,12 +86,3 @@ export default function Sidebar() {
   );
 }
 
-function SunIcon() {
-  return (
-    <svg className="w-5 h-5" fill="none" stroke="#1B2621" viewBox="0 0 24 24" strokeWidth="2.5">
-      <path strokeLinecap="round" strokeLinejoin="round"
-        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707" />
-      <circle cx="12" cy="12" r="4" />
-    </svg>
-  );
-}

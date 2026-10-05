@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../services/api';
-import { ErrorBanner, Spinner } from '../../components/ui/index';
+import { ErrorBanner, Spinner, Logo } from '../../components/ui/index';
 
 export default function Login() {
   const { session, login } = useAuth();
@@ -45,11 +45,8 @@ export default function Login() {
       {/* Left panel */}
       <div className="flex-col justify-between hidden w-1/2 p-12 text-white lg:flex"
         style={{ background: 'linear-gradient(160deg,#1B2621 0%,#2D6A4F 60%,#3a8a68 100%)' }}>
-        <Link to="/" className="flex items-center gap-3">
-          <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-xl bg-accent">
-            <SunIcon />
-          </div>
-          <span className="text-xl font-bold">MicroHelio</span>
+        <Link to="/" className="flex items-center">
+          <Logo theme="dark" className="w-auto h-10" />
         </Link>
         <div>
           <h2 className="mb-4 text-3xl font-bold leading-tight">Solar energy trading,<br />intelligently managed.</h2>
@@ -68,9 +65,8 @@ export default function Login() {
       {/* Right panel - form */}
       <div className="flex items-center justify-center flex-1 p-8 bg-bg-app">
         <div className="w-full max-w-md">
-          <Link to="/" className="flex items-center gap-3 mb-8 lg:hidden">
-            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-accent"><SunIcon /></div>
-            <span className="text-xl font-bold text-text-dark">MicroHelio</span>
+          <Link to="/" className="flex items-center justify-center mb-8 lg:hidden">
+            <Logo theme="light" className="w-auto h-10" />
           </Link>
 
           <h1 className="mb-1 text-2xl font-bold text-text-dark">Welcome back</h1>
@@ -121,6 +117,3 @@ export default function Login() {
   );
 }
 
-function SunIcon() {
-  return <svg className="w-5 h-5" fill="none" stroke="#1B2621" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3" /><circle cx="12" cy="12" r="4" /></svg>;
-}

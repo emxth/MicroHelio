@@ -148,3 +148,7 @@ export function DetailRow({ label, value }) {
 export function useConfirm() {
   return (message) => window.confirm(message);
 }
+
+// MicroHelio Official Logo
+export { default as Logo } from './Logo';
+
