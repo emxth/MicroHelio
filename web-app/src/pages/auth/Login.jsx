@@ -79,18 +79,18 @@ export default function Login() {
               <label className="form-label">Email address</label>
               <input type="email" value={form.identifier}
                 onChange={e => setForm(f => ({ ...f, identifier: e.target.value }))}
-                className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
+                className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                 placeholder="operator@microhelio.com, username, or NIC" required />
             </div>
-            
+
             <div className="flex flex-col gap-1.5 mb-6">
               <label className="block form-label">Password</label>
               <div className="relative w-full">
                 <input type={showPw ? 'text' : 'password'} value={form.password}
                   onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                  className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500" 
+                  className="w-full p-2 bg-transparent border rounded-xl form-input focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500"
                   placeholder="••••••••" required />
-                
+
                 <button type="button" onClick={() => setShowPw(p => !p)}
                   className="absolute -translate-y-1/2 right-3 top-1/2 text-text-muted hover:text-text-dark">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
