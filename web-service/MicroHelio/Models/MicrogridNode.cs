@@ -47,7 +47,6 @@ namespace MicroHelio.Models
         public bool IsActive { get; set; } = true;
 
         [BsonElement("createdBy")]
-        [BsonRepresentation(BsonType.ObjectId)]
         public string? CreatedBy { get; set; }
 
         [BsonElement("createdAt")]
