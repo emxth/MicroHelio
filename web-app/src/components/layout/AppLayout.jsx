@@ -14,7 +14,8 @@ const PAGE_TITLES = {
   '/slots': 'Energy Slots',
   '/slots/new': 'New Slot',
   '/reservations': 'All Reservations',
-  '/pending-bookings': 'Pending Bookings',
+  '/pending-approvals': 'Pending Approvals',
+  '/pending-bookings': 'Pending Approvals',
   '/transactions': 'Transaction History',
   '/operator-dashboard': 'Operator Dashboard',
   '/operator/pending-approvals': 'Pending Approvals',
@@ -73,7 +74,7 @@ export default function AppLayout() {
 
       {/* Page content */}
       <main className="min-h-screen pt-16 ml-64">
-        <div className="p-8 max-w-7xl">
+        <div className="w-full max-w-[1600px] mx-auto p-6 sm:p-8">
           <Outlet />
         </div>
       </main>

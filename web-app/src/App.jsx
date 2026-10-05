@@ -77,7 +77,9 @@ export default function App() {
 
             {/* Grid Operator & Reservation Management */}
             <Route path="/reservations" element={<ReservationSearch />} />
-            <Route path="/pending-bookings" element={<PendingApprovals />} />
+            <Route path="/reservation-search" element={<ReservationSearch />} />
+            <Route path="/pending-approvals" element={<PendingApprovals />} />
+            <Route path="/pending-bookings" element={<Navigate to="/pending-approvals" replace />} />
             <Route path="/operator/pending-approvals" element={<PendingApprovals />} />
             <Route path="/operator/reservation-search" element={<ReservationSearch />} />
             <Route path="/operator/reservations/new" element={<ReservationForm />} />

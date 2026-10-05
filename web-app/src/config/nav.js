@@ -23,7 +23,7 @@ export const NAV_CONFIG = [
     category: 'Reservations & Bookings',
     items: [
       { label: 'All Reservations', path: '/reservations', roles: ['Backoffice', 'GridOperator'] },
-      { label: 'Pending Bookings', path: '/pending-bookings', roles: ['GridOperator'], badgeKey: 'pendingBookings' },
+      { label: 'Pending Approvals', path: '/pending-approvals', roles: ['GridOperator'], badgeKey: 'pendingApprovals' },
     ],
   },
   {

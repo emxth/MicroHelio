@@ -181,13 +181,13 @@ export default function ReservationSearch() {
   };
 
   return (
-    <div className="min-h-full bg-bg-app text-text-dark font-sans p-4 sm:p-6 lg:p-8 relative">
-      {/* Top Navigation Bar */}
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 mb-6">
+    <div className="space-y-6">
+      {/* Top Navigation & Status Bar */}
+      <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
             title="Go Back"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -195,7 +195,7 @@ export default function ReservationSearch() {
           </button>
           <button
             onClick={() => navigate('/operator-dashboard')}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-semibold text-text-muted hover:text-primary bg-surface border border-border hover:border-secondary rounded-xl shadow-sm transition-all"
             title="Operator Dashboard"
           >
             <Home className="w-4 h-4 text-secondary" />
@@ -208,171 +208,184 @@ export default function ReservationSearch() {
       </div>
 
       {/* Page Header */}
-      <div className="max-w-7xl mx-auto mb-6">
-        <h1 className="text-3xl font-bold text-primary flex items-center">
-          <svg className="w-8 h-8 mr-3 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-primary flex items-center">
+          <svg className="w-7 h-7 mr-2.5 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           Reservation Management Tracker
         </h1>
-        <p className="mt-2 text-text-muted">
+        <p className="mt-1 text-sm text-text-muted">
           Search, filter, and manage all microgrid energy reservations.
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Search Filter Bar */}
-        <form onSubmit={handleSearch} className="bg-surface rounded-2xl shadow-sm border border-border p-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
-            <div>
-              <label className="block text-sm font-medium text-text-muted mb-1">Prosumer NIC</label>
-              <input
-                type="text"
-                value={filters.nic}
-                onChange={(e) => setFilters({ ...filters, nic: e.target.value })}
-                placeholder="e.g. 199012345678"
-                className="w-full px-4 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-text-dark placeholder-text-muted/50"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-muted mb-1">Date</label>
-              <input
-                type="date"
-                value={filters.date}
-                onChange={(e) => setFilters({ ...filters, date: e.target.value })}
-                className="w-full px-4 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-text-dark"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-muted mb-1">Status</label>
-              <select
-                value={filters.status}
-                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                className="w-full px-4 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-text-dark appearance-none"
-              >
-                <option value="All">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-text-muted mb-1">Microgrid Node</label>
-              <select
-                value={filters.nodeId}
-                onChange={(e) => setFilters({ ...filters, nodeId: e.target.value })}
-                className="w-full px-4 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-text-dark appearance-none"
-              >
-                <option value="">All Nodes</option>
-                {nodes.map(node => (
-                  <option key={node.id} value={node.id}>{node.nodeCode} - {node.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-xl text-surface bg-primary hover:bg-[#245a42] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-sm"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Search
-              </button>
-            </div>
+      {/* Search Filter Bar */}
+      <form onSubmit={handleSearch} className="bg-surface rounded-2xl shadow-sm border border-border p-4 sm:p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 items-end">
+          <div>
+            <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1.5">Prosumer NIC</label>
+            <input
+              type="text"
+              value={filters.nic}
+              onChange={(e) => setFilters({ ...filters, nic: e.target.value })}
+              placeholder="e.g. 199012345678"
+              className="w-full px-3.5 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-xs sm:text-sm text-text-dark placeholder-text-muted/50"
+            />
           </div>
-        </form>
 
-        {/* Data Table */}
-        <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden transition-all duration-300">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-10 h-10 border-4 border-primary-light border-t-primary rounded-full animate-spin"></div>
-              <p className="mt-4 text-text-muted font-medium">Searching reservations...</p>
-            </div>
-          ) : reservations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-              <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-primary mb-1">No reservations match your search</h3>
-              <p className="text-text-muted text-sm">Try adjusting your filters to find what you're looking for.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-primary-light/50 text-primary uppercase text-xs tracking-wider border-b border-border">
-                    <th className="py-4 px-6 font-semibold">Reservation Code</th>
-                    <th className="py-4 px-6 font-semibold">Prosumer NIC</th>
-                    <th className="py-4 px-6 font-semibold">Node</th>
-                    <th className="py-4 px-6 font-semibold">Date</th>
-                    <th className="py-4 px-6 font-semibold">Time Slot</th>
-                    <th className="py-4 px-6 font-semibold">Type</th>
-                    <th className="py-4 px-6 font-semibold">Status</th>
-                    <th className="py-4 px-6 font-semibold text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border bg-surface text-sm">
-                  {reservations.map((res) => (
-                    <tr key={res.id} className="hover:bg-primary-light/30 transition-colors duration-150 group">
-                      <td className="py-4 px-6 whitespace-nowrap font-medium text-text-dark">{res.reservationCode}</td>
-                      <td className="py-4 px-6 whitespace-nowrap text-text-muted">{res.prosumerNic}</td>
-                      <td className="py-4 px-6 whitespace-nowrap text-text-dark">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-bg-app border border-border">
-                          {res.nodeCode} - {res.nodeName}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap text-text-dark">
-                        {res.scheduledDate ? new Date(res.scheduledDate).toLocaleDateString() : 'N/A'}
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap text-text-muted">
-                        {res.scheduledStartTime} - {res.scheduledEndTime}
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap text-text-dark">{res.reservationType}</td>
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        {getStatusBadge(res.status)}
-                      </td>
-                      <td className="py-4 px-6 whitespace-nowrap text-right">
-                        <div className="flex items-center justify-end space-x-2">
-                          {(res.status === 'Pending' || res.status === 'Approved') && (
-                            <>
-                              <Link
-                                to={`/operator/reservations/${res.id}/edit`}
-                                className="inline-flex items-center px-3 py-1.5 border border-[#52B788] text-[#52B788] hover:bg-[#52B788] hover:text-white transition-colors text-xs font-medium rounded-lg"
-                              >
-                                <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                Edit
-                              </Link>
-                              <button
-                                onClick={() => setCancelModal({ isOpen: true, reservationId: res.id, reason: '', isProcessing: false })}
-                                className="inline-flex items-center px-3 py-1.5 border border-danger/30 text-xs font-medium rounded-lg text-danger bg-danger-light hover:bg-danger hover:text-surface focus:outline-none transition-all duration-200"
-                              >
-                                <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                                Cancel
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div>
+            <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1.5">Date</label>
+            <input
+              type="date"
+              value={filters.date}
+              onChange={(e) => setFilters({ ...filters, date: e.target.value })}
+              className="w-full px-3.5 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-xs sm:text-sm text-text-dark"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1.5">Status</label>
+            <select
+              value={filters.status}
+              onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+              className="w-full px-3.5 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-xs sm:text-sm text-text-dark"
+            >
+              <option value="All">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Cancelled">Cancelled</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-muted uppercase tracking-wider mb-1.5">Microgrid Node</label>
+            <select
+              value={filters.nodeId}
+              onChange={(e) => setFilters({ ...filters, nodeId: e.target.value })}
+              className="w-full px-3.5 py-2 bg-bg-app border border-border rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent outline-none transition-all text-xs sm:text-sm text-text-dark"
+            >
+              <option value="">All Nodes</option>
+              {nodes.map(node => (
+                <option key={node.id} value={node.id}>{node.nodeCode} - {node.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="sm:col-span-2 lg:col-span-4 xl:col-span-1">
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-xs sm:text-sm font-semibold rounded-xl text-surface bg-primary hover:bg-[#245a42] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-sm h-[38px]"
+            >
+              <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Search
+            </button>
+          </div>
         </div>
+      </form>
+
+      {/* Data Table */}
+      <div className="bg-surface rounded-2xl shadow-sm border border-border overflow-hidden">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-10 h-10 border-4 border-primary-light border-t-primary rounded-full animate-spin"></div>
+            <p className="mt-4 text-text-muted font-medium text-sm">Searching reservations...</p>
+          </div>
+        ) : reservations.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
+            <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mb-4">
+              <svg className="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-primary mb-1">No reservations match your search</h3>
+            <p className="text-text-muted text-sm">Try adjusting your filters to find what you're looking for.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-primary text-surface uppercase text-xs tracking-wider border-b border-border">
+                  <th className="py-3.5 px-4 font-semibold">Code</th>
+                  <th className="py-3.5 px-4 font-semibold">Prosumer NIC</th>
+                  <th className="py-3.5 px-4 font-semibold">Node</th>
+                  <th className="py-3.5 px-4 font-semibold">Date</th>
+                  <th className="py-3.5 px-4 font-semibold">Time Slot</th>
+                  <th className="py-3.5 px-4 font-semibold">Type</th>
+                  <th className="py-3.5 px-4 font-semibold">Status</th>
+                  <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border bg-surface text-sm">
+                {reservations.map((res) => (
+                  <tr key={res.id} className="hover:bg-primary-light/30 transition-colors duration-150">
+                    <td className="py-3 px-4 whitespace-nowrap font-mono text-xs font-semibold text-primary">
+                      {res.reservationCode}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap text-text-dark font-medium text-xs sm:text-sm">
+                      {res.prosumerNic}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-bg-app border border-border">
+                        {res.nodeCode || res.nodeName ? `${res.nodeCode || ''} ${res.nodeName ? `· ${res.nodeName}` : ''}` : 'N/A'}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap text-text-muted text-xs">
+                      {res.scheduledDate ? new Date(res.scheduledDate).toLocaleDateString() : 'N/A'}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap text-text-dark text-xs">
+                      {res.scheduledStartTime && res.scheduledEndTime ? (
+                        <div className="flex items-center">
+                          <svg className="w-3.5 h-3.5 mr-1 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span>{res.scheduledStartTime} - {res.scheduledEndTime}</span>
+                        </div>
+                      ) : 'N/A'}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary-light text-primary">
+                        {res.reservationType}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap">
+                      {getStatusBadge(res.status)}
+                    </td>
+                    <td className="py-3 px-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end space-x-1.5">
+                        {(res.status === 'Pending' || res.status === 'Approved') && (
+                          <>
+                            <Link
+                              to={`/operator/reservations/${res.id}/edit`}
+                              className="inline-flex items-center px-2.5 py-1 border border-secondary text-secondary hover:bg-secondary hover:text-white transition-colors text-xs font-medium rounded-lg shadow-sm"
+                            >
+                              <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                              Edit
+                            </Link>
+                            <button
+                              onClick={() => setCancelModal({ isOpen: true, reservationId: res.id, reason: '', isProcessing: false })}
+                              className="inline-flex items-center px-2.5 py-1 border border-danger/30 text-xs font-medium rounded-lg text-danger bg-danger-light hover:bg-danger hover:text-surface focus:outline-none transition-all shadow-sm"
+                            >
+                              <svg className="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {renderToast()}
