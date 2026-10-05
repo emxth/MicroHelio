@@ -49,7 +49,7 @@ export default function CreateNode() {
     }
   })();
 
-  const isBackoffice = session?.role === 'Backoffice';
+  const isAuthorized = session?.role === 'Backoffice' || session?.role === 'GridOperator';
 
   // Form State
   const [formData, setFormData] = useState({
@@ -270,8 +270,8 @@ export default function CreateNode() {
     }
   };
 
-  // Role Access Guard: Non-Backoffice users restricted
-  if (!isBackoffice) {
+  // Role Access Guard: Non-authorized users restricted
+  if (!isAuthorized) {
     return (
       <div className="min-h-screen bg-[#F7FAF7] flex items-center justify-center p-4">
         <div className="bg-white max-w-md w-full rounded-2xl border border-red-200 shadow-lg p-6 text-center space-y-4">
@@ -280,7 +280,7 @@ export default function CreateNode() {
           </div>
           <h2 className="text-xl font-bold text-[#1B2621]">Unauthorized Access</h2>
           <p className="text-sm text-[#748C7E]">
-            Node Registration is strictly restricted to authorized <strong className="text-[#1B2621]">Backoffice</strong> operators. Your current role (<span className="text-red-600 font-semibold">{session?.role || 'Guest'}</span>) does not have permission to view or register microgrid hubs.
+            Node Registration is restricted to authorized operators. Your current role (<span className="text-red-600 font-semibold">{session?.role || 'Guest'}</span>) does not have permission to register microgrid hubs.
           </p>
           <div className="pt-2">
             <button

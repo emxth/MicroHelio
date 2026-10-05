@@ -318,7 +318,7 @@ export default function NodeSlotManagement() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F7FAF7] text-[#1B2621] p-4 sm:p-6 lg:p-8 font-sans">
+    <div className="min-h-screen bg-[#F7FAF7] text-[#1B2621] p-4 sm:p-6 lg:p-8 pb-24 font-sans">
       {/* Toast Notification Banner */}
       {toastMessage && (
         <div className="fixed top-6 right-6 z-50 flex items-center gap-3 bg-[#2D6A4F] text-white px-5 py-3.5 rounded-xl shadow-lg border border-[#52B788]/30 animate-in fade-in slide-in-from-top-4 duration-300">

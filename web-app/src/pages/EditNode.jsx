@@ -20,6 +20,7 @@ import {
   Power,
   Info
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../services/api';
 
 // Base API URL for C# Web API endpoints
@@ -34,6 +35,7 @@ const ALL_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export default function EditNode() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { session } = useAuth();
 
   // Loading & Initial Fetch State
   const [isFetching, setIsFetching] = useState(true);
