@@ -71,9 +71,26 @@ namespace MicroHelio.Controllers
         // Operator confirms energy transfer is done; updates status to 'Completed' and stores energyTransferredKWh
         [HttpPatch("{id}/complete")]
         // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
-        public async Task<IActionResult> CompleteTransaction(string id, [FromBody] double energyTransferredKWh)
+        public async Task<IActionResult> CompleteTransaction(string id, [FromBody] System.Text.Json.JsonElement element)
         {
-            var result = await _transactionService.CompleteTransactionAsync(id, energyTransferredKWh);
+            double energyKWh = 0.0;
+            if (element.ValueKind == System.Text.Json.JsonValueKind.Number)
+            {
+                energyKWh = element.GetDouble();
+            }
+            else if (element.ValueKind == System.Text.Json.JsonValueKind.Object)
+            {
+                if (element.TryGetProperty("energyTransferredKWh", out var prop) && prop.ValueKind == System.Text.Json.JsonValueKind.Number)
+                {
+                    energyKWh = prop.GetDouble();
+                }
+                else if (element.TryGetProperty("energyKWh", out var prop2) && prop2.ValueKind == System.Text.Json.JsonValueKind.Number)
+                {
+                    energyKWh = prop2.GetDouble();
+                }
+            }
+
+            var result = await _transactionService.CompleteTransactionAsync(id, energyKWh);
             if (!result)
             {
                 return NotFound("Transaction not found or could not be completed.");
@@ -82,12 +99,12 @@ namespace MicroHelio.Controllers
             return Ok(new { message = "Energy transfer finalised. Transaction completed." });
         }
 
-        // Retrieves full transaction history for a Prosumer (via NIC) or a Grid Operator (via operatorId)
+        // Retrieves full transaction history for a Prosumer (via NIC), a Grid Operator (via operatorId), or filtered by Status
         [HttpGet]
         // [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
-        public async Task<IActionResult> GetTransactions([FromQuery] string? prosumerNic, [FromQuery] string? operatorId)
+        public async Task<IActionResult> GetTransactions([FromQuery] string? prosumerNic, [FromQuery] string? operatorId, [FromQuery] string? status)
         {
-            var transactions = await _transactionService.GetFilteredTransactionsAsync(prosumerNic, operatorId);
+            var transactions = await _transactionService.GetFilteredTransactionsAsync(prosumerNic, operatorId, status);
             return Ok(transactions);
         }
 

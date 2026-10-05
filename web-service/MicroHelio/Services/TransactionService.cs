@@ -141,8 +141,8 @@ namespace MicroHelio.Services
             return true;
         }
 
-        // Retrieves a filtered list of transactions based on Prosumer NIC or Operator ID
-        public async Task<List<Transaction>> GetFilteredTransactionsAsync(string? prosumerNic, string? operatorId)
+        // Retrieves a filtered list of transactions based on Prosumer NIC, Operator ID, or Status
+        public async Task<List<Transaction>> GetFilteredTransactionsAsync(string? prosumerNic, string? operatorId, string? status = null)
         {
             var builder = Builders<Transaction>.Filter;
             var filter = builder.Empty;
@@ -154,6 +154,10 @@ namespace MicroHelio.Services
             if (!string.IsNullOrEmpty(operatorId))
             {
                 filter &= builder.Eq(t => t.OperatorId, operatorId);
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                filter &= builder.Eq(t => t.TransactionStatus, status);
             }
 
             return await _transactions.Find(filter).SortByDescending(t => t.CreatedAt).ToListAsync();
