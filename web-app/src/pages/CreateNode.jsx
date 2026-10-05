@@ -301,9 +301,7 @@ export default function CreateNode() {
         {/* Navigation Breadcrumbs & Back Link */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs sm:text-sm text-[#748C7E] font-medium">
-            <Link to="/" className="hover:text-[#2D6A4F] transition-colors">Microgrid</Link>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <Link to="/nodes" className="hover:text-[#2D6A4F] transition-colors">Hubs Directory</Link>
+            <Link to="/nodes" className="hover:text-[#2D6A4F] transition-colors">Microgrid Nodes</Link>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-[#1B2621] font-semibold">Register Node</span>
           </div>
@@ -396,7 +394,7 @@ export default function CreateNode() {
                 {errors.nodeCode ? (
                   <p className="mt-1 text-xs text-red-600 font-medium">{errors.nodeCode}</p>
                 ) : (
-                  <p className="mt-1 text-xs text-[#748C7E]">Unique enterprise code assigned to this station.</p>
+                  <p className="mt-1 text-xs text-[#748C7E]"> </p>
                 )}
               </div>
 

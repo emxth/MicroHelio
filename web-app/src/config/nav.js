@@ -16,7 +16,7 @@ export const NAV_CONFIG = [
     category: 'Grid Infrastructure',
     items: [
       { label: 'Microgrid Nodes', path: '/nodes', roles: ['Backoffice', 'GridOperator'] },
-      { label: 'Energy Slots', path: '/slots', roles: ['Backoffice', 'GridOperator'] },
+      // { label: 'Energy Slots', path: '/slots', roles: ['Backoffice', 'GridOperator'] },
     ],
   },
   {

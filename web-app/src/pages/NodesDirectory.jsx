@@ -20,6 +20,7 @@ import {
   Activity
 } from 'lucide-react';
 import { API_BASE_URL } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 // Base API URL pointing to the central C# Web API on IIS / Localhost
 const BASE_URL = `${API_BASE_URL}/MicrogridNodes`;
@@ -27,6 +28,8 @@ const BASE_URL = `${API_BASE_URL}/MicrogridNodes`;
 // Microgrid Hubs Directory Page Component (Smart Solar Microgrid Nodes & Battery Slots)
 export default function NodesDirectory() {
   const navigate = useNavigate();
+  const { hasRole } = useAuth();
+  const isBackoffice = hasRole(['Backoffice']);
 
   // State Management
   const [nodes, setNodes] = useState([]);
@@ -177,13 +180,6 @@ export default function NodesDirectory() {
 
       {/* Outer Container */}
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs sm:text-sm text-[#748C7E] font-medium">
-          <Link to="/" className="hover:text-[#2D6A4F] transition-colors">Smart Solar Microgrid</Link>
-          <ChevronRight className="w-3.5 h-3.5" />
-          <span className="text-[#1B2621] font-semibold">Nodes & Hubs Directory</span>
-        </div>
-
         {/* Header Title & Top Controls Section */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-6 rounded-2xl border border-[#748C7E]/20 shadow-sm">
           <div>
@@ -210,13 +206,15 @@ export default function NodesDirectory() {
               <span className="hidden sm:inline">Refresh</span>
             </button>
 
-            <button
-              onClick={() => navigate('/nodes/create')}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
-            >
-              <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>Register New Node</span>
-            </button>
+            {isBackoffice && (
+              <button
+                onClick={() => navigate('/nodes/create')}
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white font-semibold text-sm transition-all shadow-sm hover:shadow-md active:scale-[0.98]"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>Register New Node</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -356,7 +354,7 @@ export default function NodesDirectory() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-[#F7FAF7] border-b border-[#748C7E]/20 text-[#1B2621] text-xs uppercase font-bold tracking-wider">
-                    <th className="py-4 px-5">Node Code / ID</th>
+                    <th className="py-4 px-5">  Node   ID</th>
                     <th className="py-4 px-5">Station Name</th>
                     <th className="py-4 px-5">Location Coordinates</th>
                     <th className="py-4 px-5 text-right">Capacity (kWh)</th>
@@ -375,7 +373,7 @@ export default function NodesDirectory() {
                       {/* Node ID & Code */}
                       <td className="py-4 px-5">
                         <div className="flex flex-col">
-                          <span className="font-mono font-bold text-[#2D6A4F]">
+                          <span className="font-mono font-bold text-[#2D6A4F] whitespace-nowrap">
                             {node.nodeCode || `NODE-${node.id}`}
                           </span>
                         </div>
@@ -384,11 +382,7 @@ export default function NodesDirectory() {
                       {/* Station Name */}
                       <td className="py-4 px-5">
                         <div className="font-semibold text-[#1B2621]">{node.name}</div>
-                        {node.address && (
-                          <div className="text-xs text-[#748C7E] truncate max-w-[200px]" title={node.address}>
-                            {node.address}
-                          </div>
-                        )}
+
                       </td>
 
                       {/* Location (Address & Coordinates) */}
@@ -411,7 +405,7 @@ export default function NodesDirectory() {
                       </td>
 
                       {/* Battery Slots (Available / Total) */}
-                      <td className="py-4 px-5 text-center">
+                      <td className="py-4 px-4 text-center">
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F7FAF7] border border-[#748C7E]/20 rounded-lg text-xs font-semibold">
                           <Battery className="w-3.5 h-3.5 text-[#52B788]" />
                           <span>
@@ -468,18 +462,20 @@ export default function NodesDirectory() {
                             <span>Slots</span>
                           </button>
 
-                          {/* Deactivate Button (Enabled if Active) */}
-                          <button
-                            onClick={() => handleOpenDeactivateModal(node)}
-                            disabled={!node.isActive}
-                            className={`p-1.5 rounded-lg transition-colors ${node.isActive
-                              ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50'
-                              : 'text-gray-300 cursor-not-allowed'
-                              }`}
-                            title={node.isActive ? 'Deactivate Node' : 'Node is already inactive'}
-                          >
-                            <Power className="w-4 h-4" />
-                          </button>
+                          {/* Deactivate Button (Enabled if Active & Backoffice role) */}
+                          {isBackoffice && (
+                            <button
+                              onClick={() => handleOpenDeactivateModal(node)}
+                              disabled={!node.isActive}
+                              className={`p-1.5 rounded-lg transition-colors ${node.isActive
+                                ? 'text-amber-600 hover:text-amber-700 hover:bg-amber-50'
+                                : 'text-gray-300 cursor-not-allowed'
+                                }`}
+                              title={node.isActive ? 'Deactivate Node' : 'Node is already inactive'}
+                            >
+                              <Power className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -390,9 +390,7 @@ export default function EditNode() {
         {/* Navigation Breadcrumbs */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs sm:text-sm text-[#748C7E] font-medium">
-            <Link to="/" className="hover:text-[#2D6A4F] transition-colors">Microgrid</Link>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <Link to="/nodes" className="hover:text-[#2D6A4F] transition-colors">Hubs Directory</Link>
+            <Link to="/nodes" className="hover:text-[#2D6A4F] transition-colors">Microgrid Nodes</Link>
             <ChevronRight className="w-3.5 h-3.5" />
             <span className="text-[#1B2621] font-semibold">Edit Node Specifications</span>
           </div>
@@ -415,9 +413,7 @@ export default function EditNode() {
                   Edit Node Specifications
                 </h1>
               </div>
-              <p className="text-sm text-[#748C7E] mt-0.5">
-                Updating technical and operational parameters for <strong className="text-[#1B2621]">{formData.name || 'Station Node'}</strong>
-              </p>
+
             </div>
           </div>
 
@@ -455,14 +451,12 @@ export default function EditNode() {
               <Lock className="w-4 h-4 text-[#748C7E]" />
               <div>
                 <label className="block text-xs font-bold text-[#748C7E] uppercase tracking-wider">
-                  Node Code (Immutable Identifier)
+                  Node Code
                 </label>
                 <span className="font-mono text-sm font-bold text-[#1B2621]">{formData.nodeCode}</span>
               </div>
             </div>
-            <span className="text-xs text-[#748C7E] italic hidden sm:inline">
-              Assigned enterprise code cannot be modified after registration.
-            </span>
+
           </div>
 
           {/* SECTION 1: Basic Station Details */}

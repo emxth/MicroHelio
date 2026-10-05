@@ -10,6 +10,7 @@ const PAGE_TITLES = {
   '/prosumers': 'Prosumer Management',
   '/nodes': 'Microgrid Nodes',
   '/nodes/new': 'New Node',
+  '/nodes/create': 'New Node',
   '/slots': 'Energy Slots',
   '/slots/new': 'New Slot',
   '/reservations': 'All Reservations',
@@ -23,7 +24,7 @@ const PAGE_TITLES = {
 
 function getTitle(pathname) {
   if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
-  if (pathname.includes('/edit')) return 'Edit';
+  if (pathname.includes('/edit')) return 'Edit Node';
   if (pathname.startsWith('/prosumers/')) return 'Prosumer Detail';
   if (pathname.startsWith('/nodes/')) return 'Node Detail';
   if (pathname.startsWith('/reservations/')) return 'Reservation Detail';
