@@ -216,6 +216,7 @@ export default function CreateNode() {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          ...(session?.token ? { Authorization: `Bearer ${session.token}` } : {}),
         },
         body: JSON.stringify(payload),
       });
@@ -244,14 +245,14 @@ export default function CreateNode() {
           });
           setErrors(backendFieldErrors);
         }
-        setApiError(responseData.title || responseData.message || 'Validation failed on central Web API server.');
+        setApiError(responseData.title || responseData.message || responseData.details || 'Validation failed on central Web API server.');
         setIsSubmitting(false);
         return;
       }
 
       // Case 3: Other HTTP Error Codes
       if (!response.ok) {
-        throw new Error(responseData.message || `Failed to create microgrid node (HTTP ${response.status})`);
+        throw new Error(responseData.message || responseData.details || `Failed to create microgrid node (HTTP ${response.status})`);
       }
 
       // Case 4: 201 Created Success

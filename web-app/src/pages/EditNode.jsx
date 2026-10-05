@@ -263,7 +263,10 @@ export default function EditNode() {
         // Attempt deactivation endpoint first to verify active reservation constraint
         const deactivateCheck = await fetch(`${BASE_URL}/${id}/deactivate`, {
           method: 'PATCH',
-          headers: { 'Accept': 'application/json' },
+          headers: {
+            'Accept': 'application/json',
+            ...(session?.token ? { Authorization: `Bearer ${session.token}` } : {}),
+          },
         });
 
         if (deactivateCheck.status === 409) {
@@ -283,6 +286,7 @@ export default function EditNode() {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          ...(session?.token ? { Authorization: `Bearer ${session.token}` } : {}),
         },
         body: JSON.stringify(payload),
       });

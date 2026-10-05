@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * Author: Randiv
  * Purpose: Represents the TRANSACTION collection in MongoDB.
  */
@@ -7,6 +7,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace MicroHelio.Models
 {
+    [BsonIgnoreExtraElements]
     public class Transaction
     {
         [BsonId]

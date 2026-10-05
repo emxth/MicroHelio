@@ -1,8 +1,10 @@
+using MicroHelio.Helpers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace MicroHelio.Models
 {
+    [BsonIgnoreExtraElements]
     public class Prosumer
     {
         [BsonId]
@@ -33,8 +35,8 @@ namespace MicroHelio.Models
         [BsonElement("isActive")]
         public bool IsActive { get; set; } = false;
 
-        [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("reactivatedBy")]
+        [BsonSerializer(typeof(BsonStringOrObjectIdSerializer))]
         public string? ReactivatedBy { get; set; }
 
         [BsonElement("deactivationRequestedAt")]

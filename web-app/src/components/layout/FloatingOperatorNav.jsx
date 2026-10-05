@@ -31,16 +31,16 @@ export default function FloatingOperatorNav() {
     setIsOpen(false);
   }, [location.pathname]);
 
-  // Hide on landing or login page, or when not authenticated
+  // Only display for authenticated Grid Operator accounts on private pages
   const isPublicPage = location.pathname === '/' || location.pathname === '/login';
-  if (isPublicPage || !session) {
+  if (isPublicPage || !session || session.role !== 'GridOperator') {
     return null;
   }
 
   return (
-    <div className="fixed bottom-6 left-6 z-[100] flex flex-col items-start">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Expandable Menu Items */}
-      <div className={`flex flex-col mb-4 space-y-3 transition-all duration-300 origin-bottom-left ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'}`}>
+      <div className={`flex flex-col mb-4 space-y-3 transition-all duration-300 origin-bottom-right ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-4 pointer-events-none'}`}>
         {/* Title for the menu card */}
         <div className="bg-primary-light text-primary px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm border border-border">
           Grid Operator Menu

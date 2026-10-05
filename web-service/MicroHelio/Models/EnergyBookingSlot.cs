@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace MicroHelio.Models
 {
     // Represents an Energy Booking Slot associated with a Microgrid Node.
+    [BsonIgnoreExtraElements]
     public class EnergyBookingSlot
     {
         [BsonId]

@@ -1,12 +1,14 @@
-﻿/* 
+/* 
  * Author: Ashwin
  * Purpose: Represents the ENERGY_RESERVATION collection in MongoDB.
  */
+using MicroHelio.Helpers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace MicroHelio.Models
 {
+    [BsonIgnoreExtraElements]
     public class EnergyReservation
     {
         [BsonId]
@@ -45,8 +47,8 @@ namespace MicroHelio.Models
         [BsonElement("status")]
         public string Status { get; set; } = null!;
 
-        [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("approvedBy")]
+        [BsonSerializer(typeof(BsonStringOrObjectIdSerializer))]
         public string? ApprovedBy { get; set; }
 
         [BsonElement("approvedAt")]

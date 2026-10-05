@@ -1,9 +1,11 @@
+using MicroHelio.Helpers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace MicroHelio.Models
 {
     // Represents a Solar Microgrid Station/Node in the system.
+    [BsonIgnoreExtraElements]
     public class MicrogridNode
     {
         [BsonId]
@@ -47,6 +49,7 @@ namespace MicroHelio.Models
         public bool IsActive { get; set; } = true;
 
         [BsonElement("createdBy")]
+        [BsonSerializer(typeof(BsonStringOrObjectIdSerializer))]
         public string? CreatedBy { get; set; }
 
         [BsonElement("createdAt")]
