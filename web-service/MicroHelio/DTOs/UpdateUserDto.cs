@@ -1,3 +1,6 @@
+/*
+ * Purpose: Carries optional account updates for an existing system user.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

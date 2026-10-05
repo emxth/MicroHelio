@@ -1,4 +1,7 @@
-﻿using MicroHelio.Config;
+﻿/*
+ * Purpose: Manages transaction records, QR verification, and reservation completion in MongoDB.
+ */
+using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 using Microsoft.Extensions.Options;

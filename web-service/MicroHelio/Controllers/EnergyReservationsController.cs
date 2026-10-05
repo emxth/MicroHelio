@@ -1,4 +1,7 @@
-﻿using MicroHelio.Services;
+﻿/*
+ * Purpose: Exposes reservation-related endpoints for generating approved reservation QR payloads.
+ */
+using MicroHelio.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +25,7 @@ namespace MicroHelio.Controllers
          */
         [HttpPost("{id}/generate-qr")]
         [Authorize(Roles = "Prosumer,Backoffice,GridOperator")]
+        // Generates and returns a signed QR payload for the approved reservation.
         public async Task<IActionResult> GenerateQr(string id)
         {
             var qrData = await _transactionService.GenerateQrPayloadAsync(id);

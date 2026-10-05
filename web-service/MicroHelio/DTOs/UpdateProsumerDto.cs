@@ -1,3 +1,6 @@
+/*
+ * Purpose: Carries optional profile updates for an existing prosumer account.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

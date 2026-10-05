@@ -1,3 +1,6 @@
+/*
+ * Purpose: Represents the public account data returned for a system user.
+ */
 namespace MicroHelio.DTOs
 {
     public class UserResponseDto

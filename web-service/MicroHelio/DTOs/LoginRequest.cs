@@ -1,3 +1,6 @@
+/*
+ * Purpose: Represents the credentials submitted to the authentication endpoint.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

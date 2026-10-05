@@ -1,3 +1,6 @@
+/*
+ * Purpose: Carries the validated registration details required to create a prosumer account.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

@@ -1,3 +1,6 @@
+/*
+ * Purpose: Represents the authentication token and account details returned after sign-in.
+ */
 namespace MicroHelio.DTOs
 {
     public class LoginResponse

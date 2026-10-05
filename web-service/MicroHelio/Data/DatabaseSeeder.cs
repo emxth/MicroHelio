@@ -1,3 +1,6 @@
+/*
+ * Purpose: Seeds the initial backoffice account when seed credentials are configured.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +13,7 @@ namespace MicroHelio.Data
 {
     public static class DatabaseSeeder
     {
+        // Creates the configured backoffice account unless it already exists.
         public static async Task SeedBackofficeAsync(IServiceProvider serviceProvider)
         {
             var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseSeeder");

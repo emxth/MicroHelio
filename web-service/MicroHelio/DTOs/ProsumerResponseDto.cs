@@ -1,3 +1,6 @@
+/*
+ * Purpose: Represents the public account data returned for a prosumer.
+ */
 namespace MicroHelio.DTOs
 {
     public class ProsumerResponseDto

@@ -1,3 +1,6 @@
+/*
+ * Purpose: Manages prosumer persistence, registration, profile updates, and activation state.
+ */
 using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;
@@ -18,6 +21,7 @@ namespace MicroHelio.Services
 
         private readonly IMongoCollection<Prosumer> _prosumers;
 
+        // Opens the configured MongoDB collection used for prosumer accounts.
         public ProsumerService(
             IMongoClient mongoClient,
             IOptions<MicroHelioDatabaseSettings> settings)
@@ -26,6 +30,7 @@ namespace MicroHelio.Services
             _prosumers = database.GetCollection<Prosumer>(settings.Value.ProsumersCollectionName);
         }
 
+        // Returns all prosumers ordered by NIC.
         public async Task<List<ProsumerResponseDto>> GetAllAsync()
         {
             var prosumers = await _prosumers.Find(Builders<Prosumer>.Filter.Empty)
@@ -35,17 +40,20 @@ namespace MicroHelio.Services
             return prosumers.Select(MapToResponse).ToList();
         }
 
+        // Finds a prosumer by NIC and maps the stored entity to its response DTO.
         public async Task<ProsumerResponseDto?> GetByNicAsync(string nic)
         {
             var prosumer = await FindByNicAsync(nic);
             return prosumer == null ? null : MapToResponse(prosumer);
         }
 
+        // Returns the stored prosumer entity for authentication checks.
         internal async Task<Prosumer?> GetEntityByNicAsync(string nic)
         {
             return await FindByNicAsync(nic);
         }
 
+        // Finds a prosumer by a normalized email address for authentication.
         internal async Task<Prosumer?> GetByEmailForAuthAsync(string email)
         {
             if (!TryNormalizeEmail(email, out var normalizedEmail))
@@ -60,6 +68,7 @@ namespace MicroHelio.Services
             return await _prosumers.Find(filter).FirstOrDefaultAsync();
         }
 
+        // Returns prosumers matching a validated activation status.
         public async Task<List<ProsumerResponseDto>> GetByStatusAsync(string status)
         {
             ValidateStatus(status);
@@ -74,6 +83,7 @@ namespace MicroHelio.Services
             return prosumers.Select(MapToResponse).ToList();
         }
 
+        // Validates, hashes, and stores a new prosumer account in Pending state.
         public async Task<ProsumerResponseDto> RegisterAsync(CreateProsumerDto dto)
         {
             if (!TryNormalizeNic(dto.Nic, out var nic) ||
@@ -120,6 +130,7 @@ namespace MicroHelio.Services
             return MapToResponse(prosumer);
         }
 
+        // Applies the supplied profile changes and returns the updated account.
         public async Task<ProsumerResponseDto?> UpdateProfileAsync(
             string nic,
             UpdateProsumerDto dto)
@@ -210,6 +221,7 @@ namespace MicroHelio.Services
             }
         }
 
+        // Deactivates an active prosumer and records the request timestamp.
         public async Task<bool> DeactivateAsync(string nic)
         {
             if (!TryNormalizeNic(nic, out var normalizedNic))
@@ -235,6 +247,7 @@ namespace MicroHelio.Services
             return result.MatchedCount > 0;
         }
 
+        // Activates a pending prosumer account.
         public async Task<bool> ActivateAsync(string nic)
         {
             if (!TryNormalizeNic(nic, out var normalizedNic))
@@ -259,6 +272,7 @@ namespace MicroHelio.Services
             return result.MatchedCount > 0;
         }
 
+        // Reactivates a deactivated account and records the approving backoffice user.
         public async Task<bool> ReactivateAsync(
             string nic,
             string backofficeUserId)
@@ -288,6 +302,7 @@ namespace MicroHelio.Services
             return result.MatchedCount > 0;
         }
 
+        // Checks whether a normalized NIC is already registered.
         public async Task<bool> NicExistsAsync(string nic)
         {
             if (!TryNormalizeNic(nic, out var normalizedNic))
@@ -302,6 +317,7 @@ namespace MicroHelio.Services
             return await _prosumers.Find(filter).AnyAsync();
         }
 
+        // Checks whether an email is registered, optionally excluding one NIC.
         public async Task<bool> EmailExistsAsync(
             string email,
             string? excludeNic = null)
@@ -334,6 +350,7 @@ namespace MicroHelio.Services
                 Builders<Prosumer>.Filter.And(filters)).AnyAsync();
         }
 
+        // Finds a stored prosumer using a normalized NIC.
         private async Task<Prosumer?> FindByNicAsync(string nic)
         {
             if (!TryNormalizeNic(nic, out var normalizedNic))
@@ -348,6 +365,7 @@ namespace MicroHelio.Services
             return await _prosumers.Find(filter).FirstOrDefaultAsync();
         }
 
+        // Rejects activation statuses that are not supported by the account lifecycle.
         private static void ValidateStatus(string status)
         {
             if (!ValidStatuses.Contains(status))
@@ -358,6 +376,7 @@ namespace MicroHelio.Services
             }
         }
 
+        // Trims and uppercases a NIC, returning false when it is blank.
         private static bool TryNormalizeNic(
             string? nic,
             out string normalizedNic)
@@ -372,6 +391,7 @@ namespace MicroHelio.Services
             return true;
         }
 
+        // Trims and lowercases an email address, returning false when it is blank.
         private static bool TryNormalizeEmail(
             string? email,
             out string normalizedEmail)
@@ -386,6 +406,7 @@ namespace MicroHelio.Services
             return true;
         }
 
+        // Copies public account fields into the response DTO without exposing the password hash.
         private static ProsumerResponseDto MapToResponse(Prosumer prosumer)
         {
             return new ProsumerResponseDto
