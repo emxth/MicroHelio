@@ -408,7 +408,7 @@ export default function NodesDirectory() {
                       {/* Battery Slots (Available / Total) */}
                       <td className="py-4 px-4 text-center">
                         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F7FAF7] border border-[#748C7E]/20 rounded-lg text-xs font-semibold">
-                          <Battery className="w-3.5 h-3.5 text-[#52B788]" />
+                       
                           <span>
                             <strong className="text-[#2D6A4F]">{node.availableBatterySlots ?? 0}</strong>
                             <span className="text-[#748C7E]"> / {node.totalBatterySlots ?? 0}</span>
@@ -451,7 +451,7 @@ export default function NodesDirectory() {
                             title="Edit Node Specifications"
                           >
                             <Edit className="w-3.5 h-3.5" />
-                            <span>Edit</span>
+                            
                           </button>
 
                           {/* Manage Battery Slots Button */}
