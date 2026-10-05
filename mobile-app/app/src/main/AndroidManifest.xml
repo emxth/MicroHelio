@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,16 +21,90 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MicroHelio"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:targetApi="31">
+
+        <!-- Google Maps API Key for map tile rendering -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="YOUR_GOOGLE_MAPS_API_KEY" />
+
+        <!-- Login -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Login -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+
+        <!-- Register Prosumer -->
+        <activity
+            android:name=".RegisterProsumerActivity"
+            android:exported="false" />
+
+        <!-- Prosumer Dashboard -->
+        <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+            
+        <activity
+            android:name=".ProsumerProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".GridOperatorDashboardActivity"
+            android:exported="false" />
+
+        <!-- Create Reservation Screen -->
+        <activity
+            android:name=".CreateReservationActivity"
+            android:exported="false" />
+
+        <!-- Update & Cancel Reservation Screen -->
+        <activity
+            android:name=".UpdateReservationActivity"
+            android:exported="false" />
+
+        <!-- Booking History & Search Screen -->
+        <activity
+            android:name=".BookingHistoryActivity"
+            android:exported="false" />
+
+        <!-- Prosumer QR Code Generator Screen -->
+        <activity
+            android:name=".QrCodeGeneratorActivity"
+            android:exported="false" />
+
+        <!-- Microgrid Node List Screen -->
+        <activity
+            android:name=".NodeListActivity"
+            android:exported="false" />
+
+        <!-- Microgrid Node Details Screen -->
+        <activity
+            android:name=".NodeDetailsActivity"
+            android:exported="false" />
+
+        <!-- ZXing Portrait Camera Capture Activity -->
+        <activity
+            android:name=".PortraitCaptureActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:stateNotNeeded="true"
+            android:theme="@style/zxing_CaptureTheme"
+            tools:replace="android:screenOrientation" />
+
     </application>
 
 </manifest>

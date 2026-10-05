@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/eco_off_white"
+    android:gravity="center"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/str_login"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="@color/dark_pine"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:boxStrokeColor="#52B788"
+        app:hintTextColor="#2D6A4F">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etIdentifier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_nic_or_email"
+            android:inputType="text"
+            android:textColor="@color/dark_pine" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:passwordToggleEnabled="true"
+        app:boxStrokeColor="#52B788"
+        app:hintTextColor="#2D6A4F">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/str_password"
+            android:inputType="textPassword"
+            android:textColor="@color/dark_pine" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/str_login"
+        android:textSize="18sp"
+        android:textColor="@color/pure_white"
+        android:backgroundTint="@color/deep_canopy_green"
+        app:cornerRadius="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tvRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/str_don_t_have_an_account_register"
+        android:textSize="16sp"
+        android:textColor="@color/vibrant_leaf_green"
+        android:textStyle="bold"
+        android:padding="8dp" />
+
+</LinearLayout>

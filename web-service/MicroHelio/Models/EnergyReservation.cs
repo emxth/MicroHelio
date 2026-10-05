@@ -1,0 +1,80 @@
+/* 
+ * Author: Ashwin
+ * Purpose: Represents the ENERGY_RESERVATION collection in MongoDB.
+ */
+using MicroHelio.Helpers;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace MicroHelio.Models
+{
+    [BsonIgnoreExtraElements]
+    public class EnergyReservation
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+
+        [BsonElement("reservationCode")]
+        public string ReservationCode { get; set; } = null!;
+
+        [BsonElement("prosumerNic")]
+        public string ProsumerNic { get; set; } = null!;
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("nodeId")]
+        public string NodeId { get; set; } = null!;
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("slotId")]
+        public string SlotId { get; set; } = null!;
+
+        [BsonElement("reservationType")]
+        public string ReservationType { get; set; } = null!;
+
+        [BsonElement("scheduledDate")]
+        public DateTime ScheduledDate { get; set; }
+
+        [BsonElement("scheduledStartTime")]
+        public string ScheduledStartTime { get; set; } = null!;
+
+        [BsonElement("scheduledEndTime")]
+        public string ScheduledEndTime { get; set; } = null!;
+
+        [BsonElement("requestedCapacityKWh")]
+        public double RequestedCapacityKWh { get; set; }
+
+        [BsonElement("status")]
+        public string Status { get; set; } = null!;
+
+        [BsonElement("approvedBy")]
+        [BsonSerializer(typeof(BsonStringOrObjectIdSerializer))]
+        public string? ApprovedBy { get; set; }
+
+        [BsonElement("approvedAt")]
+        public DateTime? ApprovedAt { get; set; }
+
+        [BsonElement("cancellationReason")]
+        public string? CancellationReason { get; set; }
+
+        [BsonElement("cancelledAt")]
+        public DateTime? CancelledAt { get; set; }
+
+        [BsonElement("qrCodeData")]
+        public string? QrCodeData { get; set; }
+
+        [BsonElement("qrGeneratedAt")]
+        public DateTime? QrGeneratedAt { get; set; }
+
+        [BsonElement("createdAt")]
+        public DateTime CreatedAt { get; set; }
+
+        [BsonElement("updatedAt")]
+        public DateTime UpdatedAt { get; set; }
+        [BsonIgnore]
+        public string NodeCode { get; set; } = string.Empty;
+
+        [BsonIgnore]
+        public string NodeName { get; set; } = string.Empty;
+    }
+}

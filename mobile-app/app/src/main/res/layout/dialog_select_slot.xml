@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_metric_card"
+    android:padding="20dp">
+
+    <!-- Header Row -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/btnCloseDialog">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_select_slot_title"
+                android:textColor="@color/dark_pine"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDialogSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_select_slot_sub"
+                android:textColor="@color/moss_gray"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnCloseDialog"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:contentDescription="@string/desc_close_dialog" />
+    </RelativeLayout>
+
+    <!-- Date Filter Bar for Future Dates / Specific Date -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#F0F7F4"
+        android:padding="10dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_date_filter_options"
+            android:textColor="@color/dark_pine"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnFilterAllDates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/dialog_filter_all_dates"
+                    android:textSize="11sp"
+                    android:textColor="@color/pure_white"
+                    android:backgroundTint="@color/deep_canopy_green"
+                    android:paddingHorizontal="10dp"
+                    android:layout_marginEnd="6dp"
+                    app:cornerRadius="16dp" />
+
+                <Button
+                    android:id="@+id/btnFilterFutureDates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/dialog_filter_future_dates"
+                    android:textSize="11sp"
+                    android:textColor="@color/dark_pine"
+                    android:backgroundTint="@color/eco_off_white"
+                    android:paddingHorizontal="10dp"
+                    android:layout_marginEnd="6dp"
+                    app:cornerRadius="16dp" />
+
+                <Button
+                    android:id="@+id/btnFilterPickDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="@string/dialog_filter_pick_date"
+                    android:textSize="11sp"
+                    android:textColor="@color/dark_pine"
+                    android:backgroundTint="@color/eco_off_white"
+                    android:paddingHorizontal="10dp"
+                    app:cornerRadius="16dp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <!-- Legend Bar for Green (Available) vs Red (Reserved) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/eco_off_white"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_status_legend"
+            android:textColor="@color/dark_pine"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/badge_status_available"
+            android:textColor="#2D6A4F"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_status_badge_active"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/badge_status_reserved"
+            android:textColor="#C62828"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_status_badge_inactive"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp" />
+    </LinearLayout>
+
+    <!-- RecyclerView for Time Slots -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDialogSlots"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scrollbars="vertical" />
+
+    <!-- Empty State Container -->
+    <LinearLayout
+        android:id="@+id/layoutEmptySlots"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvEmptySlotsMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_no_slots_matching_filter"
+            android:textColor="@color/moss_gray"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>

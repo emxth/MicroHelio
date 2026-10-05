@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    File: activity_splash.xml
+    Description: Splash screen layout displaying the MicroHelio branding logo and
+                 an indeterminate loading indicator on a clean pure white background.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pure_white"
+    tools:context=".SplashActivity">
+
+    <!-- Centered Content Container -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- MicroHelio Brand Logo -->
+        <ImageView
+            android:id="@+id/ivSplashLogo"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/app_name"
+            app:srcCompat="@drawable/microhelio_logo" />
+
+        <!-- Indeterminate Loading Spinner -->
+        <ProgressBar
+            android:id="@+id/pbSplashLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/vibrant_leaf_green" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/eco_off_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/deep_canopy_green"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_microhelio_prosumer"
+                android:textColor="@color/pure_white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvWelcomeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_welcome"
+                android:textColor="@color/pure_white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"/>
+
+            <TextView
+                android:id="@+id/tvWelcomeNic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_nic"
+                android:textColor="@color/soft_sunlight"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivProfileIcon"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_profile_circle"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/desc_view_profile" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3"
+                android:layout_marginBottom="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:elevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_pending"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"/>
+                        <TextView
+                            android:id="@+id/tvPendingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_0"
+                            android:textColor="@color/dark_pine"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:elevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_approved"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"/>
+                        <TextView
+                            android:id="@+id/tvApprovedCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_0"
+                            android:textColor="@color/vibrant_leaf_green"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="4dp"
+                    android:elevation="2dp"
+                    app:cardCornerRadius="12dp"
+                    xmlns:app="http://schemas.android.com/apk/res-auto">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_upcoming"
+                            android:textColor="@color/moss_gray"
+                            android:textSize="12sp"/>
+                        <TextView
+                            android:id="@+id/tvUpcomingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/str_0"
+                            android:textColor="@color/deep_canopy_green"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnCreateReservation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/str_create_new_reservation"
+                android:textColor="@color/pure_white"
+                android:backgroundTint="@color/deep_canopy_green"
+                android:layout_marginBottom="12dp"
+                app:cornerRadius="8dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+            <Button
+                android:id="@+id/btnViewHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/str_view_booking_history"
+                android:textColor="@color/deep_canopy_green"
+                android:backgroundTint="@color/soft_sunlight"
+                android:layout_marginBottom="24dp"
+                app:cornerRadius="8dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_recent_active_bookings"
+                android:textColor="@color/dark_pine"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBookings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/layout_bottom_nav" />
+</LinearLayout>
