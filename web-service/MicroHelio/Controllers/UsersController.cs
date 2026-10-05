@@ -1,3 +1,6 @@
+/*
+ * Purpose: Exposes backoffice endpoints for managing system user accounts.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +14,7 @@ namespace MicroHelio.Controllers
     {
         private readonly UserService _userService;
 
+        // Stores the user service used by the controller endpoints.
         public UsersController(UserService userService)
         {
             _userService = userService;
@@ -18,6 +22,7 @@ namespace MicroHelio.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Backoffice")]
+        // Returns all system users to authorized backoffice callers.
         public async Task<IActionResult> GetAll()
         {
             var users = await _userService.GetAllAsync();
@@ -26,6 +31,7 @@ namespace MicroHelio.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "Backoffice,GridOperator")]
+        // Returns a system user by database ID.
         public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -40,6 +46,7 @@ namespace MicroHelio.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Backoffice")]
+        // Creates a user account and maps validation failures to HTTP responses.
         public async Task<IActionResult> Create(
             [FromBody] CreateUserDto dto)
         {
@@ -70,6 +77,7 @@ namespace MicroHelio.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Backoffice")]
+        // Updates a user account and maps validation failures to HTTP responses.
         public async Task<IActionResult> Update(
             string id,
             [FromBody] UpdateUserDto dto)
@@ -103,6 +111,7 @@ namespace MicroHelio.Controllers
 
         [HttpPatch("{id}/status")]
         [Authorize(Roles = "Backoffice")]
+        // Changes a user's active status and returns the updated account.
         public async Task<IActionResult> SetStatus(
             string id,
             [FromBody] bool isActive)

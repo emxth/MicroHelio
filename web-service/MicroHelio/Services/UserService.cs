@@ -1,3 +1,6 @@
+/*
+ * Purpose: Manages system-user persistence, account updates, and role validation.
+ */
 using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;
@@ -12,6 +15,7 @@ namespace MicroHelio.Services
         private static readonly string[] AllowedRoles = { "Backoffice", "GridOperator" };
         private readonly IMongoCollection<User> _users;
 
+        // Opens the configured MongoDB collection used for system users.
         public UserService(
             IMongoClient mongoClient,
             IOptions<MicroHelioDatabaseSettings> settings)
@@ -20,6 +24,7 @@ namespace MicroHelio.Services
             _users = database.GetCollection<User>(settings.Value.UsersCollectionName);
         }
 
+        // Returns all system users ordered by username.
         public async Task<List<UserResponseDto>> GetAllAsync()
         {
             var users = await _users.Find(Builders<User>.Filter.Empty)
@@ -29,6 +34,7 @@ namespace MicroHelio.Services
             return users.Select(MapToResponse).ToList();
         }
 
+        // Finds a system user by MongoDB ID and maps it to the response DTO.
         public async Task<UserResponseDto?> GetByIdAsync(string id)
         {
             if (!ObjectId.TryParse(id, out _))
@@ -42,6 +48,7 @@ namespace MicroHelio.Services
             return user == null ? null : MapToResponse(user);
         }
 
+        // Finds a stored user using a normalized username or email identifier.
         internal async Task<User?> GetByUsernameOrEmailAsync(string identifier)
         {
             var normalizedIdentifier = Normalize(identifier);
@@ -52,6 +59,7 @@ namespace MicroHelio.Services
             return await _users.Find(filter).FirstOrDefaultAsync();
         }
 
+        // Validates, hashes, and stores a new system-user account.
         public async Task<UserResponseDto> CreateAsync(CreateUserDto dto)
         {
             var username = Normalize(dto.Username);
@@ -93,6 +101,7 @@ namespace MicroHelio.Services
             return MapToResponse(user);
         }
 
+        // Applies the supplied account changes and returns the updated user.
         public async Task<UserResponseDto?> UpdateAsync(
             string id,
             UpdateUserDto dto)
@@ -165,6 +174,7 @@ namespace MicroHelio.Services
             return updatedUser == null ? null : MapToResponse(updatedUser);
         }
 
+        // Changes a user's active status and updates its modification timestamp.
         public async Task<bool> SetActiveStatusAsync(string id, bool isActive)
         {
             if (!ObjectId.TryParse(id, out _))
@@ -181,6 +191,7 @@ namespace MicroHelio.Services
             return result.MatchedCount > 0;
         }
 
+        // Checks whether a username exists, optionally excluding one user ID.
         public async Task<bool> UsernameExistsAsync(
             string username,
             string? excludeUserId = null)
@@ -198,6 +209,7 @@ namespace MicroHelio.Services
             return await _users.Find(Builders<User>.Filter.And(filters)).AnyAsync();
         }
 
+        // Checks whether an email exists, optionally excluding one user ID.
         public async Task<bool> EmailExistsAsync(
             string email,
             string? excludeUserId = null)
@@ -215,6 +227,7 @@ namespace MicroHelio.Services
             return await _users.Find(Builders<User>.Filter.And(filters)).AnyAsync();
         }
 
+        // Rejects roles that are not supported for system users.
         private static void ValidateRole(string role)
         {
             if (!AllowedRoles.Contains(role))
@@ -223,11 +236,13 @@ namespace MicroHelio.Services
             }
         }
 
+        // Trims and lowercases identifiers used in user lookups.
         private static string Normalize(string value)
         {
             return value.Trim().ToLowerInvariant();
         }
 
+        // Copies public account fields into the response DTO without exposing the password hash.
         private static UserResponseDto MapToResponse(User user)
         {
             return new UserResponseDto

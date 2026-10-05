@@ -22,9 +22,9 @@ namespace MicroHelio.Controllers
             _transactionService = transactionService;
         }
 
-        // Creates a transaction record when a Grid Operator initiates a scan, setting status to 'Initiated'
         [HttpPost]
-        // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        // Creates an initiated transaction record for a Grid Operator scan.
         public async Task<IActionResult> InitiateTransaction([FromBody] CreateTransactionDto dto)
         {
             var operatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -33,9 +33,9 @@ namespace MicroHelio.Controllers
             return CreatedAtAction(nameof(GetTransactionById), new { id = transaction.Id }, transaction);
         }
 
-        // Decodes the QR payload, validates the HMAC signature, and confirms the linked reservation is 'Approved'
         [HttpPost("verify")]
-        // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        // Validates the QR payload signature and confirms its reservation is approved.
         public async Task<IActionResult> VerifyQrCode([FromBody] System.Text.Json.JsonElement element)
         {
             string qrPayload;
@@ -68,9 +68,9 @@ namespace MicroHelio.Controllers
             return Ok(new { message = message });
         }
 
-        // Operator confirms energy transfer is done; updates status to 'Completed' and stores energyTransferredKWh
         [HttpPatch("{id}/complete")]
-        // [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        [Authorize(Roles = "GridOperator")] // Strictly Grid Operator operational tool
+        // Completes a transfer and records the energy amount supplied by the operator.
         public async Task<IActionResult> CompleteTransaction(string id, [FromBody] System.Text.Json.JsonElement element)
         {
             double energyKWh = 0.0;
@@ -101,16 +101,16 @@ namespace MicroHelio.Controllers
 
         // Retrieves full transaction history for a Prosumer (via NIC), a Grid Operator (via operatorId), or filtered by Status
         [HttpGet]
-        // [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
+        [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
         public async Task<IActionResult> GetTransactions([FromQuery] string? prosumerNic, [FromQuery] string? operatorId, [FromQuery] string? status)
         {
             var transactions = await _transactionService.GetFilteredTransactionsAsync(prosumerNic, operatorId, status);
             return Ok(transactions);
         }
 
-        // Retrieves a single transaction detail for specific view screens
         [HttpGet("{id}")]
-        // [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
+        [Authorize(Roles = "Backoffice,GridOperator,Prosumer")] // All three roles need viewing access
+        // Returns one transaction by ID for authorized detail views.
         public async Task<IActionResult> GetTransactionById(string id)
         {
             var transaction = await _transactionService.GetTransactionByIdAsync(id);
@@ -118,8 +118,6 @@ namespace MicroHelio.Controllers
             {
                 return NotFound();
             }
-
-            //throw new Exception("This is a simulated database failure for testing!");
 
             return Ok(transaction);
         }

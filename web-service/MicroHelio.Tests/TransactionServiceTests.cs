@@ -1,3 +1,6 @@
+/*
+ * Purpose: Tests transaction QR payload verification behavior.
+ */
 using MicroHelio.Config;
 using MicroHelio.Models;
 using MicroHelio.Services;
@@ -15,6 +18,7 @@ namespace MicroHelio.Tests
         private readonly Mock<IMongoCollection<EnergyReservation>> _mockReservations;
         private readonly TransactionService _transactionService;
 
+        // Builds the transaction service with mocked MongoDB dependencies.
         public TransactionServiceTests()
         {
             // 1. Mock MongoDB Client and Database
@@ -47,6 +51,7 @@ namespace MicroHelio.Tests
         }
 
         [Fact]
+        // Ensures a tampered QR signature is rejected during verification.
         public async Task VerifyQrPayloadAsync_WithTamperedSignature_ReturnsFalse()
         {
             // Arrange: A JSON payload where the signature does not match the data

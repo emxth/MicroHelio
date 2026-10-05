@@ -1,3 +1,6 @@
+/*
+ * Purpose: Carries the validated account details required to create a system user.
+ */
 using System.ComponentModel.DataAnnotations;
 
 namespace MicroHelio.DTOs

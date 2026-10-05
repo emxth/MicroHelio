@@ -1,4 +1,7 @@
-﻿namespace MicroHelio.Config
+﻿/*
+ * Purpose: Maps MongoDB connection, database, and collection names from configuration.
+ */
+namespace MicroHelio.Config
 {
     public class MicroHelioDatabaseSettings
     {

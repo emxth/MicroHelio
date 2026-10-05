@@ -1,3 +1,6 @@
+/*
+ * Purpose: Defines a backoffice or grid-operator account stored in MongoDB.
+ */
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

@@ -1,3 +1,6 @@
+/*
+ * Purpose: Exposes registration and account-management endpoints for prosumers.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +15,7 @@ namespace MicroHelio.Controllers
     {
         private readonly ProsumerService _prosumerService;
 
+        // Stores the prosumer service used by the controller endpoints.
         public ProsumersController(ProsumerService prosumerService)
         {
             _prosumerService = prosumerService;
@@ -19,6 +23,7 @@ namespace MicroHelio.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
+        // Registers a prosumer account and maps validation failures to HTTP responses.
         public async Task<IActionResult> Register(
             [FromBody] CreateProsumerDto dto)
         {
@@ -43,6 +48,7 @@ namespace MicroHelio.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Backoffice,GridOperator")]
+        // Returns all prosumers or filters them by activation status.
         public async Task<IActionResult> GetAll([FromQuery] string? status)
         {
             try
@@ -61,6 +67,7 @@ namespace MicroHelio.Controllers
 
         [HttpGet("{nic}")]
         [Authorize(Roles = "Backoffice,GridOperator,Prosumer")]
+        // Returns a prosumer by NIC while enforcing ownership for prosumer users.
         public async Task<IActionResult> GetByNic(string nic)
         {
             if (User.IsInRole("Prosumer") &&
@@ -81,6 +88,7 @@ namespace MicroHelio.Controllers
 
         [HttpPut("{nic}")]
         [Authorize(Roles = "Prosumer")]
+        // Updates the authenticated prosumer's profile.
         public async Task<IActionResult> UpdateProfile(
             string nic,
             [FromBody] UpdateProsumerDto dto)
@@ -113,6 +121,7 @@ namespace MicroHelio.Controllers
 
         [HttpPatch("{nic}/deactivate")]
         [Authorize(Roles = "Prosumer")]
+        // Deactivates the authenticated prosumer's active account.
         public async Task<IActionResult> Deactivate(string nic)
         {
             if (!OwnsProsumerNic(nic))
@@ -140,6 +149,7 @@ namespace MicroHelio.Controllers
 
         [HttpPatch("{nic}/activate")]
         [Authorize(Roles = "Backoffice")]
+        // Activates a pending prosumer account.
         public async Task<IActionResult> Activate(string nic)
         {
             var prosumer = await _prosumerService.GetByNicAsync(nic);
@@ -162,6 +172,7 @@ namespace MicroHelio.Controllers
 
         [HttpPatch("{nic}/reactivate")]
         [Authorize(Roles = "Backoffice")]
+        // Reactivates a deactivated account and records the backoffice user.
         public async Task<IActionResult> Reactivate(string nic)
         {
             var prosumer = await _prosumerService.GetByNicAsync(nic);
@@ -192,6 +203,7 @@ namespace MicroHelio.Controllers
                 : BadRequest("Prosumer could not be reactivated.");
         }
 
+        // Checks whether the current principal is associated with the supplied NIC.
         private bool OwnsProsumerNic(string nic)
         {
             var prosumerNic = User.FindFirst("prosumerNic")?.Value;

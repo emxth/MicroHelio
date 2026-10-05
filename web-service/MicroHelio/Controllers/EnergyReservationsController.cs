@@ -6,7 +6,7 @@ using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 using MicroHelio.Services;
-// using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -242,6 +242,8 @@ namespace MicroHelio.Controllers
         }
 
         [HttpPost("{id}/generate-qr")]
+        [Authorize(Roles = "Prosumer,Backoffice,GridOperator")]
+        // Generates and returns a signed QR payload for the approved reservation.
         public async Task<IActionResult> GenerateQr(string id)
         {
             var qrData = await _transactionService.GenerateQrPayloadAsync(id);

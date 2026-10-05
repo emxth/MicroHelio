@@ -1,3 +1,6 @@
+/*
+ * Purpose: Validates user and prosumer credentials and issues authentication tokens.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 
@@ -9,6 +12,7 @@ namespace MicroHelio.Services
         private readonly ProsumerService _prosumerService;
         private readonly JwtTokenService _jwtTokenService;
 
+        // Provides the account lookups and token generation required for sign-in.
         public AuthService(
             UserService userService,
             ProsumerService prosumerService,
@@ -19,6 +23,7 @@ namespace MicroHelio.Services
             _jwtTokenService = jwtTokenService;
         }
 
+        // Authenticates an account by username, email, or NIC and returns its token.
         public async Task<LoginResponse?> LoginAsync(LoginRequest request)
         {
             if (request == null ||

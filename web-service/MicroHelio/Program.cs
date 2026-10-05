@@ -1,3 +1,6 @@
+/*
+ * Purpose: Configures services, authentication, middleware, and API routes for the web service.
+ */
 using MicroHelio.Config;
 using MicroHelio.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -141,6 +144,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Test endpoint to verify MongoDB connection
+// Reports whether the configured MongoDB connection is reachable.
 app.MapGet("/api/test-db", async (MongoDB.Driver.IMongoClient client) =>
 {
     try

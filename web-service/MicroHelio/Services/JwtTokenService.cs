@@ -1,3 +1,6 @@
+/*
+ * Purpose: Creates signed JWT responses for authenticated users and prosumers.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +17,7 @@ namespace MicroHelio.Services
         private readonly string _audience;
         private readonly int _expirationMinutes;
 
+        // Loads and validates the signing and token-lifetime configuration.
         public JwtTokenService(IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("Jwt");
@@ -39,6 +43,7 @@ namespace MicroHelio.Services
             _expirationMinutes = expirationMinutes;
         }
 
+        // Creates a token response for a backoffice or grid-operator user.
         public LoginResponse GenerateForUser(User user)
         {
             if (string.IsNullOrWhiteSpace(user.Id))
@@ -62,6 +67,7 @@ namespace MicroHelio.Services
                 additionalClaims: Array.Empty<Claim>());
         }
 
+        // Creates a token response for an active prosumer account.
         public LoginResponse GenerateForProsumer(Prosumer prosumer)
         {
             if (string.IsNullOrWhiteSpace(prosumer.Id))
@@ -81,6 +87,7 @@ namespace MicroHelio.Services
                 });
         }
 
+        // Signs a JWT with account identity, role, and any additional claims.
         private LoginResponse GenerateToken(
             string accountId,
             string accountIdentifier,

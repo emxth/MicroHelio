@@ -1,3 +1,6 @@
+/*
+ * Purpose: Defines a prosumer account and its activation lifecycle data stored in MongoDB.
+ */
 using MicroHelio.Helpers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;

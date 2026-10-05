@@ -1,3 +1,6 @@
+/*
+ * Purpose: Exposes the authentication endpoint for user and prosumer sign-in.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +14,7 @@ namespace MicroHelio.Controllers
     {
         private readonly AuthService _authService;
 
+        // Stores the authentication service used by the login endpoint.
         public AuthController(AuthService authService)
         {
             _authService = authService;
@@ -18,6 +22,7 @@ namespace MicroHelio.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
+        // Authenticates the supplied credentials and returns a token when valid.
         public async Task<IActionResult> Login(
             [FromBody] LoginRequest request)
         {
