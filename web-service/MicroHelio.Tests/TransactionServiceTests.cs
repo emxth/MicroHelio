@@ -61,7 +61,7 @@ namespace MicroHelio.Tests
             var result = await _transactionService.VerifyQrPayloadAsync(tamperedPayload);
 
             // Assert
-            Assert.False(result);
+            Assert.False(result.IsSuccess);
         }
     }
 }
