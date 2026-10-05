@@ -1,3 +1,6 @@
+/* 
+ * Purpose: Business logic service implementing Microgrid Node CRUD, battery slot enrichment, and deactivation rules.
+ */
 using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;

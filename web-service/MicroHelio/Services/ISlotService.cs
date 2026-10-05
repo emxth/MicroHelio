@@ -1,3 +1,6 @@
+/* 
+ * Purpose: Service interface contract for managing energy booking slots and schedule generation.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 

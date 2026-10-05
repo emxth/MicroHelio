@@ -1,3 +1,7 @@
+/* 
+ * Author: Sewwandi Edirisooriya
+ * Purpose: Request DTO for updating an existing microgrid node's specifications.
+ */
 namespace MicroHelio.DTOs
 {
     // Request DTO for updating an existing microgrid node.

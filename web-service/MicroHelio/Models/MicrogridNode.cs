@@ -1,3 +1,6 @@
+/* 
+ * Purpose: Represents the Microgrid Node entity collection in MongoDB for solar grid station hub management.
+ */
 using MicroHelio.Helpers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;

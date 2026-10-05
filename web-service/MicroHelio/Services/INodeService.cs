@@ -1,3 +1,6 @@
+/* 
+ * Purpose: Service interface contract defining business operations for Microgrid Node management.
+ */
 using MicroHelio.DTOs;
 using MicroHelio.Models;
 

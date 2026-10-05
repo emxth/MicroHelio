@@ -1,3 +1,6 @@
+/* 
+ * Purpose: Business logic service implementing Energy Booking Slot CRUD operations and batch slot schedule generation.
+ */
 using MicroHelio.Config;
 using MicroHelio.DTOs;
 using MicroHelio.Models;
@@ -48,6 +51,12 @@ namespace MicroHelio.Services
         // Create single energy slot
         public async Task<EnergyBookingSlot> CreateSlotAsync(CreateSlotDto dto)
         {
+            var node = await _nodesCollection.Find(n => n.Id == dto.NodeId).FirstOrDefaultAsync();
+            if (node != null && !node.IsActive)
+            {
+                throw new InvalidOperationException("Cannot create energy slots for an inactive microgrid node.");
+            }
+
             var slot = new EnergyBookingSlot
             {
                 NodeId = dto.NodeId,
@@ -118,6 +127,7 @@ namespace MicroHelio.Services
         {
             var node = await _nodesCollection.Find(n => n.Id == nodeId).FirstOrDefaultAsync();
             if (node == null) throw new InvalidOperationException("Node not found.");
+            if (!node.IsActive) throw new InvalidOperationException("Cannot generate energy slots for an inactive microgrid node.");
 
             if (!TimeSpan.TryParse(startTime, out var startTs))
             {

@@ -7,6 +7,7 @@ import {
   AlertTriangle,
   Zap,
   Plus,
+  Edit,
   Trash2,
   ArrowLeft,
   CheckCircle2,
@@ -70,6 +71,86 @@ export default function NodeSlotManagement() {
   // Deletion Modal State
   const [deletingSlotId, setDeletingSlotId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Edit Slot Modal State
+  const [editingSlot, setEditingSlot] = useState(null);
+  const [editForm, setEditForm] = useState({
+    totalCapacityKWh: 50,
+    slotType: 'DropOff',
+    isAvailable: true,
+  });
+  const [isUpdatingSlot, setIsUpdatingSlot] = useState(false);
+  const [editSlotError, setEditSlotError] = useState(null);
+
+  const handleOpenEditSlot = (slot) => {
+    setEditingSlot(slot);
+    setEditForm({
+      totalCapacityKWh: slot.totalCapacityKWh,
+      slotType: slot.slotType || 'DropOff',
+      isAvailable: slot.isAvailable ?? true,
+    });
+    setEditSlotError(null);
+  };
+
+  const handleEditSlotSubmit = async (e) => {
+    e.preventDefault();
+    if (!editingSlot) return;
+
+    const capacityNum = Number(editForm.totalCapacityKWh);
+    if (!capacityNum || capacityNum <= 0) {
+      setEditSlotError('Capacity must be greater than 0.');
+      return;
+    }
+
+    setIsUpdatingSlot(true);
+    setEditSlotError(null);
+
+    try {
+      const payload = {
+        totalCapacityKWh: capacityNum,
+        slotType: editForm.slotType,
+        isAvailable: editForm.isAvailable,
+      };
+
+      const response = await fetch(`${SLOTS_API_URL}/${editingSlot.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || `Failed to update slot (HTTP ${response.status})`);
+      }
+
+      setSlots((prev) =>
+        prev.map((s) =>
+          s.id === editingSlot.id
+            ? {
+              ...s,
+              ...data,
+              totalCapacityKWh: capacityNum,
+              slotType: editForm.slotType,
+              isAvailable: editForm.isAvailable,
+              availableCapacityKWh: Math.max(0, capacityNum - (s.reservedCapacityKWh || 0)),
+            }
+            : s
+        )
+      );
+
+      showToast(`Time slot (${editingSlot.slotStartTime} - ${editingSlot.slotEndTime}) updated successfully.`);
+      setEditingSlot(null);
+    } catch (err) {
+      console.error('Error updating slot:', err);
+      setEditSlotError(err.message || 'Failed to update slot.');
+    } finally {
+      setIsUpdatingSlot(false);
+    }
+  };
 
   // Helper to display temporary toast feedback
   const showToast = (message) => {
@@ -218,6 +299,11 @@ export default function NodeSlotManagement() {
   const handleBatchGenerateSubmit = async (e) => {
     e.preventDefault();
     setBatchError(null);
+
+    if (node && !node.isActive) {
+      setBatchError('Cannot create energy slots for an inactive microgrid station.');
+      return;
+    }
 
     // Client-side validation: startTime must be strictly before endTime
     if (!batchForm.startTime || !batchForm.endTime) {
@@ -462,6 +548,17 @@ export default function NodeSlotManagement() {
           </div>
         </div>
 
+        {/* Inactive Node Warning Banner */}
+        {node && !node.isActive && (
+          <div className="p-4 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl flex items-start gap-3 text-sm shadow-sm">
+            <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+            <div>
+              <strong className="font-bold text-amber-950 block mb-0.5">Station Currently Inactive</strong>
+              <span>This microgrid hub is deactivated. Creating new energy trading slots is disabled while the station is inactive.</span>
+            </div>
+          </div>
+        )}
+
         {/* Global API Error Alert Banner */}
         {apiError && (
           <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl flex items-start gap-3 text-sm animate-in fade-in duration-200">
@@ -507,7 +604,13 @@ export default function NodeSlotManagement() {
                 setBatchForm((prev) => ({ ...prev, date: selectedDate }));
                 setShowBatchModal(true);
               }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white font-semibold text-sm transition-all shadow-sm active:scale-[0.98]"
+              disabled={!node?.isActive}
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-sm ${
+                node?.isActive
+                  ? 'bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 text-white cursor-pointer active:scale-[0.98]'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300'
+              }`}
+              title={!node?.isActive ? 'Slot creation is disabled for inactive stations' : ''}
             >
               <span>Create Daily Slots</span>
             </button>
@@ -536,7 +639,13 @@ export default function NodeSlotManagement() {
                   setBatchForm((prev) => ({ ...prev, date: selectedDate }));
                   setShowBatchModal(true);
                 }}
-                className="mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2D6A4F] text-white font-semibold text-xs hover:bg-[#2D6A4F]/90 transition-all shadow-sm"
+                disabled={!node?.isActive}
+                className={`mt-3 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all shadow-sm ${
+                  node?.isActive
+                    ? 'bg-[#2D6A4F] text-white hover:bg-[#2D6A4F]/90 cursor-pointer'
+                    : 'bg-gray-200 text-gray-400 cursor-not-allowed border border-gray-300'
+                }`}
+                title={!node?.isActive ? 'Slot creation is disabled for inactive stations' : ''}
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Slots Now</span>
@@ -614,13 +723,22 @@ export default function NodeSlotManagement() {
 
                       {/* Actions Column */}
                       <td className="py-4 px-5 text-right">
-                        <button
-                          onClick={() => setDeletingSlotId(slot.id)}
-                          className="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors"
-                          title="Delete Slot"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => handleOpenEditSlot(slot)}
+                            className="gap-1.5 px-3 py-1.5 rounded-xl border border-[#748C7E]/30 bg-white hover:bg-[#2D6A4F] hover:text-white text-[#1B2621] shadow-sm transition-all cursor-pointer"
+                            title="Edit Slot Specifications"
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => setDeletingSlotId(slot.id)}
+                            className="p-1.5 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors"
+                            title="Delete Slot"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -797,6 +915,117 @@ export default function NodeSlotManagement() {
                 {isDeleting ? 'Deleting...' : 'Confirm Delete'}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT SLOT SPECIFICATIONS MODAL */}
+      {editingSlot && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-2xl border border-[#748C7E]/20 shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-[#748C7E]/20 flex items-center justify-between bg-[#F7FAF7]">
+              <div>
+                <h3 className="text-lg font-bold text-[#1B2621]">Edit Slot Specifications</h3>
+                <p className="text-xs text-[#748C7E] font-medium">
+                  {editingSlot.slotStartTime} - {editingSlot.slotEndTime} ({selectedDate})
+                </p>
+              </div>
+              <button
+                onClick={() => setEditingSlot(null)}
+                disabled={isUpdatingSlot}
+                className="text-[#748C7E] hover:text-[#1B2621] p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleEditSlotSubmit} className="p-6 space-y-4">
+              {editSlotError && (
+                <div className="p-3.5 bg-red-50 border border-red-200 text-red-800 rounded-xl text-xs flex items-start gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <span className="font-medium">{editSlotError}</span>
+                </div>
+              )}
+
+              {/* Slot Type Selection */}
+              <div>
+                <label className="block text-xs font-bold text-[#1B2621] uppercase tracking-wider mb-1">
+                  Trading Slot Type
+                </label>
+                <select
+                  value={editForm.slotType}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, slotType: e.target.value }))}
+                  className="w-full px-3.5 py-2 text-sm bg-[#F7FAF7] text-[#1B2621] rounded-xl border border-[#748C7E]/30 focus:outline-none focus:ring-2 focus:ring-[#52B788]"
+                >
+                  <option value="DropOff">DropOff</option>
+                  <option value="Charging">Charging</option>
+                </select>
+              </div>
+
+              {/* Total Capacity */}
+              <div>
+                <label className="block text-xs font-bold text-[#1B2621] uppercase tracking-wider mb-1">
+                  Total Capacity (kWh)
+                </label>
+                <input
+                  type="number"
+                  value={editForm.totalCapacityKWh}
+                  onChange={(e) => setEditForm((prev) => ({ ...prev, totalCapacityKWh: e.target.value }))}
+                  min="1"
+                  required
+                  className="w-full px-3.5 py-2 text-sm bg-[#F7FAF7] text-[#1B2621] rounded-xl border border-[#748C7E]/30 focus:outline-none focus:ring-2 focus:ring-[#52B788]"
+                />
+              </div>
+
+              {/* Availability Toggle */}
+              <div className="p-3.5 bg-[#F7FAF7] rounded-xl border border-[#748C7E]/20 flex items-center justify-between">
+                <div>
+                  <label className="block text-xs font-bold text-[#1B2621]">Slot Operational Status</label>
+                  <span className="text-xs text-[#748C7E]">
+                    {editForm.isAvailable ? 'Available for Reservations' : 'Disabled / Suspended'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditForm((prev) => ({ ...prev, isAvailable: !prev.isAvailable }))}
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${editForm.isAvailable ? 'bg-[#52B788]' : 'bg-gray-300'
+                    }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${editForm.isAvailable ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                  />
+                </button>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setEditingSlot(null)}
+                  disabled={isUpdatingSlot}
+                  className="px-4 py-2 text-sm font-semibold text-[#748C7E] hover:text-[#1B2621]"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdatingSlot}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-[#2D6A4F] hover:bg-[#2D6A4F]/90 shadow-sm transition-all"
+                >
+                  {isUpdatingSlot ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <span>Save Changes</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
